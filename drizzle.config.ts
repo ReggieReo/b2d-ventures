@@ -8,5 +8,6 @@ export default {
   dbCredentials: {
     url: env.POSTGRES_URL,
   },
-  tablesFilter: ["b2d-ventures_*"],
+  tablesFilter: ["b2d_ventures_*"],
+  schemaFilter: ["public"]
 } satisfies Config;
