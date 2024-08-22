@@ -1,13 +1,13 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { sql } from "drizzle-orm";
+import {sql} from "drizzle-orm";
 import {
-  index,
-  pgTableCreator,
-  serial,
-  timestamp,
-  varchar,
+    pgTableCreator,
+    numeric,
+    serial,
+    timestamp,
+    varchar,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -16,21 +16,68 @@ import {
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `b2d-ventures_${name}`);
+export const createTable = pgTableCreator((name) => `b2d_ventures_${name}`);
 
-export const posts = createTable(
-  "post",
-  {
-    id: serial("id").primaryKey(),
-    name: varchar("name", { length: 256 }),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
-  },
-  (example) => ({
-    nameIndex: index("name_idx").on(example.name),
-  })
+
+
+export const user = createTable(
+    "user",
+    {
+        userID: varchar("userID", {length: 256}).primaryKey(),
+        createdAt: timestamp("created_at", {withTimezone: true})
+            .default(sql`CURRENT_TIMESTAMP`)
+            .notNull(),
+        updatedAt: timestamp("updated_at", {withTimezone: true}).$onUpdate(
+            () => new Date(),
+        ),
+
+    }
+);
+
+export const business = createTable(
+    "business",
+    {
+        businessID: serial("businessID").primaryKey(),
+        userID: varchar("userID", {length: 256}).references(() => user.userID),
+        createdAt: timestamp("created_at", {withTimezone: true})
+            .default(sql`CURRENT_TIMESTAMP`)
+            .notNull(),
+        updatedAt: timestamp("updated_at", {withTimezone: true}).$onUpdate(
+            () => new Date(),
+        ),
+
+    }
+);
+
+export const investment = createTable(
+    "investment",
+    {
+        investmentID: serial("investmentID").primaryKey(),
+        businessID: serial("businessID").references(() => business.businessID),
+        userID: varchar("userID", {length: 256}).references(() => user.userID),
+        fund: numeric("fund").notNull(),
+        createdAt: timestamp("created_at", {withTimezone: true})
+            .default(sql`CURRENT_TIMESTAMP`)
+            .notNull(),
+        updatedAt: timestamp("updated_at", {withTimezone: true}).$onUpdate(
+            () => new Date(),
+        ),
+    }
+);
+
+export const media = createTable(
+    "media",
+    {
+        mediaID: serial("mediaID").primaryKey(),
+        businessID: serial("businessID").references(() => business.businessID),
+        userID: varchar("userID", {length: 256}).references(() => user.userID),
+        url: varchar("url", {length: 1024}).notNull(),
+        name: varchar("name", {length: 256}).notNull(),
+        createdAt: timestamp("created_at", {withTimezone: true})
+            .default(sql`CURRENT_TIMESTAMP`)
+            .notNull(),
+        updatedAt: timestamp("updated_at", {withTimezone: true}).$onUpdate(
+            () => new Date(),
+        ),
+    }
 );
