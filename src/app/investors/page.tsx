@@ -54,9 +54,9 @@ export default function PortfolioPage() {
         <div className="w-[336px] h-16 left-0 top-[63px] absolute text-black text-5xl font-bold font-['Inter'] leading-[57.60px]">$70,000</div>
         </div>
         <div className="w-[400px] h-20 left-[25px] top-[605px] absolute bg-black rounded-[20px] border border-white" />
-        <div className="w-[393px] h-[73px] left-[28px] top-[608px] absolute text-center text-white text-2xl font-semibold font-['Inter'] leading-[28.80px]">Invest in Rento</div>
+        <div className="w-[393px] h-[73px] left-[28px] top-[608px] absolute text-center text-white text-2xl font-semibold font-['Inter'] leading-[68.80px]">Invest in Rento</div>
         <div className="w-[400px] h-20 left-[25px] top-[515px] absolute bg-white rounded-[20px] border border-black" />
-        <div className="w-[393px] h-[73px] left-[28px] top-[518px] absolute text-center text-black text-2xl font-semibold font-['Inter'] leading-[28.80px]">Request Data Room</div>
+        <div className="w-[393px] h-[73px] left-[28px] top-[518px] absolute text-center text-black text-2xl font-semibold font-['Inter'] leading-[68.80px]">Request Data Room</div>
         <div className="w-[380px] h-4 left-[35px] top-[156px] absolute bg-[#1a1a1a]/10 rounded-full">
         <div className="w-[280.39px] h-4 left-[-5.34px] top-0 absolute bg-[#34c759]" />
         </div>
