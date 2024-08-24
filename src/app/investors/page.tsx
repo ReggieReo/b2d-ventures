@@ -1,6 +1,5 @@
-import SearchIcon from "./assets/b2dlogo.png";
 
-export default function SearchBar() {
+export default function InvestorsPage() {
   return (
     <div className="w-[1422px] h-[120px] relative">
         <div className="w-[1800px] h-[120px] p-8 left-0 top-0 absolute bg-white shadow border-b border-[#d9d9d9] justify-start items-center gap-6 inline-flex">
@@ -14,7 +13,7 @@ export default function SearchBar() {
             </div>
             <div className="px-3 py-2 rounded-lg justify-start items-center gap-2 flex">
                 <div className="w-10 h-10 relative rounded-full">
-                    <img className="w-10 h-10 left-0 top-0 absolute" src="./assets/kin.gif" />
+                    <img className="w-10 h-10 left-0 top-0 absolute" src="./assets/user.jpg" />
                 </div>
                 <div className="w-4 h-4 relative" />
             </div>
