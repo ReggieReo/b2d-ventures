@@ -1,7 +1,7 @@
 export default function portfolioPage() {
     return (
         <main className="">
-            (Page for Portfolio)
+            (Page for Detail)
         </main>
     )
 }
