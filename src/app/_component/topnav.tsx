@@ -27,19 +27,24 @@ export function TopNav() {
   return (
     <nav
       className={
-        "flex max-h-16 w-full items-center justify-between border-b p-4 text-xl font-semibold"
+        "flex max-h-16 w-full items-center justify-between border-b bg-white p-4 text-xl font-semibold text-black"
       }
     >
       <div>
         <Logo />
       </div>
-      <div>
-        <SignedOut>
-          <SignInButton />
-        </SignedOut>
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
+      <div className={"flex flex-row space-x-4"}>
+        <Link href={"/api"}>
+          <div>asdf</div>
+        </Link>
+        <div>
+          <SignedOut>
+            <SignInButton />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </div>
       </div>
     </nav>
   );
