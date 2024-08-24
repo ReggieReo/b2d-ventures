@@ -1,6 +1,6 @@
 import SearchIcon from "./assets/b2dlogo.png";
 
-export default function LogoAndSearch() {
+export default function SearchBar() {
   return (
     <div className="w-[1422px] h-[120px] relative">
         <div className="w-[1800px] h-[120px] p-8 left-0 top-0 absolute bg-white shadow border-b border-[#d9d9d9] justify-start items-center gap-6 inline-flex">
