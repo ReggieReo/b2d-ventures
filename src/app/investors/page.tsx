@@ -1,12 +1,13 @@
 const mockUrls = [
     "https://utfs.io/f/bb1dabab-7c7c-40d7-8ea5-030fdc7f1d96-ny8zu1.jpg",
+    "https://utfs.io/f/7f073d8d-ade3-4ba3-ade5-165386c8a815-186s3o.png",
 ];
 
 export default function Page() {
     return (
         <div className="flex justify-center items-center min-h-screen">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8 justify-between p-4 transform -translate-y-20 translate-x-40">
-                <div className="w-full w-[803px] h-[20vh] sm:h-[180px] bg-[#f1f1f1] rounded-[15px] flex items-center p-10">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8 justify-between p-4">
+                <div className="w-[803px] h-[20vh] sm:h-[180px] bg-[#f1f1f1] rounded-[15px] flex items-center p-10">
                     <img
                         src={mockUrls[0]}
                         alt="Logo"
@@ -20,8 +21,9 @@ export default function Page() {
                             Peer-to-Peer Rental Platform
                         </div>
                     </div>
+                    <div className="w-[450px] h-[710px] bg-[#f1f1f1] rounded-[15px]" />
                 </div>
-                <div className="w-[450px] h-[710px] bg-[#f1f1f1] rounded-[15px]" />
+                <img className="w-[800px] h-[500px] rounded-lg" src={mockUrls[1]}/>
             </div>
         </div>
     );
