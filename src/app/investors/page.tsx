@@ -59,31 +59,3 @@ export default function Page() {
     </div>
   );
 }
-
-{/* <div className="flex items-center justify-center pt-20">
-<div className="grid grid-flow-col grid-rows-3 gap-4">
-  <div className="order-3 row-span-3 w-[300px] rounded-[15px] sm:w-[500px]"></div>
-  <div className="order-1 col-span-2 flex items-center rounded-[15px] p-10">
-    <div className="relative md:w-[75px] md:h-[75px] sm:w-[125px] sm:h-[125px]">
-      <Image
-        src="https://utfs.io/f/bb1dabab-7c7c-40d7-8ea5-030fdc7f1d96-ny8zu1.jpg"
-        alt="Logo"
-        layout="fill"
-        objectFit="cover"
-      />
-    </div>
-    <div className="flex flex-col">
-      <div className="text-[5vw] font-bold leading-tight text-black sm:text-4xl">
-        Rento
-      </div>
-      <div className="text-[3vw] font-normal leading-snug text-[#494c4f] sm:text-base">
-        Peer-to-Peer Rental Platform
-      </div>
-    </div>
-  </div>
-  <img
-    className="order-2 col-span-2 row-span-2 h-[500px] w-full rounded-lg"
-    src={mockUrls[1]}
-  />
-</div>
-</div> */}
