@@ -51,9 +51,9 @@ export default function Page() {
           <div
             className="my-3 h-2 w-full overflow-hidden rounded-full bg-gray-200"
             role="progressbar"
-            aria-valuenow="25"
-            aria-valuemin="0"
-            aria-valuemax="100"
+            aria-valuenow={25}
+            aria-valuemin={0}
+            aria-valuemax={100}
           >
             <div className="h-full bg-green-600" style={{ width: "25%" }}></div>
           </div>
