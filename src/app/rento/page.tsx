@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <div className="font-geist-sans my-10 flex flex-col">
       <div className="flex flex-col place-content-center gap-10 md:flex-row">
-        <div className="flex w-full flex-col gap-4 md:w-2/3">
+        <div className="flex w-full flex-col gap-4 px-4 md:w-2/3">
           <div className="mb-6 flex items-center gap-4">
             <div className="relative h-[60px] w-[60px] min-w-[60px]">
               <Image
