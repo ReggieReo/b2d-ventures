@@ -7,7 +7,7 @@ const mockUrls = [
 
 export default function Page() {
   return (
-    <div className="my-10 flex flex-col font-geist-sans">
+    <div className="font-geist-sans my-10 flex flex-col">
       <div className="flex flex-col place-content-center gap-10 md:flex-row">
         <div className="flex w-full flex-col gap-4 md:w-2/3">
           <div className="mb-6 flex items-center gap-4">
@@ -39,7 +39,7 @@ export default function Page() {
           </div>
         </div>
 
-        <div className="mt-16 md:mt-24 flex flex-col gap-5 p-3 md:w-1/5">
+        <div className="mt-16 flex flex-col gap-5 p-3 md:mt-24 md:w-1/5">
           <div className="text-[24px] font-bold md:text-[28px]">
             Fund Raised
           </div>
@@ -87,7 +87,7 @@ export default function Page() {
         >
           <button
             type="button"
-            className="hs-tab-active:font-bold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 inline-flex gap-x-2 whitespace-nowrap border-b-2 border-transparent px-4 py-4 text-base font-medium text-gray-600 hover:text-blue-600 focus:text-blue-600 focus:outline-none disabled:pointer-events-none disabled:opacity-50"
+            className="hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 active inline-flex items-center gap-x-2 whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-lg font-bold text-gray-500 hover:text-blue-600 focus:text-blue-600 focus:outline-none disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-400 dark:hover:text-blue-500"
             id="tabs-with-underline-item-1"
             aria-selected="true"
             data-hs-tab="#tabs-with-underline-1"
@@ -97,6 +97,42 @@ export default function Page() {
             Pitch
           </button>
         </nav>
+      </div>
+
+      <div className="mt-4 max-w-[90%] mx-auto">
+        <div
+          id="tabs-with-underline-1"
+          role="tabpanel"
+          aria-labelledby="tabs-with-underline-item-1"
+        >
+          <h2 className="mb-4 text-2xl font-bold">Why Invest in Rento?</h2>
+          <p className="mb-4 text-gray-700">
+            Rento is revolutionizing the peer-to-peer rental market by providing
+            a seamless platform for people to rent out items they own but seldom
+            use. Our mission is to create a sustainable sharing economy where
+            everyone can benefit from renting rather than buying.
+          </p>
+          <h3 className="mb-2 text-xl font-semibold">Key Highlights:</h3>
+          <ul className="list-disc pl-6 text-gray-700">
+            <li className="mb-2">
+              Strong market demand with over 1 million registered users.
+            </li>
+            <li className="mb-2">
+              Proprietary technology ensures secure and smooth transactions.
+            </li>
+            <li className="mb-2">
+              Partnered with top insurance providers to protect users and their
+              assets.
+            </li>
+            <li className="mb-2">
+              Experienced team with a proven track record in tech and finance.
+            </li>
+          </ul>
+          <p className="mt-4 text-gray-700">
+            Join us in this exciting journey and be part of the future of
+            sharing!
+          </p>
+        </div>
       </div>
     </div>
   );
