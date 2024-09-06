@@ -10,6 +10,9 @@ import "server-only";
 export async function getUser() {
   return db.query.user.findMany();
 }
+export async function getAllImages() {
+  return db.query.media.findMany();
+}
 
 export async function createUserForCurrentUser() {
   const currentUser = auth();

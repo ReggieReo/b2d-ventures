@@ -4,7 +4,9 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "~/server/db";
 import { z } from "zod";
 import { UploadedFileData } from "uploadthing/types";
-import { media } from "~/server/db/schema";
+import { business, media, user } from "~/server/db/schema";
+import { serial, timestamp, varchar } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 const f = createUploadthing();
 
@@ -19,6 +21,7 @@ export const ourFileRouter = {
       const user = auth();
 
       // If you throw, the user will not be able to upload
+      // eslint-disable-next-line @typescript-eslint/only-throw-error
       if (!user) throw new UploadThingError("Unauthorized");
       console.log(input, "test test");
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
@@ -29,13 +32,15 @@ export const ourFileRouter = {
       console.log("Upload complete for userId:", metadata.userId);
       console.log(metadata.input, "test test");
       console.log("file url", file.url);
+      console.log("writing to db");
+
       await db.insert(media).values({
-        businessID: 1123,
-        userID: "123",
-        name: file.name,
-        // userID: metadata.userId ?? "",
+        userID: metadata.userId ?? "",
         url: file.url,
+        name: file.name,
+        businessID: 1,
       });
+
       // businessID: serial("businessID").references(() => business.businessID),
       //     userID: varchar("userID", {length: 256}).references(() => user.userID),
       //     url: varchar("url", {length: 1024}).notNull(),

@@ -34,10 +34,11 @@ export function TopNav() {
         <Logo />
       </div>
       <div className={"flex flex-row space-x-4"}>
-        <Link href={"/api"}>
-          <div>asdf</div>
-        </Link>
-        <div>
+        <Link href={"/api"}>{/*<div>asdf</div>*/}</Link>
+        <div className={"flex flex-row gap-4"}>
+          <Link className={"font-light"} href={"/test_media"}>
+            Test Media Page
+          </Link>
           <SignedOut>
             <SignInButton />
           </SignedOut>
