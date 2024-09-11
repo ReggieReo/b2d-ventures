@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <div className="font-geist-sans my-10 flex flex-col">
       <div className="flex flex-col place-content-center gap-10 md:flex-row">
-        <div className="flex w-full flex-col gap-4 px-4 md:w-2/3">
+        <div className="flex w-full flex-col gap-4 px-4 md:w-1/2">
           <div className="mb-6 flex items-center gap-4">
             <div className="relative h-[60px] w-[60px] min-w-[60px]">
               <Image
@@ -39,7 +39,7 @@ export default function Page() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col gap-5 p-3 md:mt-24 md:w-1/5">
+        <div className="flex flex-col gap-5 p-3 md:mt-20 md:w-1/4">
           <div className="text-[24px] font-bold md:text-[28px]">
             Fund Raised
           </div>
@@ -83,7 +83,7 @@ export default function Page() {
 
       <div className="my-8 border-b border-gray-200">
         <nav
-          className="mx-auto flex w-full max-w-[90%] justify-start gap-x-5"
+          className="mx-auto flex w-full max-w-[85%] justify-start gap-x-5"
           aria-label="Tabs"
           role="tablist"
           aria-orientation="horizontal"
@@ -102,7 +102,7 @@ export default function Page() {
         </nav>
       </div>
 
-      <div className="mx-auto mt-4 max-w-[90%]">
+      <div className="mx-auto mt-4 max-w-[85%]">
         <div
           id="tabs-with-underline-1"
           role="tabpanel"
