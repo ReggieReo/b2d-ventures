@@ -102,7 +102,7 @@ export default function Page() {
         </nav>
       </div>
 
-      <div className="mx-auto mt-4 max-w-[85%]">
+      <div className="mx-auto mt-8 max-w-[85%]">
         <div
           id="tabs-with-underline-1"
           role="tabpanel"
