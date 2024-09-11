@@ -72,6 +72,9 @@ export default function Page() {
           <button className="w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500">
             Invest in Rento
           </button>
+          <button className="w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500">
+            Access the Dataroom
+          </button>
           <div className="mt-2 text-center text-sm text-gray-500">
             $300 minimum investment
           </div>
@@ -80,7 +83,7 @@ export default function Page() {
 
       <div className="my-8 border-b border-gray-200">
         <nav
-          className="flex justify-start gap-x-5 w-full max-w-[90%] mx-auto"
+          className="mx-auto flex w-full max-w-[90%] justify-start gap-x-5"
           aria-label="Tabs"
           role="tablist"
           aria-orientation="horizontal"
@@ -99,7 +102,7 @@ export default function Page() {
         </nav>
       </div>
 
-      <div className="mt-4 max-w-[90%] mx-auto">
+      <div className="mx-auto mt-4 max-w-[90%]">
         <div
           id="tabs-with-underline-1"
           role="tabpanel"
