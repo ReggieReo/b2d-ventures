@@ -11,7 +11,7 @@ function Logo() {
   return (
     <Link href={"/"}>
       <Image
-        src={"r.svg"}
+        src={"/r.svg"}
         alt={"logo"}
         width={50}
         height={50}

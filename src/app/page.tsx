@@ -23,14 +23,6 @@ export default async function HomePage() {
               Just the basics - Everything you need to know to set up your
               database and authentication.
             </div>
-
-            {/*<div className={"flex flex-col overflow-hidden overflow-x-scroll"}>*/}
-            {/*{user.map((user) => (*/}
-            {/*  <div key={user.userID} className={"text-xl"}>*/}
-            {/*    {user.userID}*/}
-            {/*  </div>*/}
-            {/*))}*/}
-            {/*</div>*/}
           </Link>
           <Link
             className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
