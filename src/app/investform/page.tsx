@@ -6,7 +6,7 @@ const mockUrls = [
 
 export default function Page() {
   return (
-    <div className="my-20 flex flex-col place-items-center gap-4">
+    <div className="font-geist-sans my-20 flex flex-col place-items-center gap-4">
       <div className="mb-6 flex items-center gap-4">
         <div className="relative h-[40px] w-[40px] min-w-[40px]">
           <Image
