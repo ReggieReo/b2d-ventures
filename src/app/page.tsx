@@ -19,7 +19,7 @@ export default async function HomePage() {
             <Button>Start Raising</Button>
           </div>
         </div>
-        <p className={"ml-5 max-w-fit"}>
+        <p className={"ml-5 mr-5 max-w-fit"}>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
           minim veniam, quis nostrud exercitation ullamco laboris nisi ut
