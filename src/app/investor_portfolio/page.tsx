@@ -11,9 +11,9 @@ export const dynamic = "force-dynamic";
 
 export default async function InvestorPortfolioPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center">
-      <p className={"mb-4 text-3xl font-bold"}>My Business Portfolio</p>
-      <div className={"flex-row"}>
+    <main className="justify-left items-left mb-4 ml-4 mt-4 flex min-h-screen flex-col">
+      <p className={"mb-5 text-3xl font-bold"}>My Business Portfolio</p>
+      <div className={"flex flex-row gap-4"}>
         <Card>
           <CardHeader>
             <CardTitle>Portfolio Summary</CardTitle>
@@ -22,7 +22,7 @@ export default async function InvestorPortfolioPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className={"flex flex-row"}>
-            <div className={"mb-4 flex flex-col gap-y-3"}>
+            <div className={"mb-4 ml-4 flex flex-col gap-y-3"}>
               <div>
                 <p>Total:</p>
                 <p className={"text-xl font-bold"}>$2,250</p>
@@ -59,6 +59,11 @@ export default async function InvestorPortfolioPage() {
               </div>
             </div>
           </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Investment Breakdown</CardTitle>
+          </CardHeader>
         </Card>
       </div>
     </main>
