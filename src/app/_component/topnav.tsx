@@ -11,7 +11,7 @@ function Logo() {
   return (
     <Link href={"/"}>
       <Image
-        src={"r.svg"}
+        src={"/r.svg"}
         alt={"logo"}
         width={50}
         height={50}
@@ -27,19 +27,25 @@ export function TopNav() {
   return (
     <nav
       className={
-        "flex max-h-16 w-full items-center justify-between border-b p-4 text-xl font-semibold"
+        "flex max-h-16 w-full items-center justify-between border-b bg-white p-4 text-xl font-semibold text-black"
       }
     >
       <div>
         <Logo />
       </div>
-      <div>
-        <SignedOut>
-          <SignInButton />
-        </SignedOut>
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
+      <div className={"flex flex-row space-x-4"}>
+        <Link href={"/api"}>{/*<div>asdf</div>*/}</Link>
+        <div className={"flex flex-row gap-4"}>
+          <Link className={"font-light"} href={"/test_media"}>
+            Test Media Page
+          </Link>
+          <SignedOut>
+            <SignInButton />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </div>
       </div>
     </nav>
   );
