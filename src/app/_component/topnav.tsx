@@ -39,11 +39,11 @@ export function TopNav() {
           <Link className={"font-light"} href={"/browse_buisiness"}>
             Browse Business
           </Link>
+          <Link className={"font-light"} href={"/"}>
+            Start Raising
+          </Link>
           <Link className={"font-light"} href={"/investor_portfolio"}>
             My Portfolio
-          </Link>
-          <Link className={"font-light"} href={"/test_media"}>
-            Test Media Page
           </Link>
           <SignedOut>
             <SignInButton />
