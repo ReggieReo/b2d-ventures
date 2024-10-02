@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const mockUrls = [
   "https://utfs.io/f/bb1dabab-7c7c-40d7-8ea5-030fdc7f1d96-ny8zu1.jpg",
@@ -69,11 +70,13 @@ export default function Page() {
             </div>
           </div>
 
+          <Link href={"/investform"}>
+            <button className="w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500">
+              Invest in Rento
+            </button>
+          </Link>
           <button className="w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500">
-            Invest in Rento
-          </button>
-          <button className="w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500">
-            Access the Dataroom
+            Request Access to the Dataroom
           </button>
           <div className="mt-2 text-center text-sm text-gray-500">
             $300 minimum investment
