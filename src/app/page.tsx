@@ -18,7 +18,7 @@ export default async function HomePage() {
             <Link href={"/browse_buisiness"}>
               <Button variant="outline">Start Investing</Button>
             </Link>
-            <Link href={"/"}>
+            <Link href={"/create_fundraising"}>
               <Button>Start Raising</Button>
             </Link>
           </div>

@@ -75,6 +75,7 @@ export default function Page() {
               Invest in Rento
             </button>
           </Link>
+          {/*TODO: pop upppp*/}
           <button className="w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500">
             Request Access to the Dataroom
           </button>
