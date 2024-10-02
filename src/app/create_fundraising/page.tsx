@@ -254,7 +254,7 @@ export default function CreateFundraising() {
                         name="min_investment"
                         render={({field}) => (
                             <FormItem>
-                                <FormLabel>How much would you like to raise</FormLabel>
+                                <FormLabel>The minimum check-size per investment</FormLabel>
                                 <FormControl>
                                     <Input placeholder="$" {...field} />
                                 </FormControl>
