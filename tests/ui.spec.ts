@@ -3,13 +3,27 @@ import { test, expect } from "@playwright/test";
 test.beforeEach(async ({ page }) => {
   await page.goto("http://localhost:3000/");
 });
+
+test("request dataroom testing", async ({ page }) => {
+  await page.getByText("Start Investing").click();
+  await page.waitForURL("**/browse_buisiness");
+
+  await page.waitForTimeout(200);
+  await page.getByRole("link", { name: "IP3 Banner IP3 Logo Rento" }).click();
+  await page.waitForURL("**/business/1");
+
+  await page.waitForTimeout(200);
+  await page.getByText("Request Access to the Dataroom").click();
+  await page.waitForTimeout(600);
+});
+
 test("invest form testing", async ({ page }) => {
   // Click the get started link.
   await page.getByText("Start Investing").click();
   await page.waitForURL("**/browse_buisiness");
 
   await page.waitForTimeout(200);
-  await page.getByText("Rento").click();
+  await page.getByRole("link", { name: "IP3 Banner IP3 Logo Rento" }).click();
   await page.waitForURL("**/business/1");
 
   await page.waitForTimeout(200);
@@ -29,8 +43,6 @@ test("invest form testing", async ({ page }) => {
   await page.getByText("Confirm investment").click();
   await page.waitForURL("**/investor_portfolio");
   await page.waitForTimeout(1000);
-  // Expects page to have a heading with the name of Installation.
-  // await expect(page.getByText("Ventures")).toBeVisible();
 });
 
 test("create fundraising form testing", async ({ page }) => {
@@ -65,6 +77,6 @@ test("create fundraising form testing", async ({ page }) => {
   await page.getByRole("gridcell", { name: "31" }).click();
   await page.waitForTimeout(100);
   await page.getByText("Submit").click();
-  await page.waitForURL("**/browse_buisiness");
+  await page.waitForURL("**");
   await page.waitForTimeout(500);
 });

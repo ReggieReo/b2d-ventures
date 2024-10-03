@@ -11,7 +11,7 @@ export default function Ip3Card() {
       <CardHeader className="border-b">
         <div className="relative h-32 w-full">
           <Image
-            src="/r.svg"
+            src="/rento_bg.png"
             alt="IP3 Banner"
             layout="fill"
             objectFit="cover"
@@ -33,7 +33,9 @@ export default function Ip3Card() {
       <CardContent className="content-start p-4 pt-6">
         <h2 className="mb-2 text-2xl font-bold">Rento</h2>
         <p className="mb-4 text-gray-600">
-          IP3 is an incubator of web3 inclusive entertainment IP
+          Rento is revolutionizing the peer-to-peer rental market by providing a
+          seamless platform for people to rent out items they own but seldom
+          use.
         </p>
 
         <div className={"flex flex-row gap-1"}>
