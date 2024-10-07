@@ -37,11 +37,9 @@ export default async function HomePage() {
         <p>Explore emerging investment opportunities on our platform.</p>
       </div>
       <div className="grid max-w-5xl grid-cols-1 items-center gap-10 md:grid-cols-2 lg:grid-cols-3">
-        <Ip3Card />
-        <Ip3Card />
-        <Ip3Card />
-        <Ip3Card />
-        <Ip3Card />
+        <Link href={"business/1"}>
+          <Ip3Card />
+        </Link>
       </div>
     </main>
   );

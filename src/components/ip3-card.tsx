@@ -1,12 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "~/components/ui/card";
+import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 
 export default function Ip3Card() {
@@ -16,7 +11,7 @@ export default function Ip3Card() {
       <CardHeader className="border-b">
         <div className="relative h-32 w-full">
           <Image
-            src="/r.svg"
+            src="/rento_bg.png"
             alt="IP3 Banner"
             layout="fill"
             objectFit="cover"
@@ -26,7 +21,7 @@ export default function Ip3Card() {
       </CardHeader>
       <div className="absolute left-4 top-[168px] h-16 w-16 -translate-y-1/2 overflow-hidden rounded-lg border-4 border-white bg-white shadow-lg">
         <Image
-          src="r.svg"
+          src="https://utfs.io/f/bb1dabab-7c7c-40d7-8ea5-030fdc7f1d96-ny8zu1.jpg"
           alt="IP3 Logo"
           width={64}
           height={64}
@@ -36,9 +31,11 @@ export default function Ip3Card() {
 
       {/*  des */}
       <CardContent className="content-start p-4 pt-6">
-        <h2 className="mb-2 text-2xl font-bold">IP3</h2>
+        <h2 className="mb-2 text-2xl font-bold">Rento</h2>
         <p className="mb-4 text-gray-600">
-          IP3 is an incubator of web3 inclusive entertainment IP
+          Rento is revolutionizing the peer-to-peer rental market by providing a
+          seamless platform for people to rent out items they own but seldom
+          use.
         </p>
 
         <div className={"flex flex-row gap-1"}>

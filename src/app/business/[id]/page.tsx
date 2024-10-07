@@ -1,4 +1,16 @@
 import Image from "next/image";
+import Link from "next/link";
+
+import {
+  Dialog,
+  DialogContentNoClose as DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
+import { Button } from "~/components/ui/button";
+import React from "react";
 
 const mockUrls = [
   "https://utfs.io/f/bb1dabab-7c7c-40d7-8ea5-030fdc7f1d96-ny8zu1.jpg",
@@ -69,12 +81,29 @@ export default function Page() {
             </div>
           </div>
 
-          <button className="w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500">
-            Invest in Rento
-          </button>
-          <button className="w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500">
-            Access the Dataroom
-          </button>
+          <Link href={"/investform"}>
+            <button className="w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500">
+              Invest in Rento
+            </button>
+          </Link>
+          {/*TODO: pop upppp*/}
+          <Dialog>
+            <DialogTrigger asChild>
+              <button className="w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500">
+                Request Access to the Dataroom
+              </button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Data room request has been sent.</DialogTitle>
+                <DialogDescription>
+                  You can access Rento's data room after admin approves the
+                  request.
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+
           <div className="mt-2 text-center text-sm text-gray-500">
             $300 minimum investment
           </div>
