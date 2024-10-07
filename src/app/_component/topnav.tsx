@@ -36,8 +36,14 @@ export function TopNav() {
       <div className={"flex flex-row space-x-4"}>
         <Link href={"/api"}>{/*<div>asdf</div>*/}</Link>
         <div className={"flex flex-row gap-4"}>
-          <Link className={"font-light"} href={"/test_media"}>
-            Test Media Page
+          <Link className={"font-light"} href={"/browse_buisiness"}>
+            Browse Business
+          </Link>
+          <Link className={"font-light"} href={"/create_fundraising"}>
+            Start Raising
+          </Link>
+          <Link className={"font-light"} href={"/investor_portfolio"}>
+            My Portfolio
           </Link>
           <SignedOut>
             <SignInButton />
