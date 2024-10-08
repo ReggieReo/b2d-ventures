@@ -18,13 +18,6 @@ export function Sidebar() {
           <UsersIcon className="w-5 h-5" />
           <span>Investors</span>
         </a>
-        <a
-          href="#"
-          className="flex items-center space-x-2 hover:bg-black hover:text-white p-2 rounded"
-        >
-          <SettingsIcon className="w-5 h-5" />
-          <span>Settings</span>
-        </a>
       </nav>
     </div>
   );
