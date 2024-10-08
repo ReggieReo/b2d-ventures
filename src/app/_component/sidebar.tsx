@@ -12,7 +12,7 @@ export function Sidebar() {
           <span>Dashboard</span>
         </a>
         <a
-          href="#"
+          href="admin/fund"
           className="flex items-center space-x-2  hover:bg-black hover:text-white p-2 rounded"
         >
           <UsersIcon className="w-5 h-5" />

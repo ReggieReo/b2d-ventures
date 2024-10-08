@@ -86,7 +86,6 @@ export const columns: ColumnDef<InvestmentData>[] = [
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"))
 
-      // Format the amount as a dollar amount
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
@@ -114,7 +113,6 @@ const handleCheckout = (rowData: InvestmentData) => {
 
 export default function DataTableDemo() {
   const [sorting, setSorting] = React.useState<SortingState>([])
-
   const table = useReactTable({
     data,
     columns,
