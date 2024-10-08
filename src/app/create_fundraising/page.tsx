@@ -1,14 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Calendar as CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
 import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
-import { useEffect, useState } from "react";
-
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
 
 import { Button } from "~/components/ui/button";
 import { Calendar } from "~/components/ui/calendar";
@@ -49,8 +47,8 @@ import {
 } from "~/components/ui/dialog";
 import Link from "next/link";
 
-import { createFundraising } from "~/app/_server_action/create_fundraising";
-import { auth } from "@clerk/nextjs/server";
+import { createFundraising } from "~/app/create_fundraising/_server_action/create_fundraising";
+import { formSchema } from "~/app/create_fundraising/schema";
 
 const industries = [
   { label: "Technology", value: "tech" },
@@ -69,44 +67,6 @@ const industries = [
   { label: "Construction", value: "construction" },
   { label: "Consulting", value: "consulting" },
 ] as const;
-
-const formSchema = z.object({
-  company: z
-    .string({
-      required_error: "Please enter your company name.",
-    })
-    .min(2)
-    .max(50),
-  title: z
-    .string({
-      required_error: "Please enter your business title.",
-    })
-    .min(2)
-    .max(50),
-  website: z
-    .string({
-      required_error: "Please enter your company's website.",
-    })
-    .url(),
-  target_fund: z.coerce.number({
-    required_error: "Please enter the target fund.",
-  }),
-  industry: z.string({
-    required_error: "Please select the industry.",
-  }),
-  min_investment: z.coerce.number({
-    required_error: "Please enter the minimum investment.",
-  }),
-  allocation: z.coerce.number({
-    required_error: "Please enter the allocation.",
-  }),
-  valuation: z.coerce.number({
-    required_error: "Please enter the valuation.",
-  }),
-  deadline: z.coerce.date({
-    required_error: "Please select a date and time",
-  }),
-});
 
 function DialogCountdown() {
   const [countdown, setCountdown] = useState(3);
