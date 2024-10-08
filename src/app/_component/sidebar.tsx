@@ -16,7 +16,7 @@ export function Sidebar() {
           className="flex items-center space-x-2  hover:bg-black hover:text-white p-2 rounded"
         >
           <UsersIcon className="w-5 h-5" />
-          <span>Investors</span>
+          <span>Fundrasising</span>
         </a>
       </nav>
     </div>
