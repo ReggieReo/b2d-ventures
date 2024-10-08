@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
 import { useEffect, useState } from "react";
 
@@ -48,6 +48,9 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import Link from "next/link";
+
+import { createFundraising } from "~/app/_server_action/create_fundraising";
+import { auth } from "@clerk/nextjs/server";
 
 const industries = [
   { label: "Technology", value: "tech" },
@@ -109,6 +112,7 @@ function DialogCountdown() {
   const [countdown, setCountdown] = useState(3);
   const [startCountdown, setStartCountdown] = useState(false);
 
+  const { isValid, isDirty } = useFormState();
   const handleConfirmInvestment = () => {
     setStartCountdown(true);
   };
@@ -129,7 +133,11 @@ function DialogCountdown() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button type="submit" onClick={handleConfirmInvestment}>
+        <Button
+          type="submit"
+          disabled={!isValid || !isDirty}
+          onClick={handleConfirmInvestment}
+        >
           Submit
         </Button>
       </DialogTrigger>
@@ -155,23 +163,22 @@ function DialogCountdown() {
 export default function CreateFundraising() {
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
+    //   TODO: Delete default
     resolver: zodResolver(formSchema),
     defaultValues: {
-      company: "",
-      title: "",
-      website: "",
-      industry: "",
+      company: "Setthapon",
+      title: "CEO",
+      website: "https://b2dventures.com",
+      industry: "consulting",
+      allocation: 100,
+      min_investment: 199,
+      target_fund: 100,
+      valuation: 100,
+      deadline: new Date(Date.now()),
     },
   });
 
-  const [date, setDate] = useState<Date | undefined>(undefined);
-
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    //  This will be type-safe and validated.
-    console.log(values);
-  }
+  const createFundraisingBind = createFundraising.bind(null);
 
   return (
     <main className="justify-left items-left mb-4 ml-4 mt-4 flex min-h-screen flex-col">
@@ -179,7 +186,11 @@ export default function CreateFundraising() {
         Start the Fundraising Campaign
       </a>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form
+          action={createFundraisingBind}
+          // onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8"
+        >
           <FormField
             control={form.control}
             name="company"
@@ -288,6 +299,11 @@ export default function CreateFundraising() {
                   Which industry is best described your company
                 </FormDescription>
                 <FormMessage />
+                <input
+                  type="hidden"
+                  name={field.name}
+                  value={field.value?.toString()}
+                />
               </FormItem>
             )}
           />
@@ -389,6 +405,11 @@ export default function CreateFundraising() {
                 </FormControl>
                 <FormDescription>Company Allocation</FormDescription>
                 <FormMessage />
+                <input
+                  type="hidden"
+                  name={field.name}
+                  value={field.value?.toISOString()}
+                />
               </FormItem>
             )}
           />
