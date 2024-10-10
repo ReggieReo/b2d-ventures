@@ -47,7 +47,7 @@ import {
 } from "~/components/ui/dialog";
 import Link from "next/link";
 
-import { createFundraising } from "~/app/create_fundraising/_server_action/create_fundraising";
+import { createFundraising } from "~/server/action/create_fundraising";
 import { formSchema } from "~/app/create_fundraising/schema";
 
 const industries = [

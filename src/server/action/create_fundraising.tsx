@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { formSchema } from "~/app/create_fundraising/schema";
 import { z } from "zod";
+import { createBusiness } from "~/server/query";
 
 export async function createFundraising(formData: FormData) {
   "use server";
@@ -25,7 +26,5 @@ export async function createFundraising(formData: FormData) {
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-  console.log(formData);
-  console.log(formData.get("deadline"));
-  console.log(auth().userId);
+  await createBusiness(validatedFields.data);
 }

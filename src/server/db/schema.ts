@@ -9,6 +9,7 @@ import {
   timestamp,
   varchar,
   date,
+  integer,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -41,12 +42,11 @@ export const business = createTable("business", {
   company: varchar("company", { length: 256 }),
   title: varchar("title", { length: 256 }),
   website: varchar("website", { length: 256 }),
-  target_fund: numeric("target_fund"),
-  min_investment: numeric("min_investment"),
-  allocation: numeric("allocation"),
-  valuation: numeric("valuation"),
+  target_fund: integer("target_fund"),
+  min_investment: integer("min_investment"),
+  allocation: integer("allocation"),
+  valuation: integer("valuation"),
   deadline: date("deadline"),
-  email: varchar("email", { length: 256 }),
   industry: varchar("industry", { length: 256 }),
 });
 
