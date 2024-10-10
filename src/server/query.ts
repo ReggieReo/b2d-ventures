@@ -1,6 +1,8 @@
 import { db } from "~/server/db";
 import { auth } from "@clerk/nextjs/server";
-import { user } from "~/server/db/schema";
+import { user, business } from "~/server/db/schema";
+import { type formSchema } from "~/app/create_fundraising/schema";
+import { z } from "zod";
 import "server-only";
 
 // user client -> ship js to the client but code still on the server
@@ -29,4 +31,23 @@ export async function createUserForCurrentUser() {
       userID: currentUser.userId,
     });
   }
+}
+type businessFromSchema = z.infer<typeof formSchema>;
+export async function createBusiness(businessFromData: businessFromSchema) {
+  const currentUser = auth();
+
+  if (!currentUser.userId) throw new Error("Unauthorized");
+
+  await db.insert(business).values({
+    userID: currentUser.userId,
+    company: businessFromData.company,
+    title: businessFromData.title,
+    website: businessFromData.website,
+    target_fund: businessFromData.target_fund,
+    min_investment: businessFromData.min_investment,
+    allocation: businessFromData.allocation,
+    valuation: businessFromData.valuation,
+    deadline: businessFromData.deadline.toISOString(),
+    industry: businessFromData.industry,
+  });
 }

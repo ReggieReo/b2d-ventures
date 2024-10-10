@@ -1,6 +1,6 @@
 import { SignedOut, SignedIn } from "@clerk/nextjs";
 
-import { UploadButtonCom } from "~/app/_component/uploadbuttton";
+import { UploadButtonCom } from "~/components/uploadbuttton";
 import { getAllImages } from "~/server/query";
 import Image from "next/image";
 
