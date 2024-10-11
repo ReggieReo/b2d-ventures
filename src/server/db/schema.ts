@@ -1,7 +1,7 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   pgTableCreator,
   numeric,
@@ -10,6 +10,7 @@ import {
   varchar,
   date,
   integer,
+  text,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -22,6 +23,7 @@ export const createTable = pgTableCreator((name) => `b2d_ventures_${name}`);
 
 export const user = createTable("user", {
   userID: varchar("userID", { length: 256 }).primaryKey(),
+  name: text("name"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -54,7 +56,7 @@ export const investment = createTable("investment", {
   investmentID: serial("investmentID").primaryKey(),
   businessID: serial("businessID").references(() => business.businessID),
   userID: varchar("userID", { length: 256 }).references(() => user.userID),
-  fund: numeric("fund").notNull(),
+  fund: integer("fund").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -76,3 +78,27 @@ export const media = createTable("media", {
     () => new Date(),
   ),
 });
+
+export const businessRelation = relations(business, ({ many, one }) => ({
+  posts: many(investment),
+  user: one(user, {
+    fields: [business.userID],
+    references: [user.userID],
+  }),
+}));
+
+export const investmentRelation = relations(investment, ({ one }) => ({
+  business: one(business, {
+    fields: [investment.businessID],
+    references: [business.businessID],
+  }),
+  user: one(user, {
+    fields: [investment.userID],
+    references: [user.userID],
+  }),
+}));
+
+export const userRelation = relations(user, ({ many, one }) => ({
+  business: one(business),
+  investment: many(investment),
+}));

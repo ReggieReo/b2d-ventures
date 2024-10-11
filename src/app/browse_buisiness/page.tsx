@@ -2,11 +2,13 @@ import { SignedOut, SignedIn } from "@clerk/nextjs";
 
 import Ip3Card from "~/components/ip3-card";
 
-import { getAllImages } from "~/server/fetchQuery";
+import { getAllBusiness } from "~/server/fetchQuery";
 import Image from "next/image";
 import Link from "next/link";
+import BusinessCard from "~/components/business_card";
 
 export default async function HomePage() {
+  const business = await getAllBusiness();
   return (
     <main className={"mt-12 flex h-screen w-screen flex-col items-center"}>
       <div className={"mb-8 flex w-full max-w-5xl flex-col"}>
@@ -17,6 +19,9 @@ export default async function HomePage() {
         <Link href={"business/1"}>
           <Ip3Card />
         </Link>
+        {business.map((b) => (
+          <BusinessCard className={"h-full"} cBusiness={b} key={b.businessID} />
+        ))}
       </div>
     </main>
   );
