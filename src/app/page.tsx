@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
-import { getUser } from "~/server/query";
+import { getUser } from "~/server/fetchQuery";
 import Image from "next/image";
 
 export const dynamic = "force-dynamic";

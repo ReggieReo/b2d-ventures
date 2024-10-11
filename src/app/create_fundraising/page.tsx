@@ -123,17 +123,8 @@ function DialogCountdown() {
 export default function CreateFundraising() {
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
-    //   TODO: Delete default
     resolver: zodResolver(formSchema),
     defaultValues: {
-      company: "Setthapon",
-      title: "CEO",
-      website: "https://b2dventures.com",
-      industry: "consulting",
-      allocation: 100,
-      min_investment: 199,
-      target_fund: 100,
-      valuation: 100,
       deadline: new Date(Date.now()),
     },
   });

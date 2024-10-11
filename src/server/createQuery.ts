@@ -1,21 +1,10 @@
-import { db } from "~/server/db";
 import { auth } from "@clerk/nextjs/server";
-import { user, business } from "~/server/db/schema";
-import { type formSchema } from "~/app/create_fundraising/schema";
+import { db } from "~/server/db";
+import { business, user } from "~/server/db/schema";
 import { z } from "zod";
-import "server-only";
+import type { formSchema } from "~/app/create_fundraising/schema";
 
-// user client -> ship js to the client but code still on the server
-// user server -> expose endpoint to the client
-// running on the server
-
-export async function getUser() {
-  return db.query.user.findMany();
-}
-export async function getAllImages() {
-  return db.query.media.findMany();
-}
-
+type businessFromSchema = z.infer<typeof formSchema>;
 export async function createUserForCurrentUser() {
   const currentUser = auth();
 
@@ -32,7 +21,7 @@ export async function createUserForCurrentUser() {
     });
   }
 }
-type businessFromSchema = z.infer<typeof formSchema>;
+
 export async function createBusiness(businessFromData: businessFromSchema) {
   const currentUser = auth();
 

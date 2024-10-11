@@ -3,7 +3,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { formSchema } from "~/app/create_fundraising/schema";
 import { z } from "zod";
-import { createBusiness } from "~/server/query";
+
+import { createBusiness } from "~/server/createQuery";
 
 export async function createFundraising(formData: FormData) {
   "use server";

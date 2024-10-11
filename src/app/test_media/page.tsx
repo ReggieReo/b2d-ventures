@@ -1,7 +1,7 @@
 import { SignedOut, SignedIn } from "@clerk/nextjs";
 
 import { UploadButtonCom } from "~/components/uploadbuttton";
-import { getAllImages } from "~/server/query";
+import { getAllImages } from "~/server/fetchQuery";
 import Image from "next/image";
 
 export default async function HomePage() {
