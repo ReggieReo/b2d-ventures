@@ -17,7 +17,7 @@ export default async function StartupDashboard() {
   return (
     <main className="justify-left m-4 flex min-h-screen flex-col">
       <p className={"mb-5 text-3xl font-bold"}>My Fundraising</p>
-      <div className={"flex flex-col items-center"}>
+      <div className={"flex flex-col items-center gap-4"}>
         <Card className={"w-full"}>
           <CardHeader>
             <CardTitle>Fundraising Summary</CardTitle>
@@ -51,6 +51,24 @@ export default async function StartupDashboard() {
                   <p className={"text-3xl font-bold"}>75</p>
                   {/*TODO: Implement logic for day from start*/}
                   <p>(15 days from start)</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className={"w-full"}>
+          <CardHeader>
+            <CardTitle>Statistical Data</CardTitle>
+            <CardDescription>
+              The statistical data occur in the fundraising
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className={"flex flex-row"}>
+              <div className={"flex-col"}>
+                <div className={"flex-col"}>
+                  <p className={"text-xl"}>Minimum Check-size</p>
+                  <p className={"text-2xl font-bold"}>$100</p>
                 </div>
               </div>
             </div>
