@@ -7,14 +7,18 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 
+import * as React from "react";
+
+import { Progress } from "~/components/ui/progress";
+
 export const dynamic = "force-dynamic";
 
 export default async function StartupDashboard() {
   return (
-    <main className="justify-left mb-4 ml-4 mt-4 flex min-h-screen flex-col">
+    <main className="justify-left m-4 flex min-h-screen flex-col">
       <p className={"mb-5 text-3xl font-bold"}>My Fundraising</p>
-      <div className={"mx-3 flex flex-col items-center"}>
-        <Card>
+      <div className={"flex flex-col items-center"}>
+        <Card className={"w-full"}>
           <CardHeader>
             <CardTitle>Fundraising Summary</CardTitle>
             {/*TODO: Change the CardDescription to the time the info updated*/}
