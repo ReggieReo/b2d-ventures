@@ -25,29 +25,33 @@ export default async function StartupDashboard() {
             <CardDescription>Last Updated: Date</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className={"flex min-w-fit flex-row justify-center gap-x-10"}>
-              <div className={"flex flex-col"}>
-                <p className={"text-2xl"}>Fund Raised:</p>
-                <div className={"flex flex-row items-end"}>
-                  {/*TODO: Add a logic to display total fund raised*/}
-                  <p className={"mr-2 text-3xl font-bold"}>$70,000</p>
-                  {/*TODO: Add a logic to display difference fund raised from last week*/}
-                  <p className={"text-green-500"}>(+$1000 from last week)</p>
+            <div className={"flex flex-row justify-center gap-x-10"}>
+              <div className={"flex-col"}>
+                <p className={"text-2xl"}>Fund Raised</p>
+                <div className={"ml-3 flex flex-row items-end gap-2"}>
+                  {/*TODO: Implement logic for total fund raised*/}
+                  <p className={"text-3xl font-bold"}>$10,000</p>
+                  {/*TODO: Implement logic for fund diff to last week*/}
+                  <p>(+$1000 from last week)</p>
                 </div>
               </div>
-              <div className={"flex flex-col"}>
-                <p className={"text-2xl"}>Investors:</p>
-                <div className={"flex flex-row items-end"}>
-                  {/*TODO: Add a logic to display total investor*/}
-                  <p className={"mr-2 text-3xl font-bold"}>41</p>
-                  {/*TODO: Add a logic to display difference investor from last week*/}
-                  <p className={"text-green-500"}>(+3 from last week)</p>
+              <div className={"flex-col"}>
+                <p className={"text-2xl"}>Investor</p>
+                <div className={"ml-3 flex flex-row items-end gap-2"}>
+                  {/*TODO: Implement logic for Total investor*/}
+                  <p className={"text-3xl font-bold"}>41</p>
+                  {/*TODO: Implement logic for diff investor to last week*/}
+                  <p>(+3 from last week)</p>
                 </div>
               </div>
-              <div className={"flex flex-col"}>
-                <p className={"text-2xl"}>Day to go:</p>
-                {/*TODO: Add a logic to display day left in fundraising*/}
-                <p className={"mr-2 text-3xl font-bold"}>75</p>
+              <div className={"flex-col"}>
+                <p className={"text-2xl"}>Day to go</p>
+                <div className={"ml-3 flex flex-row items-end gap-2"}>
+                  {/*TODO: Implement logic for Day left*/}
+                  <p className={"text-3xl font-bold"}>75</p>
+                  {/*TODO: Implement logic for day from start*/}
+                  <p>(15 days from start)</p>
+                </div>
               </div>
             </div>
           </CardContent>
