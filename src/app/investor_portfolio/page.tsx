@@ -7,8 +7,8 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 
-import { InvestorPortPieChart } from "~/app/_component/pie_chart";
-import { InvestmentHistoryTable } from "~/app/_component/investment_history";
+import { InvestorPortPieChart } from "~/components/pie_chart";
+import { InvestmentHistoryTable } from "~/components/investment_history";
 
 export const dynamic = "force-dynamic";
 

@@ -2,32 +2,9 @@ import { SignedOut, SignedIn } from "@clerk/nextjs";
 
 import Ip3Card from "~/components/ip3-card";
 
-import { getAllImages } from "~/server/query";
+import { getAllImages } from "~/server/fetchQuery";
 import Image from "next/image";
 import Link from "next/link";
-
-async function FImage() {
-  const images = await getAllImages();
-  return (
-    <div>
-      {images.map((image, index) => (
-        <div key={image.mediaID} className="mx-auto mb-4 w-full max-w-md">
-          <div className="relative aspect-square overflow-hidden">
-            <Image
-              src={image.url}
-              alt={image.name}
-              objectFit="contain"
-              width={480}
-              height={480}
-              priority
-            />
-          </div>
-          <div className="mt-2 text-center">{image.name}</div>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 export default async function HomePage() {
   return (

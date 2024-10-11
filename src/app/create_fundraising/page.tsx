@@ -1,14 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Calendar as CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
+import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
-import { useEffect, useState } from "react";
-
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
 
 import { Button } from "~/components/ui/button";
 import { Calendar } from "~/components/ui/calendar";
@@ -49,6 +47,9 @@ import {
 } from "~/components/ui/dialog";
 import Link from "next/link";
 
+import { createFundraising } from "~/server/action/create_fundraising";
+import { formSchema } from "~/app/create_fundraising/schema";
+
 const industries = [
   { label: "Technology", value: "tech" },
   { label: "Healthcare", value: "health" },
@@ -67,48 +68,11 @@ const industries = [
   { label: "Consulting", value: "consulting" },
 ] as const;
 
-const formSchema = z.object({
-  company: z
-    .string({
-      required_error: "Please enter your company name.",
-    })
-    .min(2)
-    .max(50),
-  title: z
-    .string({
-      required_error: "Please enter your business title.",
-    })
-    .min(2)
-    .max(50),
-  website: z
-    .string({
-      required_error: "Please enter your company's website.",
-    })
-    .url(),
-  target_fund: z.coerce.number({
-    required_error: "Please enter the target fund.",
-  }),
-  industry: z.string({
-    required_error: "Please select the industry.",
-  }),
-  min_investment: z.coerce.number({
-    required_error: "Please enter the minimum investment.",
-  }),
-  allocation: z.coerce.number({
-    required_error: "Please enter the allocation.",
-  }),
-  valuation: z.coerce.number({
-    required_error: "Please enter the valuation.",
-  }),
-  deadline: z.coerce.date({
-    required_error: "Please select a date and time",
-  }),
-});
-
 function DialogCountdown() {
   const [countdown, setCountdown] = useState(3);
   const [startCountdown, setStartCountdown] = useState(false);
 
+  const { isValid, isDirty } = useFormState();
   const handleConfirmInvestment = () => {
     setStartCountdown(true);
   };
@@ -129,7 +93,11 @@ function DialogCountdown() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button type="submit" onClick={handleConfirmInvestment}>
+        <Button
+          type="submit"
+          disabled={!isValid || !isDirty}
+          onClick={handleConfirmInvestment}
+        >
           Submit
         </Button>
       </DialogTrigger>
@@ -157,21 +125,11 @@ export default function CreateFundraising() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      company: "",
-      title: "",
-      website: "",
-      industry: "",
+      deadline: new Date(Date.now()),
     },
   });
 
-  const [date, setDate] = useState<Date | undefined>(undefined);
-
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    //  This will be type-safe and validated.
-    console.log(values);
-  }
+  const createFundraisingBind = createFundraising.bind(null);
 
   return (
     <main className="justify-left items-left mb-4 ml-4 mt-4 flex min-h-screen flex-col">
@@ -179,7 +137,11 @@ export default function CreateFundraising() {
         Start the Fundraising Campaign
       </a>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form
+          action={createFundraisingBind}
+          // onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8"
+        >
           <FormField
             control={form.control}
             name="company"
@@ -288,6 +250,11 @@ export default function CreateFundraising() {
                   Which industry is best described your company
                 </FormDescription>
                 <FormMessage />
+                <input
+                  type="hidden"
+                  name={field.name}
+                  value={field.value?.toString()}
+                />
               </FormItem>
             )}
           />
@@ -389,6 +356,11 @@ export default function CreateFundraising() {
                 </FormControl>
                 <FormDescription>Company Allocation</FormDescription>
                 <FormMessage />
+                <input
+                  type="hidden"
+                  name={field.name}
+                  value={field.value?.toISOString()}
+                />
               </FormItem>
             )}
           />
