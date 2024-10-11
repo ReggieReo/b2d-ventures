@@ -1,9 +1,6 @@
-import { SignedOut, SignedIn } from "@clerk/nextjs";
-
 import Ip3Card from "~/components/ip3-card";
 
 import { getAllBusiness } from "~/server/fetchQuery";
-import Image from "next/image";
 import Link from "next/link";
 import BusinessCard from "~/components/business_card";
 
