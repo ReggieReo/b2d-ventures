@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import * as React from "react";
 import { Sidebar } from "~/app/_component/sidebar";
@@ -72,7 +72,9 @@ export const columns: ColumnDef<InvestmentData>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="capitalize">{row.getValue("Investment")}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("Investment")}</div>
+    ),
   },
   {
     accessorKey: "paymentMethod",
@@ -110,6 +112,102 @@ const handleCheckout = (rowData: InvestmentData) => {
   alert(`Confirmed checkout for ${rowData.Investment}`);
 };
 
+type CampaignData = {
+  companyName: string;
+  title: string;
+  website: string;
+  industry: string;
+  amountToRaise: number;
+  allocation: string;
+  deadline: string;
+};
+
+const campaignData: CampaignData[] = [
+  {
+    companyName: "B2D Ventures",
+    title: "CTO",
+    website: "https://b2dventures.com",
+    industry: "Technology",
+    amountToRaise: 500000,
+    allocation: "10%",
+    deadline: "2024-12-01",
+  },
+  {
+    companyName: "Green Energy Co",
+    title: "Founder",
+    website: "https://greenenergy.co",
+    industry: "Energy",
+    amountToRaise: 750000,
+    allocation: "15%",
+    deadline: "2024-11-15",
+  },
+];
+
+export const campaignColumns: ColumnDef<CampaignData>[] = [
+  {
+    accessorKey: "companyName",
+    header: "Company Name",
+    cell: ({ row }) => <div>{row.getValue("companyName")}</div>,
+  },
+  {
+    accessorKey: "website",
+    header: "Website",
+    cell: ({ row }) => (
+      <a
+        href={row.getValue("website")}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {row.getValue("website")}
+      </a>
+    ),
+  },
+  {
+    accessorKey: "industry",
+    header: "Industry",
+    cell: ({ row }) => <div>{row.getValue("industry")}</div>,
+  },
+  {
+    accessorKey: "amountToRaise",
+    header: () => <div className="text-right">Amount to Raise</div>,
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("amountToRaise"));
+
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(amount);
+
+      return <div className="text-right font-medium">{formatted}</div>;
+    },
+  },
+  {
+    accessorKey: "allocation",
+    header: "Allocation",
+    cell: ({ row }) => <div>{row.getValue("allocation")}</div>,
+  },
+  {
+    accessorKey: "deadline",
+    header: "Deadline",
+    cell: ({ row }) => <div>{row.getValue("deadline")}</div>,
+  },
+  {
+    id: "approve",
+    header: "Action",
+    cell: ({ row }) => (
+      <Button onClick={() => handleApprove(row.original)}>
+        Approve Campaign
+      </Button>
+    ),
+    enableSorting: false,
+  },
+];
+
+const handleApprove = (rowData: CampaignData) => {
+  console.log(`Approving campaign for:`, rowData);
+  alert(`Approved fundraising campaign for ${rowData.companyName}`);
+};
+
 export default function DataTableDemo() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const table = useReactTable({
@@ -124,18 +222,81 @@ export default function DataTableDemo() {
     },
   });
 
+  const campaignTable = useReactTable({
+    data: campaignData,
+    columns: campaignColumns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   return (
     <div className="flex min-h-screen">
       <Sidebar />
 
-      <main className="flex-1 p-6 space-y-6 mt-10">
+      <main className="mt-10 flex-1 space-y-6 p-6">
         <div className="w-full">
+          <h2 className="mb-4 text-2xl font-bold">
+            Fundraising Campaign Approval
+          </h2>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                {campaignTable.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead key={header.id}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {campaignTable.getRowModel().rows?.length ? (
+                  campaignTable.getRowModel().rows.map((row) => (
+                    <TableRow key={row.id}>
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={campaignColumns.length}
+                      className="h-24 text-center"
+                    >
+                      No results.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+
+          <h2 className="mb-4 mt-8 text-2xl font-bold">Investment Table</h2>
           <div className="flex items-center py-4">
             <Input
               placeholder="Filter investments..."
-              value={(table.getColumn("Investment")?.getFilterValue() as string) ?? ""}
+              value={
+                (table.getColumn("Investment")?.getFilterValue() as string) ??
+                ""
+              }
               onChange={(event) =>
-                table.getColumn("Investment")?.setFilterValue(event.target.value)
+                table
+                  .getColumn("Investment")
+                  ?.setFilterValue(event.target.value)
               }
               className="max-w-sm"
             />
@@ -152,7 +313,7 @@ export default function DataTableDemo() {
                             ? null
                             : flexRender(
                                 header.column.columnDef.header,
-                                header.getContext()
+                                header.getContext(),
                               )}
                         </TableHead>
                       );
@@ -168,7 +329,7 @@ export default function DataTableDemo() {
                         <TableCell key={cell.id}>
                           {flexRender(
                             cell.column.columnDef.cell,
-                            cell.getContext()
+                            cell.getContext(),
                           )}
                         </TableCell>
                       ))}
@@ -186,26 +347,6 @@ export default function DataTableDemo() {
                 )}
               </TableBody>
             </Table>
-          </div>
-          <div className="flex items-center justify-end space-x-2 py-4">
-            <div className="space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Next
-              </Button>
-            </div>
           </div>
         </div>
       </main>
