@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Sidebar } from "~/app/_component/sidebar";
+import { Sidebar } from "~/components/sidebar";
 import {
   ColumnDef,
   SortingState,

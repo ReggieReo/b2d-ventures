@@ -1,7 +1,7 @@
-import { Sidebar } from "~/app/_component/sidebar";
-import { InvestmentBarChart } from "~/app/_component/bar_chart";
-import { RecentInvestments } from "~/app/_component/investor_card";
-import { TotalInvestmentCard, InvestmentGrowthCard } from "~/app/_component/investment_card";
+import { Sidebar } from "~/components/sidebar";
+import { InvestmentBarChart } from "~/components/bar_chart";
+import { RecentInvestments } from "~/components/investor_card";
+import { TotalInvestmentCard, InvestmentGrowthCard } from "~/components/investment_card";
 
 export const dynamic = "force-dynamic";
 

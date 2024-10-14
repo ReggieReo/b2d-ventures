@@ -7,18 +7,18 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 
-import { InvestorPortPieChart } from "~/app/_component/pie_chart";
-import { InvestmentHistoryTable } from "~/app/_component/investment_history";
+import { InvestorPortPieChart } from "~/components/pie_chart";
+import { InvestmentHistoryTable } from "~/components/investment_history";
 
 export const dynamic = "force-dynamic";
 
 export default async function InvestorPortfolioPage() {
   return (
-    <main className="justify-left items-left mb-4 ml-4 mt-4 flex min-h-screen flex-col">
-      <p className={"mb-5 text-3xl font-bold"}>My Business Portfolio</p>
+    <main className="justify-left items-left m-4 flex min-h-screen flex-col gap-y-5">
+      <p className={"text-3xl font-bold"}>My Business Portfolio</p>
       <div
         className={
-          "flex w-screen max-w-7xl flex-row justify-center gap-4 self-center"
+          "m-4 flex w-full max-w-7xl flex-row justify-center gap-4 self-center"
         }
       >
         <Card className={"w-1/2"}>
@@ -69,7 +69,7 @@ export default async function InvestorPortfolioPage() {
       </div>
       <div
         className={
-          "mt-4 flex w-screen max-w-7xl flex-col justify-center gap-4 self-center"
+          "m-4 flex w-full max-w-7xl flex-col justify-center gap-4 self-center"
         }
       >
         <p className={"text-2xl font-bold"}>Investment Breakdown</p>

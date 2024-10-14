@@ -1,35 +1,11 @@
-import { SignedOut, SignedIn } from "@clerk/nextjs";
-
 import Ip3Card from "~/components/ip3-card";
 
-import { getAllImages } from "~/server/query";
-import Image from "next/image";
+import { getAllBusiness } from "~/server/fetchQuery";
 import Link from "next/link";
-
-async function FImage() {
-  const images = await getAllImages();
-  return (
-    <div>
-      {images.map((image, index) => (
-        <div key={image.mediaID} className="mx-auto mb-4 w-full max-w-md">
-          <div className="relative aspect-square overflow-hidden">
-            <Image
-              src={image.url}
-              alt={image.name}
-              objectFit="contain"
-              width={480}
-              height={480}
-              priority
-            />
-          </div>
-          <div className="mt-2 text-center">{image.name}</div>
-        </div>
-      ))}
-    </div>
-  );
-}
+import BusinessCard from "~/components/business_card";
 
 export default async function HomePage() {
+  const business = await getAllBusiness();
   return (
     <main className={"mt-12 flex h-screen w-screen flex-col items-center"}>
       <div className={"mb-8 flex w-full max-w-5xl flex-col"}>
@@ -40,6 +16,9 @@ export default async function HomePage() {
         <Link href={"business/1"}>
           <Ip3Card />
         </Link>
+        {business.map((b) => (
+          <BusinessCard className={"h-full"} cBusiness={b} key={b.businessID} />
+        ))}
       </div>
     </main>
   );
