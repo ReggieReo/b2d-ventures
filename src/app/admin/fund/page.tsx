@@ -100,7 +100,7 @@ export const columns: ColumnDef<InvestmentData>[] = [
     header: "Action",
     cell: ({ row }) => (
       <Button onClick={() => handleCheckout(row.original)}>
-        Confirm Checkout
+        Checkout
       </Button>
     ),
     enableSorting: false,
