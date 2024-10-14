@@ -26,34 +26,28 @@ import {
 
 type InvestmentData = {
   amount: number;
-  paymentMethod: string;
   Investment: string;
 };
 
 const data: InvestmentData[] = [
   {
     amount: 316,
-    paymentMethod: "Bank Account",
     Investment: "Rento",
   },
   {
     amount: 242,
-    paymentMethod: "Credit Card",
     Investment: "Green Energy Solutions",
   },
   {
     amount: 837,
-    paymentMethod: "Bank Account",
     Investment: "Urban Farming Co",
   },
   {
     amount: 874,
-    paymentMethod: "Credit Card",
     Investment: "Rento",
   },
   {
     amount: 721,
-    paymentMethod: "Bank Account",
     Investment: "EcoBuild Constructors",
   },
 ];
@@ -77,13 +71,8 @@ export const columns: ColumnDef<InvestmentData>[] = [
     ),
   },
   {
-    accessorKey: "paymentMethod",
-    header: "Payment Method",
-    cell: ({ row }) => <div>{row.getValue("paymentMethod")}</div>,
-  },
-  {
     accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    header: () => <div className="text-right pr-6">Amount</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"));
 
@@ -92,7 +81,7 @@ export const columns: ColumnDef<InvestmentData>[] = [
         currency: "USD",
       }).format(amount);
 
-      return <div className="text-right font-medium">{formatted}</div>;
+      return <div className="text-right pr-6 font-medium">{formatted}</div>;
     },
   },
   {
