@@ -8,6 +8,7 @@ const config = {
     "@typescript-eslint",
     "drizzle"
   ],
+  "ignorePatterns": ["**/components/ui/*.tsx", "**/components/hook/*.tsx"],
   "extends": [
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended-type-checked",

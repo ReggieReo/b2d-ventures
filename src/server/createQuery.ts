@@ -1,23 +1,26 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { db } from "~/server/db";
-import { business, user } from "~/server/db/schema";
+import { business, investment, user } from "~/server/db/schema";
 import { z } from "zod";
 import type { formSchema } from "~/app/create_fundraising/schema";
+import { relations } from "drizzle-orm";
 
 type businessFromSchema = z.infer<typeof formSchema>;
 export async function createUserForCurrentUser() {
-  const currentUser = auth();
+  // const currentUser = auth();
+  const cuser = await currentUser();
 
-  if (!currentUser.userId) throw new Error("Unauthorized");
+  if (!cuser) throw new Error("Unauthorized");
 
   const userQuery = await db.query.user.findMany({
-    where: (model, { eq }) => eq(model.userID, currentUser.userId),
+    where: (model, { eq }) => eq(model.userID, cuser.id),
   });
 
   if (userQuery.length === 0) {
     console.log("no user");
     await db.insert(user).values({
-      userID: currentUser.userId,
+      userID: cuser.id,
+      name: cuser.firstName,
     });
   }
 }

@@ -3,10 +3,7 @@ import { UploadThingError } from "uploadthing/server";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "~/server/db";
 import { z } from "zod";
-import { UploadedFileData } from "uploadthing/types";
 import { business, media, user } from "~/server/db/schema";
-import { serial, timestamp, varchar } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
 
 const f = createUploadthing();
 
