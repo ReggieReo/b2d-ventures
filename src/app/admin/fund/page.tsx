@@ -220,8 +220,8 @@ const handleApprove = (rowData: CampaignData) => {
 
 export default function DataTableDemo() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  
-  // Investment Table
+
+  // Investment Table (with page size of 10)
   const table = useReactTable({
     data,
     columns,
@@ -232,9 +232,14 @@ export default function DataTableDemo() {
     state: {
       sorting,
     },
+    initialState: {
+      pagination: {
+        pageSize: 10, // Limit to 10 rows per page
+      },
+    },
   });
 
-  // Campaign Table
+  // Campaign Table (with page size of 5)
   const campaignTable = useReactTable({
     data: campaignData,
     columns: campaignColumns,
@@ -245,6 +250,11 @@ export default function DataTableDemo() {
     state: {
       sorting,
     },
+    initialState: {
+      pagination: {
+        pageSize: 5, // Limit to 5 rows per page
+      },
+    },
   });
 
   return (
@@ -253,7 +263,7 @@ export default function DataTableDemo() {
 
       <main className="mt-10 flex-1 space-y-4 p-6">
         <div className="w-full">
-          <h2 className="mb-2 text-2xl font-bold">Fundraising Campaign Approval</h2> {/* Reduced margin */}
+          <h2 className="mb-2 text-2xl font-bold">Fundraising Campaign Approval</h2>
           <div className="rounded-md border">
             <Table>
               <TableHeader>
@@ -302,7 +312,7 @@ export default function DataTableDemo() {
             </Table>
           </div>
           
-          <div className="flex items-center justify-end space-x-2 py-2"> {/* Reduced padding */}
+          <div className="flex items-center justify-end space-x-2 py-2">
             <Button
               variant="outline"
               onClick={() => campaignTable.previousPage()}
@@ -319,8 +329,8 @@ export default function DataTableDemo() {
             </Button>
           </div>
 
-          <h2 className="mb-2 mt-6 text-2xl font-bold">Investment Table</h2> {/* Reduced margin */}
-          <div className="flex items-center py-2"> {/* Reduced padding */}
+          <h2 className="mb-2 mt-6 text-2xl font-bold">Investment Table</h2>
+          <div className="flex items-center py-2">
             <Input
               placeholder="Filter investments..."
               value={
@@ -383,7 +393,7 @@ export default function DataTableDemo() {
             </Table>
           </div>
 
-          <div className="flex items-center justify-end space-x-2 py-2"> {/* Reduced padding */}
+          <div className="flex items-center justify-end space-x-2 py-2">
             <Button
               variant="outline"
               onClick={() => table.previousPage()}
