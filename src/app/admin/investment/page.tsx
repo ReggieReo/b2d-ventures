@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import * as React from "react";
 import { Sidebar } from "~/app/_component/sidebar";
@@ -127,6 +127,11 @@ export default function DataTableWithUserInvestments() {
     getSortedRowModel: getSortedRowModel(),
     state: {
       sorting,
+    },
+    initialState: {
+      pagination: {
+        pageSize: 10, // Limit to 10 rows per page
+      },
     },
   });
 
