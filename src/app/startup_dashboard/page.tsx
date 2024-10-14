@@ -7,6 +7,26 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table"
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "~/components/ui/select";
+
+
 import {Button} from "~/components/ui/button";
 
 import * as React from "react";
@@ -14,6 +34,15 @@ import * as React from "react";
 import { Progress } from "~/components/ui/progress";
 
 export const dynamic = "force-dynamic";
+
+const dataroom_request = [
+  { id: "R001", name: "Elon Musk", date: "2024-10-01", status: "Paid" },
+  { id: "R002", name: "Bill Gates", date: "2024-10-05", status: "Pending" },
+  { id: "R003", name: "Warren Buffett", date: "2024-10-10", status: "Paid" },
+  { id: "R004", name: "Sundar Pichai", date: "2024-10-12", status: "Failed" },
+  { id: "R005", name: "Satya Nadella", date: "2024-10-14", status: "Pending" },
+];
+
 
 export default async function StartupDashboard() {
   return (
@@ -97,6 +126,48 @@ export default async function StartupDashboard() {
                 </div>
               </div>
             </div>
+          </CardContent>
+        </Card>
+        <Card className={"w-full"}>
+          <CardHeader>
+            <CardTitle>Dataroom Requests</CardTitle>
+            <CardDescription>
+              The request for the dataroom access
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableCaption>A list of dataroom requests</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">ID</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {dataroom_request.map((request) => (
+                    <TableRow key={request.id}>
+                      <TableCell className="font-medium">{request.id}</TableCell>
+                      <TableCell>{request.name}</TableCell>
+                      <TableCell>{request.date}</TableCell>
+                      <TableCell className="text-right">
+                        <Select defaultValue={request.status}>
+                          <SelectTrigger className="w-[120px]">
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Paid">Pending</SelectItem>
+                            <SelectItem value="Pending">Accept</SelectItem>
+                            <SelectItem value="Failed">Denied</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                    </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
         <Card className={"w-full"}>
