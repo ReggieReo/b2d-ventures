@@ -36,11 +36,11 @@ import { Progress } from "~/components/ui/progress";
 export const dynamic = "force-dynamic";
 
 const dataroom_request = [
-  { id: "R001", name: "Elon Musk", date: "2024-10-01", status: "Paid" },
-  { id: "R002", name: "Bill Gates", date: "2024-10-05", status: "Pending" },
-  { id: "R003", name: "Warren Buffett", date: "2024-10-10", status: "Paid" },
-  { id: "R004", name: "Sundar Pichai", date: "2024-10-12", status: "Failed" },
-  { id: "R005", name: "Satya Nadella", date: "2024-10-14", status: "Pending" },
+  { name: "Elon Musk", date: "2024-10-01", status: "Pending" },
+  { name: "Bill Gates", date: "2024-10-05", status: "Pending"},
+  { name: "Warren Buffett", date: "2024-10-10", status: "Pending"},
+  { name: "Sundar Pichai", date: "2024-10-12", status: "Pending"},
+  { name: "Satya Nadella", date: "2024-10-14", status: "Pending"},
 ];
 
 
@@ -140,27 +140,24 @@ export default async function StartupDashboard() {
               <TableCaption>A list of dataroom requests</TableCaption>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[100px]">ID</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {dataroom_request.map((request) => (
-                    <TableRow key={request.id}>
-                      <TableCell className="font-medium">{request.id}</TableCell>
+                {dataroom_request.map((request, index) => (
+                    <TableRow key={`${request.name}-${index}`}>
                       <TableCell>{request.name}</TableCell>
                       <TableCell>{request.date}</TableCell>
                       <TableCell className="text-right">
                         <Select defaultValue={request.status}>
                           <SelectTrigger className="w-[120px]">
-                            <SelectValue placeholder="Select status" />
+                            <SelectValue placeholder={"Pending"}/>
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="Paid">Pending</SelectItem>
-                            <SelectItem value="Pending">Accept</SelectItem>
-                            <SelectItem value="Failed">Denied</SelectItem>
+                            <SelectItem value="Accept">Accept</SelectItem>
+                            <SelectItem value="Denied">Denied</SelectItem>
                           </SelectContent>
                         </Select>
                       </TableCell>
