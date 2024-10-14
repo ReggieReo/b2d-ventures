@@ -60,11 +60,6 @@ const data: InvestmentData[] = [
 
 export const columns: ColumnDef<InvestmentData>[] = [
   {
-    accessorKey: "paymentMethod",
-    header: "Payment Method",
-    cell: ({ row }) => <div>{row.getValue("paymentMethod")}</div>,
-  },
-  {
     accessorKey: "Investment",
     header: ({ column }) => {
       return (
@@ -78,6 +73,11 @@ export const columns: ColumnDef<InvestmentData>[] = [
       );
     },
     cell: ({ row }) => <div className="capitalize">{row.getValue("Investment")}</div>,
+  },
+  {
+    accessorKey: "paymentMethod",
+    header: "Payment Method",
+    cell: ({ row }) => <div>{row.getValue("paymentMethod")}</div>,
   },
   {
     accessorKey: "amount",
