@@ -146,7 +146,17 @@ const campaignData: CampaignData[] = [
 export const campaignColumns: ColumnDef<CampaignData>[] = [
   {
     accessorKey: "companyName",
-    header: "Company Name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Company Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => <div>{row.getValue("companyName")}</div>,
   },
   {
@@ -225,7 +235,12 @@ export default function DataTableDemo() {
   const campaignTable = useReactTable({
     data: campaignData,
     columns: campaignColumns,
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },
   });
 
   return (
