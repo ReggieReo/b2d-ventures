@@ -156,6 +156,8 @@ export default async function StartupDashboard() {
                             <SelectValue placeholder={"Pending"}/>
                           </SelectTrigger>
                           <SelectContent>
+                            {/*TODO: Change the value of the status*/}
+                            <SelectItem value="Pending" disabled={true}>Pending</SelectItem>
                             <SelectItem value="Accept">Accept</SelectItem>
                             <SelectItem value="Denied">Denied</SelectItem>
                           </SelectContent>
