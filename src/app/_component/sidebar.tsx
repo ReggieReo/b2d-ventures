@@ -1,22 +1,29 @@
-import { HomeIcon, UsersIcon, SettingsIcon } from "lucide-react";
+import { HomeIcon, UsersIcon, BriefcaseBusiness } from "lucide-react";
 
 export function Sidebar() {
   return (
-    <div className="w-64 h-screen flex flex-col">
-      <nav className="flex-1 p-6 space-y-4">
+    <div className="flex h-screen w-64 flex-col">
+      <nav className="flex-1 space-y-4 p-6">
         <a
           href="/admin"
-          className="flex items-center space-x-2 hover:bg-black hover:text-white p-2 rounded"
+          className="flex items-center space-x-2 rounded p-2 hover:bg-black hover:text-white"
         >
-          <HomeIcon className="w-5 h-5" />
+          <HomeIcon className="h-5 w-5" />
           <span>Dashboard</span>
         </a>
         <a
           href="admin/fund"
-          className="flex items-center space-x-2  hover:bg-black hover:text-white p-2 rounded"
+          className="flex items-center space-x-2 rounded p-2 hover:bg-black hover:text-white"
         >
-          <UsersIcon className="w-5 h-5" />
+          <UsersIcon className="h-5 w-5" />
           <span>Fundrasising</span>
+        </a>
+        <a
+          href="admin/investment"
+          className="flex items-center space-x-2 rounded p-2 hover:bg-black hover:text-white"
+        >
+          <BriefcaseBusiness className="h-5 w-5" />
+          <span>Investment</span>
         </a>
       </nav>
     </div>
