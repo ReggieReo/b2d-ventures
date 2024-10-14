@@ -58,7 +58,17 @@ const userInvestmentData: UserInvestmentData[] = [
 export const userInvestmentColumns: ColumnDef<UserInvestmentData>[] = [
   {
     accessorKey: "userName",
-    header: "User Name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          User Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => <div>{row.getValue("userName")}</div>,
   },
   {
@@ -173,6 +183,22 @@ export default function DataTableWithUserInvestments() {
                 )}
               </TableBody>
             </Table>
+          </div>
+          <div className="flex items-center justify-end space-x-2 py-4">
+            <Button
+              variant="outline"
+              onClick={() => userInvestmentTable.previousPage()}
+              disabled={!userInvestmentTable.getCanPreviousPage()}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => userInvestmentTable.nextPage()}
+              disabled={!userInvestmentTable.getCanNextPage()}
+            >
+              Next
+            </Button>
           </div>
         </div>
       </main>
