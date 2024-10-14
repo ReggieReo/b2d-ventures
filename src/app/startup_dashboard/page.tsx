@@ -7,6 +7,8 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 
+import {Button} from "~/components/ui/button";
+
 import * as React from "react";
 
 import { Progress } from "~/components/ui/progress";
@@ -55,10 +57,10 @@ export default async function StartupDashboard() {
                   </div>
                 </div>
               </div>
-              <div className={"ml-5 flex flex-row gap-x-5 items-center"}>
+              <div className={"ml-5 flex flex-row items-center gap-x-5"}>
                 {/*TODO: Implement fundraised percentage logic*/}
                 <p>32%</p>
-                <Progress value={32} className="w-[60%]"/>
+                <Progress value={32} />
               </div>
             </div>
           </CardContent>
@@ -71,17 +73,58 @@ export default async function StartupDashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className={"flex flex-row"}>
+            <div className={"flex flex-col items-center"}>
               <div className={"flex flex-row gap-x-10"}>
                 <div className={"flex flex-col"}>
-                  <p className={"text-xl"}>Minimum Check-size</p>
-                  <p className={"text-2xl font-bold"}>$100</p>
+                  {/*TODO: Implement minimum check-size logic*/}
+                  <p className={"text-2xl"}>Lowest Check-size Value</p>
+                  <p className={"ml-3 text-3xl font-bold"}>$50</p>
                 </div>
                 <div className={"flex flex-col"}>
-                  <p className={"text-xl"}>Minimum Check-size</p>
-                  <p className={"text-2xl font-bold"}>$100</p>
+                  {/*TODO: Implement maximum check-size logic*/}
+                  <p className={"text-2xl"}>Highest Check-size Value</p>
+                  <p className={"ml-3 text-3xl font-bold"}>$1,000</p>
+                </div>
+                <div className={"flex flex-col"}>
+                  {/*TODO: Implement average check-size logic*/}
+                  <p className={"text-2xl"}>Average Check-size Value</p>
+                  <p className={"ml-3 text-3xl font-bold"}>$127</p>
+                </div>
+                <div className={"flex flex-col"}>
+                  {/*TODO: Implement mode check-size logic*/}
+                  <p className={"text-2xl"}>Most Invested Amount</p>
+                  <p className={"ml-3 text-3xl font-bold"}>$100</p>
                 </div>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className={"w-full"}>
+          <CardHeader>
+            <CardTitle>More Fundraising Details</CardTitle>
+            <CardDescription>
+              The more details of the fundraising
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className={"flex flex-col items-center gap-y-5"}>
+              <div className={"flex flex-row gap-x-10"}>
+                <div className={"flex flex-col"}>
+                  {/*TODO: Implement fundraising info logic*/}
+                  <p className={"text-2xl"}>Business Name</p>
+                  <p className={"ml-3 text-3xl font-bold"}>Rento</p>
+                </div>
+
+                <div className={"flex flex-col"}>
+                  <p className={"text-2xl"}>Target Fund</p>
+                  <p className={"ml-3 text-3xl font-bold"}>$100,000</p>
+                </div>
+                <div className={"flex flex-col"}>
+                  <p className={"text-2xl"}>Deadline</p>
+                  <p className={"ml-3 text-3xl font-bold"}>28 Jan 2025</p>
+                </div>
+              </div>
+              <Button>Edit Fundraising Information</Button>
             </div>
           </CardContent>
         </Card>
