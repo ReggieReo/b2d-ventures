@@ -27,7 +27,6 @@ type UserInvestmentData = {
   userName: string;
   companyName: string;
   investmentAmount: number;
-  paymentMethod: string;
   investmentStatus: string;
 };
 
@@ -36,21 +35,18 @@ const userInvestmentData: UserInvestmentData[] = [
     userName: "Phumrapee Chaowanapricha",
     companyName: "Rento",
     investmentAmount: 1000,
-    paymentMethod: "Bank Account",
     investmentStatus: "Pending",
   },
   {
     userName: "Setthapon Thadisakun",
     companyName: "Green Energy Solutions",
     investmentAmount: 2000,
-    paymentMethod: "Credit Card",
     investmentStatus: "Pending",
   },
   {
     userName: "Nanthawat Duang-ead",
     companyName: "Urban Farming Co",
     investmentAmount: 1500,
-    paymentMethod: "Bank Account",
     investmentStatus: "Pending",
   },
 ];
@@ -78,7 +74,7 @@ export const userInvestmentColumns: ColumnDef<UserInvestmentData>[] = [
   },
   {
     accessorKey: "investmentAmount",
-    header: () => <div className="text-right">Investment Amount</div>,
+    header: () => <div className="text-center">Investment Amount</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("investmentAmount"));
       const formatted = new Intl.NumberFormat("en-US", {
@@ -86,13 +82,8 @@ export const userInvestmentColumns: ColumnDef<UserInvestmentData>[] = [
         currency: "USD",
       }).format(amount);
 
-      return <div className="text-right font-medium">{formatted}</div>;
+      return <div className="text-center font-medium">{formatted}</div>;
     },
-  },
-  {
-    accessorKey: "paymentMethod",
-    header: "Payment Method",
-    cell: ({ row }) => <div>{row.getValue("paymentMethod")}</div>,
   },
   {
     accessorKey: "investmentStatus",
@@ -130,7 +121,7 @@ export default function DataTableWithUserInvestments() {
     },
     initialState: {
       pagination: {
-        pageSize: 10, // Limit to 10 rows per page
+        pageSize: 10,
       },
     },
   });
