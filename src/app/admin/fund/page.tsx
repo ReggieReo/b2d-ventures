@@ -61,7 +61,7 @@ export const columns: ColumnDef<InvestmentData>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Investment
+          Business
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -72,7 +72,7 @@ export const columns: ColumnDef<InvestmentData>[] = [
   },
   {
     accessorKey: "amount",
-    header: () => <div className="text-right pr-6">Amount</div>,
+    header: () => <div className="pr-6 text-right">Amount</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"));
 
@@ -81,16 +81,14 @@ export const columns: ColumnDef<InvestmentData>[] = [
         currency: "USD",
       }).format(amount);
 
-      return <div className="text-right pr-6 font-medium">{formatted}</div>;
+      return <div className="pr-6 text-right font-medium">{formatted}</div>;
     },
   },
   {
     id: "checkout",
     header: "Action",
     cell: ({ row }) => (
-      <Button onClick={() => handleCheckout(row.original)}>
-        Checkout
-      </Button>
+      <Button onClick={() => handleCheckout(row.original)}>Checkout</Button>
     ),
     enableSorting: false,
   },
@@ -210,7 +208,6 @@ const handleApprove = (rowData: CampaignData) => {
 export default function DataTableDemo() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
-  // Investment Table (with page size of 10)
   const table = useReactTable({
     data,
     columns,
@@ -223,12 +220,11 @@ export default function DataTableDemo() {
     },
     initialState: {
       pagination: {
-        pageSize: 10, // Limit to 10 rows per page
+        pageSize: 10,
       },
     },
   });
 
-  // Campaign Table (with page size of 5)
   const campaignTable = useReactTable({
     data: campaignData,
     columns: campaignColumns,
@@ -241,7 +237,7 @@ export default function DataTableDemo() {
     },
     initialState: {
       pagination: {
-        pageSize: 5, // Limit to 5 rows per page
+        pageSize: 5,
       },
     },
   });
@@ -252,7 +248,9 @@ export default function DataTableDemo() {
 
       <main className="mt-10 flex-1 space-y-4 p-6">
         <div className="w-full">
-          <h2 className="mb-2 text-2xl font-bold">Fundraising Campaign Approval</h2>
+          <h2 className="mb-2 text-2xl font-bold">
+            Fundraising Campaign Approval
+          </h2>
           <div className="rounded-md border">
             <Table>
               <TableHeader>
@@ -300,7 +298,7 @@ export default function DataTableDemo() {
               </TableBody>
             </Table>
           </div>
-          
+
           <div className="flex items-center justify-end space-x-2 py-2">
             <Button
               variant="outline"
@@ -318,10 +316,10 @@ export default function DataTableDemo() {
             </Button>
           </div>
 
-          <h2 className="mb-2 mt-6 text-2xl font-bold">Investment Table</h2>
+          <h2 className="mb-2 mt-6 text-2xl font-bold">Business Table</h2>
           <div className="flex items-center py-2">
             <Input
-              placeholder="Filter investments..."
+              placeholder="Filter businesses..."
               value={
                 (table.getColumn("Investment")?.getFilterValue() as string) ??
                 ""
