@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
 
 test("request dataroom testing", async ({ page }) => {
   await page.getByText("Start Investing").click();
-  await page.waitForURL("**/browse_buisiness");
+  await page.waitForURL("**/browse_business");
 
   await page.waitForTimeout(200);
   await page.getByRole("link", { name: "IP3 Banner IP3 Logo Rento" }).click();
@@ -20,7 +20,7 @@ test("request dataroom testing", async ({ page }) => {
 test("invest form testing", async ({ page }) => {
   // Click the get started link.
   await page.getByText("Start Investing").click();
-  await page.waitForURL("**/browse_buisiness");
+  await page.waitForURL("**/browse_business");
 
   await page.waitForTimeout(200);
   await page.getByRole("link", { name: "IP3 Banner IP3 Logo Rento" }).click();

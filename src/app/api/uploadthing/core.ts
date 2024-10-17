@@ -35,7 +35,7 @@ export const ourFileRouter = {
         userID: metadata.userId ?? "",
         url: file.url,
         name: file.name,
-        businessID: 1,
+        businessID: 3,
       });
 
       // businessID: serial("businessID").references(() => business.businessID),

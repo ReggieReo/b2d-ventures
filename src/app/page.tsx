@@ -15,7 +15,7 @@ export default async function HomePage() {
             <p>Ventures</p>
           </div>
           <div className={"mb-4 ml-4 flex flex-row gap-4"}>
-            <Link href={"/browse_buisiness"}>
+            <Link href={"/browse_business"}>
               <Button variant="outline">Start Investing</Button>
             </Link>
             <Link href={"/create_fundraising"}>
