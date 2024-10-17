@@ -64,7 +64,7 @@ export default async function Dataroom({ params }: { params: { id: number }}) {
                         <TableRow>
                         <TableCell key={link.mediaID}>
                             {/*TODO: Implement Download File*/}
-                            <a href={link.url} download={link.url}>{link.name}</a>
+                            <a href={link.url} target="_blank" download={link.url}>{link.name}</a>
                         </TableCell>
                         </TableRow>
                     ))}
