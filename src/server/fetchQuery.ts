@@ -22,3 +22,10 @@ export async function getInvestmentByBusinessID(businessID: number) {
     where: (model, { eq }) => eq(model.businessID, businessID),
   });
 }
+
+export async function getBusinessByID(businessID: number) {
+  return db.query.business.findFirst({
+    where: (model, { eq }) => eq(model.businessID, businessID),
+  });
+}
+
