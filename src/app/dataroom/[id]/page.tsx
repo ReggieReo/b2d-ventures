@@ -25,6 +25,7 @@ import {
 } from "~/components/ui/table"
 
 import Image from "next/image";
+import {redirect} from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +33,9 @@ export const dynamic = "force-dynamic";
 export default async function Dataroom({ params }: { params: { id: number }}) {
     const files = await getAllImages()
     const business = await getBusinessByID(params.id)
+    if (!business) {
+        redirect('/browse_business')
+    }
     return (
         <main className="justify-left m-4 flex min-h-screen flex-col">
             <Card className={"w-full"}>
@@ -61,8 +65,8 @@ export default async function Dataroom({ params }: { params: { id: number }}) {
                 </TableHeader>
                 <TableBody>
                     {files.map((link) => (
-                        <TableRow>
-                        <TableCell key={link.mediaID}>
+                        <TableRow  key={link.mediaID}>
+                        <TableCell>
                             {/*TODO: Implement Download File*/}
                             <a href={link.url} target="_blank" download={link.url}>{link.name}</a>
                         </TableCell>
