@@ -69,19 +69,19 @@ const formSchema = z.object({
     website: z.string({
         required_error: "Please enter your company's website.",
     }).url(),
-    target_fund: z.number({
+    target_fund: z.coerce.number({
         required_error: "Please enter the target fund.",
     }),
     industry: z.string({
         required_error: "Please select the industry."
     }),
-    min_investment: z.number({
+    min_investment: z.coerce.number({
         required_error: "Please enter the minimum investment.",
     }),
-    allocation: z.number({
+    allocation: z.coerce.number({
         required_error: "Please enter the allocation.",
     }),
-    valuation: z.number({
+    valuation: z.coerce.number({
         required_error: "Please enter the valuation.",
     }),
     deadline: z.date({
