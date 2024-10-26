@@ -28,6 +28,8 @@ import {
 } from "~/components/ui/dialog";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { isCreditCard } from "validator";
+import { createInvestment } from "~/server/action/create_investment";
 
 function DialogCountdown() {
   const [countdown, setCountdown] = useState(3);
@@ -48,7 +50,7 @@ function DialogCountdown() {
       router.push("/investor_portfolio");
     }
     return () => clearTimeout(timer);
-  }, [countdown, startCountdown]);
+  }, [countdown, router, startCountdown]);
 
   return (
     <Dialog>
@@ -78,34 +80,32 @@ function DialogCountdown() {
   );
 }
 
+const minInvestment = 10;
+
 const FormSchema = z.object({
-  username: z.string(),
-  terms: z.boolean().refine((value) => value === true, {
+  name: z.string(),
+  terms: z.boolean().refine((value) => value, {
     message: "You must accept the terms of investment.",
   }),
+  cardNumber: z.string(),
+  expirationDate: z.string(),
+  cvv: z.string(),
+  amount: z.number().min(1000), // pull from the business database
 });
 
 export default function InputForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      username: "",
+      name: "",
       terms: false,
     },
   });
 
-  const [selectedTab, setSelectedTab] = useState("bank");
+  const { watch } = form;
+  const watchTerms = watch("terms");
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-  }
+  const createInvestmentBind = createInvestment.bind(null);
 
   return (
     <div className="font-geist-sans mx-auto max-w-lg pb-20">
@@ -126,10 +126,10 @@ export default function InputForm() {
         </p>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form action={createInvestmentBind} className="space-y-6">
             <FormField
               control={form.control}
-              name="username"
+              name="amount"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -148,52 +148,20 @@ export default function InputForm() {
 
             <div className="mt-8">
               <h2 className="text-lg font-bold">Payment information</h2>
-              <div className="mt-4 flex border-b">
-                <button
-                  className={`px-4 py-2 font-semibold ${
-                    selectedTab === "bank" ? "border-b-2 border-black" : ""
-                  }`}
-                  onClick={() => setSelectedTab("bank")}
-                >
-                  Bank
-                </button>
-                <button
-                  className={`px-4 py-2 font-semibold ${
-                    selectedTab === "card" ? "border-b-2 border-black" : ""
-                  }`}
-                  onClick={() => setSelectedTab("card")}
-                >
-                  Card
-                </button>
+
+              <div className="mt-4">
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Card number"
+                    className="flex-1 p-3 text-lg"
+                  />
+                  <Input placeholder="ZIP code" className="w-1/3 p-3 text-lg" />
+                </div>
+                <p className="mt-2 text-sm text-gray-500">
+                  Republic does not process nor save your credit card
+                  information.
+                </p>
               </div>
-
-              {selectedTab === "card" && (
-                <div className="mt-4">
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Card number"
-                      className="flex-1 p-3 text-lg"
-                    />
-                    <Input
-                      placeholder="ZIP code"
-                      className="w-1/3 p-3 text-lg"
-                    />
-                  </div>
-                  <p className="mt-2 text-sm text-gray-500">
-                    Republic does not process nor save your credit card
-                    information.
-                  </p>
-                </div>
-              )}
-
-              {selectedTab === "bank" && (
-                <div className="mt-4">
-                  <p>Pay using a United States bank account:</p>
-                  <Button className="mt-2 bg-blue-500 text-white hover:bg-blue-600">
-                    Select bank account
-                  </Button>
-                </div>
-              )}
             </div>
 
             <div className="mt-6">

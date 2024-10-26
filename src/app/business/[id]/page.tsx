@@ -97,7 +97,7 @@ export default function Page() {
               <DialogHeader>
                 <DialogTitle>Data room request has been sent.</DialogTitle>
                 <DialogDescription>
-                  You can access Rento's data room after admin approves the
+                  You can access Rentos data room after admin approves the
                   request.
                 </DialogDescription>
               </DialogHeader>
