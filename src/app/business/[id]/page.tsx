@@ -1,3 +1,4 @@
+"use server";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -9,15 +10,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { Button } from "~/components/ui/button";
 import React from "react";
+import { getBusinessByID } from "~/server/fetchQuery";
+import { redirect } from "next/navigation";
 
 const mockUrls = [
   "https://utfs.io/f/bb1dabab-7c7c-40d7-8ea5-030fdc7f1d96-ny8zu1.jpg",
   "https://utfs.io/f/7f073d8d-ade3-4ba3-ade5-165386c8a815-186s3o.png",
 ];
 
-export default function Page() {
+export default async function Page({ params }: { params: { id: number } }) {
+  const business = await getBusinessByID(params.id);
+  if (!business) {
+    redirect("/browse_business");
+  }
+
   return (
     <div className="font-geist-sans my-10 flex flex-col">
       <div className="flex flex-col place-content-center gap-10 md:flex-row">
@@ -32,7 +39,9 @@ export default function Page() {
               />
             </div>
             <div className="flex flex-col">
-              <div className="text-3xl font-bold md:text-4xl">Rento</div>
+              <div className="text-3xl font-bold md:text-4xl">
+                {business.company}
+              </div>
               <div className="text-center text-sm md:text-left md:text-base">
                 Peer-to-Peer Rental Platform
               </div>
@@ -81,9 +90,9 @@ export default function Page() {
             </div>
           </div>
 
-          <Link href={"/investform"}>
+          <Link href={`/investform/${business.businessID}`}>
             <button className="w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500">
-              Invest in Rento
+              Invest in {business.company}
             </button>
           </Link>
           {/*TODO: pop upppp*/}
@@ -105,7 +114,7 @@ export default function Page() {
           </Dialog>
 
           <div className="mt-2 text-center text-sm text-gray-500">
-            $300 minimum investment
+            {business.min_investment!.toLocaleString()}$ minimum investment
           </div>
         </div>
       </div>
