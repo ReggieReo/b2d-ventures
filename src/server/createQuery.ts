@@ -6,6 +6,7 @@ import type { formSchema } from "~/app/create_fundraising/schema";
 import { relations } from "drizzle-orm";
 
 type businessFromSchema = z.infer<typeof formSchema>;
+
 export async function createUserForCurrentUser() {
   // const currentUser = auth();
   const cuser = await currentUser();
@@ -41,5 +42,17 @@ export async function createBusiness(businessFromData: businessFromSchema) {
     valuation: businessFromData.valuation,
     deadline: businessFromData.deadline.toISOString(),
     industry: businessFromData.industry,
+  });
+}
+
+export async function saveInvestment(businessID: number, fund: number) {
+  const currentUser = auth();
+
+  if (!currentUser.userId) throw new Error("Unauthorized");
+
+  await db.insert(investment).values({
+    userID: currentUser.userId,
+    businessID,
+    fund,
   });
 }

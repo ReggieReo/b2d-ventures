@@ -1,22 +1,21 @@
 "use server";
 
-import { formSchema } from "~/app/create_fundraising/schema";
-import { auth } from "@clerk/nextjs/server";
+import { schema } from "~/app/create_investment/schema";
+import { saveInvestment } from "~/server/createQuery";
 
 export async function createInvestment(businessID: number, formData: FormData) {
   "use server";
 
-  const user = auth();
-  console.log(user.userId);
-  console.log(businessID);
-
-  console.log(formData);
-  const validatedFields = formSchema.safeParse({});
+  const validatedFields = schema.safeParse({
+    businessID: formData.get("businessID"),
+    amount: formData.get("amount"),
+  });
 
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-  console.log(validatedFields);
+
+  await saveInvestment(businessID, validatedFields.data.amount);
 }
