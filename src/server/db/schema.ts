@@ -79,6 +79,13 @@ export const media = createTable("media", {
   ),
 });
 
+export const dataroom_request = createTable("dataroom_request", {
+  requestID: serial("requestID").primaryKey(),
+  userID: varchar("userID", { length: 256 }).references(() => user.userID),
+  businessID: serial("businessID").references(() => business.businessID),
+  requestStatus: integer("requestStatus").default(0).notNull()
+});
+
 export const businessRelation = relations(business, ({ many, one }) => ({
   posts: many(investment),
   user: one(user, {
