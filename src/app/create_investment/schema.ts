@@ -49,7 +49,7 @@ export function getInvestmentSchema(min_investment: number) {
         message: "Please enter a valid CVV (3-4 digits)",
       }),
 
-    amount: z
+    amount: z.coerce
       .number({
         required_error: "Amount is required.",
         invalid_type_error: "Amount must be a number.",
@@ -63,10 +63,6 @@ export function getInvestmentSchema(min_investment: number) {
   });
 }
 
-export const schema = z.object({
-  terms: z.boolean().default(false),
-  cardNumber: z.string(),
-  expirationDate: z.string(),
-  cvv: z.string(),
-  amount: z.number(),
+export const schemaForDB = z.object({
+  amount: z.coerce.number(),
 });

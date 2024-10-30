@@ -90,7 +90,7 @@ export default async function Page({ params }: { params: { id: number } }) {
             </div>
           </div>
 
-          <Link href={`/investform/${business.businessID}`}>
+          <Link href={`/create_investment/${business.businessID}`}>
             <button className="w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500">
               Invest in {business.company}
             </button>

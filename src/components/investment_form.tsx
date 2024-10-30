@@ -22,11 +22,10 @@ import {
 import { Input } from "~/components/ui/input";
 import { Checkbox } from "~/components/ui/checkbox";
 import { createInvestment } from "~/server/action/create_investment";
-import { z } from "zod";
+import { type z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type business } from "~/server/db/schema";
-import { isCreditCard, isDate } from "validator";
 import { getInvestmentSchema } from "~/app/create_investment/schema";
 
 function DialogCountdown({ isFormValid }: { isFormValid: boolean }) {
@@ -132,7 +131,9 @@ export function InvestingForm({
                       className="p-4 text-lg"
                       type="number"
                       {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      onChange={(e) =>
+                        field.onChange(Number(e.target.valueAsNumber))
+                      }
                     />
                   </FormControl>
                   <FormMessage />
