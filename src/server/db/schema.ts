@@ -11,6 +11,7 @@ import {
   date,
   integer,
   text,
+    boolean
 } from "drizzle-orm/pg-core";
 
 /**
@@ -36,10 +37,10 @@ export const business = createTable("business", {
   businessID: serial("businessID").primaryKey(),
   userID: varchar("userID", { length: 256 }).references(() => user.userID),
   createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-    () => new Date(),
+      () => new Date(),
   ),
   company: varchar("company", { length: 256 }),
   title: varchar("title", { length: 256 }),
@@ -50,6 +51,7 @@ export const business = createTable("business", {
   valuation: integer("valuation"),
   deadline: date("deadline"),
   industry: varchar("industry", { length: 256 }),
+  approve: boolean("approve").default(false).notNull(),
 });
 
 export const investment = createTable("investment", {
