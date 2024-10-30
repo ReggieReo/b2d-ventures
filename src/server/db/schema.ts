@@ -79,7 +79,7 @@ export const media = createTable("media", {
   ),
 });
 
-export const dataroom_request = createTable("dataroom_request", {
+export const dataroomRequest = createTable("dataroom_request", {
   requestID: serial("requestID").primaryKey(),
   userID: varchar("userID", { length: 256 }).references(() => user.userID),
   businessID: serial("businessID").references(() => business.businessID),
