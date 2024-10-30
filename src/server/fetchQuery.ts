@@ -39,3 +39,10 @@ export async function getRequest(businessID: number) {
       and(eq(model.userID, curUserID), eq(model.businessID, businessID)),
   });
 }
+
+export async function getRequestByID(businessID: number) {
+  return db.query.dataroomRequest.findMany({
+    where: (model, { eq }) =>
+        eq(model.businessID, businessID)
+  });
+}
