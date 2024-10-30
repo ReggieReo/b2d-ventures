@@ -13,11 +13,10 @@ export default async function HomePage() {
         <p>Explore emerging investment opportunities on our platform.</p>
       </div>
       <div className="grid max-w-5xl grid-cols-1 items-center gap-10 md:grid-cols-2 lg:grid-cols-3">
-        <Link href={"business/1"}>
-          <Ip3Card />
-        </Link>
         {business.map((b) => (
-          <BusinessCard className={"h-full"} cBusiness={b} key={b.businessID} />
+          <Link href={`/business/${b.businessID}`} key={b.businessID}>
+            <BusinessCard className={"h-full"} cBusiness={b} />
+          </Link>
         ))}
       </div>
     </main>
