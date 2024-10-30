@@ -29,3 +29,9 @@ export async function getBusinessByID(businessID: number) {
   });
 }
 
+export async function findRequest(curUserID: string, businessID: number) {
+  return db.query.dataroomRequest.findFirst({
+    where: (model, { eq, and }) =>
+      and(eq(model.userID, curUserID), eq(model.businessID, businessID)),
+  });
+}
