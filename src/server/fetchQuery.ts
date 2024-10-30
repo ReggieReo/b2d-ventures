@@ -1,5 +1,6 @@
 import "server-only";
 import { db } from "~/server/db";
+import {auth} from "@clerk/nextjs/server";
 
 // user client -> ship js to the client but code still on the server
 // user server -> expose endpoint to the client
@@ -29,7 +30,10 @@ export async function getBusinessByID(businessID: number) {
   });
 }
 
-export async function findRequest(curUserID: string, businessID: number) {
+export async function getRequest(businessID: number) {
+  const curUserID = auth().userId;
+  if (!curUserID) throw new Error("Unauthorized");
+
   return db.query.dataroomRequest.findFirst({
     where: (model, { eq, and }) =>
       and(eq(model.userID, curUserID), eq(model.businessID, businessID)),

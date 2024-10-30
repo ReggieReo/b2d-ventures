@@ -2,6 +2,7 @@
 import type { business } from "~/server/db/schema";
 import Image from "next/image";
 import Link from "next/link";
+import {useState} from "react";
 
 import {
   Dialog,
@@ -12,14 +13,91 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import React from "react";
-import { getBusinessByID } from "~/server/fetchQuery";
-import { redirect } from "next/navigation";
+import {RequestDataroomStatusEnum} from "~/utils/enum/requestDataroomStatusEnum";
+import {useRouter} from "next/navigation";
+import {createDataroomRequestAction, getRequestAction} from "~/server/action/dataroom_request_action";
+
+// function onClickhandler() {
+//   useEffect(() => {
+//
+//   }, []);
+// }
+
+function RequestDataroomButton({
+                                 initialRequestStatus, pageID
+                               }: {
+  initialRequestStatus: number,
+  pageID: number,
+}) {
+  const buttonStyle = "w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500"
+  const [requestStatus, setRequestStatus] = useState(initialRequestStatus);
+
+  const onclickHandler = async () => {
+    await createDataroomRequestAction(pageID);
+    const status = await getRequestAction(pageID)
+    if (!status) {
+      setRequestStatus(RequestDataroomStatusEnum.Error.valueOf());
+    } else {
+      setRequestStatus(status.requestStatus);
+    }
+  };
+  const rounter = useRouter()
+
+  if (requestStatus === RequestDataroomStatusEnum.Pending.valueOf()) {
+    return (
+      <button disabled={true} className={buttonStyle}>
+        Request Pending
+      </button>
+    );
+  }
+  if (requestStatus === RequestDataroomStatusEnum.Accepted.valueOf()) {
+
+    return (
+        // TODO: Redirect to Dataroom page
+        <button onClick={()=>rounter.push(`/dataroom/${pageID}`)} className={buttonStyle}>
+          Access Dataroom
+        </button>
+    );
+  }
+  
+  if (requestStatus === RequestDataroomStatusEnum.Rejected.valueOf()) {
+    return (
+        <button disabled={true} className={buttonStyle}>
+          Business Rejected the Dataroom Access
+        </button>
+    );
+  }
+  if (requestStatus === RequestDataroomStatusEnum.NoRequest.valueOf()) {
+    return (
+        <button onClick={onclickHandler} className={buttonStyle}>
+          Request Access to the Dataroom
+        </button>
+    );
+  }
+
+  if (requestStatus === RequestDataroomStatusEnum.Error.valueOf()) {
+    return (
+        <button onClick={onclickHandler} className={buttonStyle}>
+          Error Please Try Again Later
+        </button>
+    );
+  }
+  
+  return (
+    <button disabled={true} className={buttonStyle}>
+      Login to Request Access to the Dataroom
+    </button>
+  );
+}
 
 export function BusinessDetail({
   businessData,
+  initialRequestStatus,
 }: {
   businessData: typeof business.$inferSelect;
+  initialRequestStatus: number;
 }) {
+  const [status, setStatus] = useState(initialRequestStatus);
   return (
     <div className="font-geist-sans my-10 flex flex-col">
       <div className="flex flex-col place-content-center gap-10 md:flex-row">
@@ -92,10 +170,8 @@ export function BusinessDetail({
           </Link>
           {/*TODO: pop upppp*/}
           <Dialog>
-            <DialogTrigger asChild>
-              <button className="w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500">
-                Request Access to the Dataroom
-              </button>
+            <DialogTrigger>
+              <RequestDataroomButton pageID={businessData.businessID} initialRequestStatus={initialRequestStatus}/>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>

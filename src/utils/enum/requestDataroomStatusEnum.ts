@@ -4,4 +4,5 @@ export enum RequestDataroomStatusEnum {
   Rejected = 2,
   NoRequest = 3,
   NoUsers = 4,
+  Error = 5,
 }

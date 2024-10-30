@@ -11,7 +11,7 @@ import {
 import { z } from "zod";
 import type { formSchema } from "~/app/create_fundraising/schema";
 import { relations } from "drizzle-orm";
-import { findRequest } from "~/server/fetchQuery";
+import { getRequest } from "~/server/fetchQuery";
 
 type businessFromSchema = z.infer<typeof formSchema>;
 
@@ -59,7 +59,7 @@ export async function createDataroomRequest(businessID: number) {
 
   if (!curUserID) throw new Error("Unauthorized");
 
-  const dataroomQueryResult = await findRequest(curUserID, businessID);
+  const dataroomQueryResult = await getRequest(businessID);
 
   if (dataroomQueryResult) throw new Error("Already place a request");
 
