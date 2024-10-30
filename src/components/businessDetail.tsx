@@ -1,4 +1,5 @@
-"use server";
+"use client"
+import type { business } from "~/server/db/schema";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -14,17 +15,11 @@ import React from "react";
 import { getBusinessByID } from "~/server/fetchQuery";
 import { redirect } from "next/navigation";
 
-const mockUrls = [
-  "https://utfs.io/f/bb1dabab-7c7c-40d7-8ea5-030fdc7f1d96-ny8zu1.jpg",
-  "https://utfs.io/f/7f073d8d-ade3-4ba3-ade5-165386c8a815-186s3o.png",
-];
-
-export default async function Page({ params }: { params: { id: number } }) {
-  const business = await getBusinessByID(params.id);
-  if (!business) {
-    redirect("/browse_business");
-  }
-
+export function BusinessDetail({
+  businessData,
+}: {
+  businessData: typeof business.$inferSelect;
+}) {
   return (
     <div className="font-geist-sans my-10 flex flex-col">
       <div className="flex flex-col place-content-center gap-10 md:flex-row">
@@ -40,7 +35,7 @@ export default async function Page({ params }: { params: { id: number } }) {
             </div>
             <div className="flex flex-col">
               <div className="text-3xl font-bold md:text-4xl">
-                {business.company}
+                {businessData.company}
               </div>
               <div className="text-center text-sm md:text-left md:text-base">
                 Peer-to-Peer Rental Platform
@@ -90,9 +85,9 @@ export default async function Page({ params }: { params: { id: number } }) {
             </div>
           </div>
 
-          <Link href={`/create_investment/${business.businessID}`}>
+          <Link href={`/create_investment/${businessData.businessID}`}>
             <button className="w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500">
-              Invest in {business.company}
+              Invest in {businessData.company}
             </button>
           </Link>
           {/*TODO: pop upppp*/}
@@ -114,7 +109,7 @@ export default async function Page({ params }: { params: { id: number } }) {
           </Dialog>
 
           <div className="mt-2 text-center text-sm text-gray-500">
-            {business.min_investment!.toLocaleString()}$ minimum investment
+            {businessData.min_investment!.toLocaleString()}$ minimum investment
           </div>
         </div>
       </div>

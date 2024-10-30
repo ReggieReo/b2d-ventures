@@ -1,23 +1,6 @@
 "use client";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import React, { useState, useEffect } from "react";
-
-import { toast } from "~/components/hooks/use-toast";
-import { Button } from "~/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
-import { Checkbox } from "~/components/ui/checkbox";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContentNoClose as DialogContent,
@@ -26,12 +9,26 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
+import { Button } from "~/components/ui/button";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { isCreditCard } from "validator";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "~/components/ui/form";
+import { Input } from "~/components/ui/input";
+import { Checkbox } from "~/components/ui/checkbox";
 import { createInvestment } from "~/server/action/create_investment";
+import { type z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { type business } from "~/server/db/schema";
+import { getInvestmentSchema } from "~/app/create_investment/schema";
 
-function DialogCountdown() {
+function DialogCountdown({ isFormValid }: { isFormValid: boolean }) {
   const [countdown, setCountdown] = useState(3);
   const [startCountdown, setStartCountdown] = useState(false);
 
@@ -46,7 +43,6 @@ function DialogCountdown() {
       timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
     } else if (countdown === 0) {
-      // Redirect to the portfolio page when countdown reaches 0
       router.push("/investor_portfolio");
     }
     return () => clearTimeout(timer);
@@ -57,8 +53,9 @@ function DialogCountdown() {
       <DialogTrigger asChild>
         <Button
           type="submit"
-          className="mt-6 w-full bg-blue-500 py-3 text-lg font-semibold text-white hover:bg-blue-600"
+          className="mt-6 w-full bg-blue-500 py-3 text-lg font-semibold text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
           onClick={handleConfirmInvestment}
+          disabled={!isFormValid}
         >
           Confirm investment
         </Button>
@@ -80,51 +77,47 @@ function DialogCountdown() {
   );
 }
 
-const minInvestment = 10;
+export function InvestingForm({
+  businessData,
+}: {
+  businessData: typeof business.$inferSelect;
+}) {
+  const createInvestmentBind = createInvestment.bind(
+    null,
+    businessData.businessID,
+  );
 
-const FormSchema = z.object({
-  name: z.string(),
-  terms: z.boolean().refine((value) => value, {
-    message: "You must accept the terms of investment.",
-  }),
-  cardNumber: z.string(),
-  expirationDate: z.string(),
-  cvv: z.string(),
-  amount: z.number().min(1000), // pull from the business database
-});
+  const FormSchema = getInvestmentSchema(businessData.min_investment!);
 
-export default function InputForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      name: "",
       terms: false,
+      cardNumber: "",
+      expirationDate: "",
+      cvv: "",
+      amount: businessData.min_investment!,
     },
+    mode: "onBlur",
   });
 
-  const { watch } = form;
-  const watchTerms = watch("terms");
-
-  const createInvestmentBind = createInvestment.bind(null);
+  const isFormValid = form.formState.isValid && form.watch("terms");
 
   return (
     <div className="font-geist-sans mx-auto max-w-lg pb-20">
-      {" "}
-      {/* Added padding bottom */}
       <div className="my-6 flex flex-row items-center justify-center gap-2">
         <img
           src="https://utfs.io/f/bb1dabab-7c7c-40d7-8ea5-030fdc7f1d96-ny8zu1.jpg"
           alt="B2D Ventures Logo"
           className="h-[60px] w-[60px]"
         />
-        <h1 className="text-4xl font-bold">Invest in Rento</h1>
+        <h1 className="text-4xl font-bold">Invest in {businessData.company}</h1>
       </div>
       <div className="mt-6">
         <h2 className="text-lg font-bold">Investment amount</h2>
         <p className="mb-4 text-sm text-gray-600">
           Payments are processed immediately.
         </p>
-
         <Form {...form}>
           <form action={createInvestmentBind} className="space-y-6">
             <FormField
@@ -134,14 +127,16 @@ export default function InputForm() {
                 <FormItem>
                   <FormControl>
                     <Input
-                      placeholder="min $1000"
+                      placeholder={`Minimum investment ${businessData.min_investment!.toLocaleString()} $`}
                       className="p-4 text-lg"
+                      type="number"
                       {...field}
+                      onChange={(e) =>
+                        field.onChange(Number(e.target.valueAsNumber))
+                      }
                     />
                   </FormControl>
-                  <FormDescription className="mt-2 text-sm">
-                    You are investing as Myself / individual change.
-                  </FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -149,21 +144,71 @@ export default function InputForm() {
             <div className="mt-8">
               <h2 className="text-lg font-bold">Payment information</h2>
 
-              <div className="mt-4">
+              <div className="mt-4 space-y-4">
+                <FormField
+                  control={form.control}
+                  name="cardNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="Card number"
+                          className="p-3 text-lg"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <div className="flex gap-2">
-                  <Input
-                    placeholder="Card number"
-                    className="flex-1 p-3 text-lg"
+                  <FormField
+                    control={form.control}
+                    name="expirationDate"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormControl>
+                          <Input
+                            placeholder="MM/YY"
+                            className="p-3 text-lg"
+                            {...field}
+                            onChange={(e) => {
+                              let value = e.target.value;
+                              if (value.length === 2 && !value.includes("/")) {
+                                value += "/";
+                              }
+                              field.onChange(value);
+                            }}
+                            maxLength={5}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <Input placeholder="ZIP code" className="w-1/3 p-3 text-lg" />
+
+                  <FormField
+                    control={form.control}
+                    name="cvv"
+                    render={({ field }) => (
+                      <FormItem className="w-1/3">
+                        <FormControl>
+                          <Input
+                            placeholder="CVV"
+                            className="p-3 text-lg"
+                            type="password"
+                            maxLength={4}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
-                <p className="mt-2 text-sm text-gray-500">
-                  Republic does not process nor save your credit card
-                  information.
-                </p>
               </div>
             </div>
-
             <div className="mt-6">
               <h2 className="text-lg font-semibold">Terms</h2>
               <div className="mt-4 space-y-2 rounded-md bg-gray-100 p-4 text-sm text-gray-700">
@@ -220,14 +265,13 @@ export default function InputForm() {
                       id="terms"
                     />
                   </FormControl>
-                  <FormLabel htmlFor="terms">
+                  <FormLabel>
                     I have read and accept the terms of investment
                   </FormLabel>
-                  <FormMessage />
                 </FormItem>
               )}
             />
-            <DialogCountdown />
+            <DialogCountdown isFormValid={isFormValid} />
           </form>
         </Form>
       </div>
