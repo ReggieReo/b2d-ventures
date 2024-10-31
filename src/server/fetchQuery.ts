@@ -14,7 +14,9 @@ export async function getAllImages() {
 }
 
 export async function getAllBusiness() {
-  return db.query.business.findMany();
+  return db.query.business.findMany({
+    where: (model, {eq}) => eq(model.approve, false),
+  });
 }
 
 export async function getInvestmentByBusinessID(businessID: number) {
@@ -28,4 +30,3 @@ export async function getBusinessByID(businessID: number) {
     where: (model, { eq }) => eq(model.businessID, businessID),
   });
 }
-
