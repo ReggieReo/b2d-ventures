@@ -1,6 +1,6 @@
 import { SignedOut, SignedIn } from "@clerk/nextjs";
 
-import { UploadButtonCom } from "~/components/uploadbuttton";
+import { LogoUploadButton, UploadButtonCom } from "~/components/uploadbuttton";
 import { getAllImages } from "~/server/fetchQuery";
 import Image from "next/image";
 
@@ -19,6 +19,7 @@ export default async function HomePage() {
         </SignedIn>
 
         <UploadButtonCom />
+        <LogoUploadButton />
       </div>
       <div>
         {images.map((image, i) => (

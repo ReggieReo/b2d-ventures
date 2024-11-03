@@ -36,4 +36,22 @@ export const formSchema = z.object({
   deadline: z.coerce.date({
     required_error: "Please select a date and time",
   }),
+  media: z
+    .array(
+      z.object({
+        url: z.coerce.string(),
+        name: z.coerce.string(),
+        size: z.coerce.number(),
+        key: z.coerce.string(),
+      }),
+    )
+    .min(1),
+  logo: z
+    .object({
+      url: z.coerce.string(),
+      name: z.coerce.string(),
+      size: z.coerce.number(),
+      key: z.coerce.string(),
+    })
+    .nullable(),
 });

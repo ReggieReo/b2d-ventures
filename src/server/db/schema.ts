@@ -4,13 +4,13 @@
 import { relations, sql } from "drizzle-orm";
 import {
   pgTableCreator,
-  numeric,
   serial,
   timestamp,
   varchar,
   date,
   integer,
   text,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -50,6 +50,7 @@ export const business = createTable("business", {
   valuation: integer("valuation"),
   deadline: date("deadline"),
   industry: varchar("industry", { length: 256 }),
+  approve: boolean("approve").default(false).notNull(),
 });
 
 export const investment = createTable("investment", {
@@ -71,6 +72,21 @@ export const media = createTable("media", {
   userID: varchar("userID", { length: 256 }).references(() => user.userID),
   url: varchar("url", { length: 1024 }).notNull(),
   name: varchar("name", { length: 256 }).notNull(),
+  type: text("type"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+    () => new Date(),
+  ),
+});
+
+export const dataroomRequest = createTable("dataroom_request", {
+  requestID: serial("requestID").primaryKey(),
+  userID: varchar("userID", { length: 256 }).references(() => user.userID),
+  businessID: serial("businessID").references(() => business.businessID),
+  requestStatus: integer("requestStatus").default(0).notNull(),
+
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
