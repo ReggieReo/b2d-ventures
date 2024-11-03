@@ -11,7 +11,7 @@ import {
   date,
   integer,
   text,
-    boolean
+  boolean,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -37,10 +37,10 @@ export const business = createTable("business", {
   businessID: serial("businessID").primaryKey(),
   userID: varchar("userID", { length: 256 }).references(() => user.userID),
   createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date(),
+    () => new Date(),
   ),
   company: varchar("company", { length: 256 }),
   title: varchar("title", { length: 256 }),
@@ -85,7 +85,14 @@ export const dataroomRequest = createTable("dataroom_request", {
   requestID: serial("requestID").primaryKey(),
   userID: varchar("userID", { length: 256 }).references(() => user.userID),
   businessID: serial("businessID").references(() => business.businessID),
-  requestStatus: integer("requestStatus").default(0).notNull()
+  requestStatus: integer("requestStatus").default(0).notNull(),
+
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+    () => new Date(),
+  ),
 });
 
 export const businessRelation = relations(business, ({ many, one }) => ({
