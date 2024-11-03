@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useTransition } from "react";
 import { Sidebar } from "~/components/sidebar";
 import {
   ColumnDef,
@@ -28,17 +29,41 @@ import InvestmentTable from "~/components/investment_table";
 export default function CampaignApprovalTable({ data: initialData }: { data: CampaignData[] }) {
   const [data, setData] = React.useState<CampaignData[]>(initialData);
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [isPending, startTransition] = useTransition();
+
+  const fetchData = async () => {
+    const response = await fetch("/api/campaigns");
+    if (response.ok) {
+      const updatedData: CampaignData[] = await response.json();
+      setData(updatedData);
+    } else {
+      console.error("Error fetching campaigns data");
+    }
+  };
 
   const handleApprove = (rowData: CampaignData) => {
     if (confirm(`Are you sure you want to approve the campaign for ${rowData.company}?`)) {
-      setData((prevData) =>
-        prevData.map((campaign) =>
-          campaign.businessID === rowData.businessID
-            ? { ...campaign, isApproved: true }
-            : campaign
-        )
-      );
-      alert(`Approved fundraising campaign for ${rowData.company}`);
+      startTransition(async () => {
+        try {
+          const response = await fetch("/api/approve_business", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ businessID: rowData.businessID }),
+          });
+
+          if (response.ok) {
+            await fetchData();
+          } else {
+            const errorData = await response.json();
+            alert(`Error: ${errorData.error}`);
+          }
+        } catch (error) {
+          console.error("Error approving campaign:", error);
+          alert("There was an error approving the campaign.");
+        }
+      });
     }
   };
 
@@ -100,8 +125,8 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Cam
       id: "approve",
       header: "Action",
       cell: ({ row }) => (
-        <Button onClick={() => handleApprove(row.original)}>
-          Approve Campaign
+        <Button onClick={() => handleApprove(row.original)} disabled={isPending}>
+          {isPending ? "Approving..." : "Approve Campaign"}
         </Button>
       ),
       enableSorting: false,
