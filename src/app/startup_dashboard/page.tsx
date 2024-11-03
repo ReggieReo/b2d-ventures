@@ -6,24 +6,6 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/components/ui/table";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
-
 import { Button } from "~/components/ui/button";
 
 import * as React from "react";
@@ -32,21 +14,22 @@ import { Progress } from "~/components/ui/progress";
 import {
   getBusinessByUserID,
   getRequestByID,
-  getUserByID,
+
 } from "~/server/fetchQuery";
 import { redirect } from "next/navigation";
 
 import { RequestDataroomStatusEnum } from "~/utils/enum/requestDataroomStatusEnum";
+import {
+  createDataroomRequestAction,
+  getRequestAction,
+  updateDataroomRequestAction
+} from "~/server/action/dataroom_request_action";
+import {DataroomRequestWithUser, DataroomTable} from "~/components/dataroomTable";
+import {dataroomRequest} from "~/server/db/schema";
+
 
 export const dynamic = "force-dynamic";
 
-const dataroom_request = [
-  { name: "Elon Musk", date: "2024-10-01", status: "Pending" },
-  { name: "Bill Gates", date: "2024-10-05", status: "Pending" },
-  { name: "Warren Buffett", date: "2024-10-10", status: "Pending" },
-  { name: "Sundar Pichai", date: "2024-10-12", status: "Pending" },
-  { name: "Satya Nadella", date: "2024-10-14", status: "Pending" },
-];
 
 export default async function StartupDashboard() {
   const business = await getBusinessByUserID();
@@ -56,6 +39,24 @@ export default async function StartupDashboard() {
   const businessID = business.businessID;
 
   const dataroomRequests = await getRequestByID(businessID);
+
+  const validatedRequests: DataroomRequestWithUser[] = dataroomRequests.map(request => ({
+    requestID: request.requestID,
+    userID: request.userID!,
+    businessID: request.businessID,
+    requestStatus: request.requestStatus,
+    createdAt: new Date(request.createdAt),
+    user: {
+      userID: request.user?.userID,
+      name: request.user?.name
+    }
+  }));
+
+
+  const onSelect = async (userID: string, newStatus: number) => {
+    await updateDataroomRequestAction(businessID, userID, newStatus);
+  };
+
   return (
     <main className="justify-left m-4 flex min-h-screen flex-col">
       <p className={"mb-5 text-3xl font-bold"}>My Fundraising</p>
@@ -147,54 +148,7 @@ export default async function StartupDashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableCaption>A list of dataroom requests</TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {dataroomRequests.map((request, index) => (
-                  <TableRow key={`${request.userID}-${index}`}>
-                    <TableCell>{request.user?.name}</TableCell>
-                    <TableCell>
-                      {new Date(request.createdAt).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Select defaultValue={request.requestStatus.toString()}>
-                        <SelectTrigger className="w-[120px]">
-                          <SelectValue
-                            placeholder={request.requestStatus.toString()}
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {/*TODO: Change the value of the status*/}
-                          <SelectItem
-                            value={RequestDataroomStatusEnum.Pending.toString()}
-                            disabled={true}
-                          >
-                            Pending
-                          </SelectItem>
-                          <SelectItem
-                            value={RequestDataroomStatusEnum.Accepted.toString()}
-                          >
-                            Accept
-                          </SelectItem>
-                          <SelectItem
-                            value={RequestDataroomStatusEnum.Rejected.toString()}
-                          >
-                            Denied
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <DataroomTable dataroomRequestData={dataroomRequestData.safeParse(dataroomRequests)}/>
           </CardContent>
         </Card>
         <Card className={"w-full"}>

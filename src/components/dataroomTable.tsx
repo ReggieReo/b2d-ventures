@@ -1,0 +1,102 @@
+"use client";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { RequestDataroomStatusEnum } from "~/utils/enum/requestDataroomStatusEnum";
+import * as React from "react";
+import { business, dataroomRequest } from "~/server/db/schema";
+import { updateDataroomRequestAction } from "~/server/action/dataroom_request_action";
+import { z } from "zod";
+
+export type DataroomRequestWithUser = {
+  requestID: number;
+  userID: string;
+  businessID: number;
+  requestStatus: number;
+  createdAt: Date;
+  user: {
+    userID?: string | undefined;  // Make userID optional
+    name?: string | null;         // Make name optional and nullable
+  } | null;
+};
+
+
+
+const onSelect = async (
+  businessID: number,
+  userID: string,
+  newStatus: number,
+) => {
+  await updateDataroomRequestAction(businessID, userID, newStatus);
+};
+
+export async function DataroomTable({
+  dataroomRequestData,
+}: {
+  dataroomRequestData: dataroomRequestWithRelations
+}) {
+  return (
+    <Table>
+      <TableCaption>A list of dataroom requests</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Name</TableHead>
+          <TableHead>Date</TableHead>
+          <TableHead>Status</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {dataroomRequestData.map((request, index) => (
+          <TableRow key={`${request.userID}-${index}`}>
+            <TableCell>{request.user.name}</TableCell>
+            <TableCell>
+              {new Date(request.createdAt).toLocaleDateString()}
+            </TableCell>
+            <TableCell className="text-right">
+              <Select
+                defaultValue={request.requestStatus.toString()}
+                onValueChange={(value) => console.log("asdf", value)}
+              >
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue placeholder={request.requestStatus.toString()} />
+                </SelectTrigger>
+                <SelectContent>
+                  {/*TODO: Change the value of the status*/}
+                  <SelectItem
+                    value={RequestDataroomStatusEnum.Pending.toString()}
+                    disabled={true}
+                  >
+                    Pending
+                  </SelectItem>
+                  <SelectItem
+                    value={RequestDataroomStatusEnum.Accepted.toString()}
+                  >
+                    Accept
+                  </SelectItem>
+                  <SelectItem
+                    value={RequestDataroomStatusEnum.Rejected.toString()}
+                  >
+                    Denied
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
