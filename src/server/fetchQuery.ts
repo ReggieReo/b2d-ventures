@@ -46,3 +46,11 @@ export async function getRequestByID(businessID: number) {
         eq(model.businessID, businessID)
   });
 }
+
+export async function getBusinessByUserID(userID: string) {
+  // Return the business from the business owner ID
+  return db.query.business.findFirst({
+    where: (model, { eq }) =>
+        eq(model.userID, userID)
+  })
+}
