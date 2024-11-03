@@ -1,13 +1,18 @@
 import "server-only";
 import { db } from "~/server/db";
-import {auth} from "@clerk/nextjs/server";
-
+import { auth } from "@clerk/nextjs/server";
 // user client -> ship js to the client but code still on the server
 // user server -> expose endpoint to the client
 // running on the server
 
 export async function getUser() {
   return db.query.user.findMany();
+}
+
+export async function getUserByID(id: string) {
+  return db.query.user.findFirst({
+    where: (model, { eq }) => eq(model.userID, id),
+  })
 }
 
 export async function getAllImages() {
@@ -42,15 +47,21 @@ export async function getRequest(businessID: number) {
 
 export async function getRequestByID(businessID: number) {
   return db.query.dataroomRequest.findMany({
-    where: (model, { eq }) =>
-        eq(model.businessID, businessID)
+    where: (model, { eq }) => eq(model.businessID, businessID),
+    with: {
+      user: true
+    }
   });
 }
 
-export async function getBusinessByUserID(userID: string) {
+export async function getBusinessByUserID() {
   // Return the business from the business owner ID
+  const userID = auth().userId;
+
+  if (!userID) throw new Error("Unauthorized");
+
   return db.query.business.findFirst({
-    where: (model, { eq }) =>
-        eq(model.userID, userID)
-  })
+    where: (model, { eq }) => eq(model.userID, userID),
+  });
 }
+
