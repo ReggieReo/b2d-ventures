@@ -17,9 +17,6 @@ import {
 } from "~/components/ui/select";
 import { RequestDataroomStatusEnum } from "~/utils/enum/requestDataroomStatusEnum";
 import * as React from "react";
-import { business, dataroomRequest } from "~/server/db/schema";
-import { updateDataroomRequestAction } from "~/server/action/dataroom_request_action";
-import { z } from "zod";
 
 export type DataroomRequestWithUser = {
   requestID: number;
@@ -34,19 +31,10 @@ export type DataroomRequestWithUser = {
 };
 
 
-
-const onSelect = async (
-  businessID: number,
-  userID: string,
-  newStatus: number,
-) => {
-  await updateDataroomRequestAction(businessID, userID, newStatus);
-};
-
-export async function DataroomTable({
+export function DataroomTable({
   dataroomRequestData,
 }: {
-  dataroomRequestData: dataroomRequestWithRelations
+  dataroomRequestData: DataroomRequestWithUser[]
 }) {
   return (
     <Table>
@@ -61,7 +49,7 @@ export async function DataroomTable({
       <TableBody>
         {dataroomRequestData.map((request, index) => (
           <TableRow key={`${request.userID}-${index}`}>
-            <TableCell>{request.user.name}</TableCell>
+            <TableCell>{request.user?.name}</TableCell>
             <TableCell>
               {new Date(request.createdAt).toLocaleDateString()}
             </TableCell>

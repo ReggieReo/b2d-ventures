@@ -148,7 +148,7 @@ export default async function StartupDashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <DataroomTable dataroomRequestData={dataroomRequestData.safeParse(dataroomRequests)}/>
+            <DataroomTable dataroomRequestData={dataroomRequests}/>
           </CardContent>
         </Card>
         <Card className={"w-full"}>
