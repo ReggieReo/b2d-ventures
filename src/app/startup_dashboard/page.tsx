@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
@@ -12,39 +11,51 @@ import {
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
-} from "~/components/ui/table"
+} from "~/components/ui/table";
 
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "~/components/ui/select";
 
-
-import {Button} from "~/components/ui/button";
+import { Button } from "~/components/ui/button";
 
 import * as React from "react";
 
 import { Progress } from "~/components/ui/progress";
+import {
+  getBusinessByUserID,
+  getRequestByID,
+  getUserByID,
+} from "~/server/fetchQuery";
+import { redirect } from "next/navigation";
+
+import { RequestDataroomStatusEnum } from "~/utils/enum/requestDataroomStatusEnum";
 
 export const dynamic = "force-dynamic";
 
 const dataroom_request = [
   { name: "Elon Musk", date: "2024-10-01", status: "Pending" },
-  { name: "Bill Gates", date: "2024-10-05", status: "Pending"},
-  { name: "Warren Buffett", date: "2024-10-10", status: "Pending"},
-  { name: "Sundar Pichai", date: "2024-10-12", status: "Pending"},
-  { name: "Satya Nadella", date: "2024-10-14", status: "Pending"},
+  { name: "Bill Gates", date: "2024-10-05", status: "Pending" },
+  { name: "Warren Buffett", date: "2024-10-10", status: "Pending" },
+  { name: "Sundar Pichai", date: "2024-10-12", status: "Pending" },
+  { name: "Satya Nadella", date: "2024-10-14", status: "Pending" },
 ];
 
-
 export default async function StartupDashboard() {
+  const business = await getBusinessByUserID();
+
+  if (!business) redirect("/browse_business");
+
+  const businessID = business.businessID;
+
+  const dataroomRequests = await getRequestByID(businessID);
   return (
     <main className="justify-left m-4 flex min-h-screen flex-col">
       <p className={"mb-5 text-3xl font-bold"}>My Fundraising</p>
@@ -146,24 +157,41 @@ export default async function StartupDashboard() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {dataroom_request.map((request, index) => (
-                    <TableRow key={`${request.name}-${index}`}>
-                      <TableCell>{request.name}</TableCell>
-                      <TableCell>{request.date}</TableCell>
-                      <TableCell className="text-right">
-                        <Select defaultValue={request.status}>
-                          <SelectTrigger className="w-[120px]">
-                            <SelectValue placeholder={"Pending"}/>
-                          </SelectTrigger>
-                          <SelectContent>
-                            {/*TODO: Change the value of the status*/}
-                            <SelectItem value="Pending" disabled={true}>Pending</SelectItem>
-                            <SelectItem value="Accept">Accept</SelectItem>
-                            <SelectItem value="Denied">Denied</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-                    </TableRow>
+                {dataroomRequests.map((request, index) => (
+                  <TableRow key={`${request.userID}-${index}`}>
+                    <TableCell>{request.user?.name}</TableCell>
+                    <TableCell>
+                      {new Date(request.createdAt).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Select defaultValue={request.requestStatus.toString()}>
+                        <SelectTrigger className="w-[120px]">
+                          <SelectValue
+                            placeholder={request.requestStatus.toString()}
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {/*TODO: Change the value of the status*/}
+                          <SelectItem
+                            value={RequestDataroomStatusEnum.Pending.toString()}
+                            disabled={true}
+                          >
+                            Pending
+                          </SelectItem>
+                          <SelectItem
+                            value={RequestDataroomStatusEnum.Accepted.toString()}
+                          >
+                            Accept
+                          </SelectItem>
+                          <SelectItem
+                            value={RequestDataroomStatusEnum.Rejected.toString()}
+                          >
+                            Denied
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                  </TableRow>
                 ))}
               </TableBody>
             </Table>
