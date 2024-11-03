@@ -31,18 +31,21 @@ export async function createBusiness(businessFromData: businessFromSchema) {
 
   if (!currentUser.userId) throw new Error("Unauthorized");
 
-  await db.insert(business).values({
-    userID: currentUser.userId,
-    company: businessFromData.company,
-    title: businessFromData.title,
-    website: businessFromData.website,
-    target_fund: businessFromData.target_fund,
-    min_investment: businessFromData.min_investment,
-    allocation: businessFromData.allocation,
-    valuation: businessFromData.valuation,
-    deadline: businessFromData.deadline.toISOString(),
-    industry: businessFromData.industry,
-  });
+  return db
+    .insert(business)
+    .values({
+      userID: currentUser.userId,
+      company: businessFromData.company,
+      title: businessFromData.title,
+      website: businessFromData.website,
+      target_fund: businessFromData.target_fund,
+      min_investment: businessFromData.min_investment,
+      allocation: businessFromData.allocation,
+      valuation: businessFromData.valuation,
+      deadline: businessFromData.deadline.toISOString(),
+      industry: businessFromData.industry,
+    })
+    .returning({ id: business.businessID });
 }
 
 export async function saveInvestment(businessID: number, fund: number) {

@@ -2,6 +2,10 @@
 
 import { formSchema } from "~/app/create_fundraising/schema";
 import { createBusiness } from "~/server/createQuery";
+import {
+  updateMediaImageTypeByMediaURLe,
+  updateMediaLogoTypeByMediaURLe,
+} from "~/server/updateQuery";
 
 export async function createFundraising(formData: FormData) {
   "use server";
@@ -40,13 +44,6 @@ export async function createFundraising(formData: FormData) {
     logo: logoData, // Use parsed logo object
   });
 
-  // Log the parsed data for debugging
-  console.log("Form Data:", {
-    media: mediaData,
-    logo: logoData,
-    allFields: Object.fromEntries(formData.entries()),
-  });
-
   if (!validatedFields.success) {
     console.error("Validation errors:", validatedFields.error.flatten());
     return {
@@ -56,7 +53,16 @@ export async function createFundraising(formData: FormData) {
 
   try {
     // Uncomment this when ready to create business
-    // await createBusiness(validatedFields.data);
+    const id = await createBusiness(validatedFields.data);
+    await updateMediaImageTypeByMediaURLe(
+      validatedFields.data.media.map((m) => m.url),
+      id[0]!.id,
+    );
+    await updateMediaLogoTypeByMediaURLe(
+      validatedFields.data.logo!.url,
+      id[0]!.id,
+    );
+
     return { success: true };
   } catch (error) {
     console.error("Error creating business:", error);
