@@ -45,17 +45,20 @@ export const formSchema = z.object({
         key: z.coerce.string(),
       }),
     )
-    // .min(1),
-    .nullable(),
-  logo: z
-    .object({
+    .min(1, "Please upload at least one media file"),
+  logo: z.object(
+    {
       url: z.coerce.string(),
       name: z.coerce.string(),
       size: z.coerce.number(),
       key: z.coerce.string(),
+    },
+    { message: "Please upload a logo." },
+  ),
+
+  pitch: z
+    .string({
+      required_error: "Please enter your pitch.",
     })
-    .nullable(),
-  pitch: z.string({
-    required_error: "Please enter your pitch.",
-  }),
+    .min(1, "Please enter a pitch"),
 });

@@ -126,6 +126,14 @@ export function FundraisingForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      company: "",
+      slogan: "",
+      website: "",
+      industry: "",
+      target_fund: 0,
+      min_investment: 0,
+      valuation: 0,
+      allocation: 0,
       deadline: new Date(Date.now()),
       media: [],
       pitch: "# Test",
@@ -386,7 +394,6 @@ export function FundraisingForm() {
                   <div className="space-y-4">
                     <UploadButton
                       endpoint="imageUploader"
-                      input={""}
                       onClientUploadComplete={async (res) => {
                         // Add uploaded files to the form's media array
                         res?.forEach((file) => {
@@ -464,7 +471,6 @@ export function FundraisingForm() {
                   <div className="space-y-4">
                     {!field.value ? (
                       <UploadButton
-                        input=""
                         endpoint="logoUploader"
                         onClientUploadComplete={async (res) => {
                           console.log(res);
@@ -507,7 +513,11 @@ export function FundraisingForm() {
                             type="button"
                             variant="ghost"
                             size="sm"
-                            onClick={() => form.setValue("logo", null)}
+                            onClick={async () => {
+                              // @ts-expect-error user can delete logo but require to have
+                              form.setValue("logo", null);
+                              await form.trigger("logo"); // Trigger validation after removal}
+                            }}
                             className="text-red-500 hover:bg-red-50 hover:text-red-600"
                           >
                             <X className="h-4 w-4" />
@@ -540,12 +550,18 @@ export function FundraisingForm() {
                     <EditorComp
                       markdown={field.value}
                       onChangeFn={field.onChange}
+                      trigger={() => trigger("pitch")}
                     />
                   </Suspense>
                 </FormControl>
                 <FormDescription>Company Valuation</FormDescription>
                 <FormMessage />
-                <input type="hidden" name="pitch" value={field.value} />
+                <input
+                  type="hidden"
+                  onChange={(v) => console.log(v, "from input")}
+                  name="pitch"
+                  value={field.value}
+                />
               </FormItem>
             )}
           />

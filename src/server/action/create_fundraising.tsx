@@ -53,25 +53,25 @@ export async function createFundraising(formData: FormData) {
     };
   }
 
-  // try {
-  //   // Uncomment this when ready to create business
-  //   const id = await createBusiness(validatedFields.data);
-  //   await updateMediaImageTypeByMediaURLe(
-  //     validatedFields.data.media.map((m) => m.url),
-  //     id[0]!.id,
-  //   );
-  //   await updateMediaLogoTypeByMediaURLe(
-  //     validatedFields.data.logo!.url,
-  //     id[0]!.id,
-  //   );
-  //
-  //   return { success: true };
-  // } catch (error) {
-  //   console.error("Error creating business:", error);
-  //   return {
-  //     errors: {
-  //       form: ["Failed to create business. Please try again."],
-  //     },
-  //   };
-  // }
+  try {
+    // Uncomment this when ready to create business
+    const id = await createBusiness(validatedFields.data);
+    await updateMediaImageTypeByMediaURLe(
+      validatedFields.data.media.map((m) => m.url),
+      id[0]!.id,
+    );
+    await updateMediaLogoTypeByMediaURLe(
+      validatedFields.data.logo!.url,
+      id[0]!.id,
+    );
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error creating business:", error);
+    return {
+      errors: {
+        form: ["Failed to create business. Please try again."],
+      },
+    };
+  }
 }

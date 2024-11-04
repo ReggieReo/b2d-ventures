@@ -2,8 +2,8 @@ import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "~/server/db";
-import { number, z } from "zod";
-import { business, media, user } from "~/server/db/schema";
+import { z } from "zod";
+import { media } from "~/server/db/schema";
 
 const f = createUploadthing();
 
@@ -11,7 +11,6 @@ const f = createUploadthing();
 export const ourFileRouter = {
   // Define as many FileRoutes as you like, each with a unique routeSlug
   imageUploader: f({ image: { maxFileSize: "4MB", maxFileCount: 40 } })
-    .input(z.string())
     // Set permissions and file types for this FileRoute
     .middleware(async ({ req, input }) => {
       // This code runs on your server before upload
@@ -28,19 +27,17 @@ export const ourFileRouter = {
       console.log(metadata.input, "test test");
       console.log("file url", file.url);
       console.log("writing to db");
-
       await db.insert(media).values({
         userID: metadata.userId ?? "",
         url: file.url,
         name: file.name,
-        businessID: 3,
+        businessID: 1,
       });
       console.log("insert complete");
       return { uploadedBy: metadata.userId };
     }),
 
   logoUploader: f(["image/png", "image/jpeg"])
-    .input(z.string())
     .middleware(async ({ req, input }) => {
       // This code runs on your server before upload
       const user = auth();
@@ -56,12 +53,11 @@ export const ourFileRouter = {
       console.log(metadata.input, "test test");
       console.log("file url", file.url);
       console.log("writing to db");
-
       await db.insert(media).values({
         userID: metadata.userId ?? "",
         url: file.url,
         name: file.name,
-        businessID: 3,
+        businessID: 1,
       });
       console.log("insert complete");
       return { uploadedBy: metadata.userId };
