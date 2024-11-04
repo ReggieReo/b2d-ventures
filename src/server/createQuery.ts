@@ -36,7 +36,7 @@ export async function createBusiness(businessFromData: businessFromSchema) {
     .values({
       userID: currentUser.userId,
       company: businessFromData.company,
-      title: businessFromData.title,
+      slogan: businessFromData.slogan,
       website: businessFromData.website,
       target_fund: businessFromData.target_fund,
       min_investment: businessFromData.min_investment,

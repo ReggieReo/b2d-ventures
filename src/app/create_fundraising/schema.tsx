@@ -7,9 +7,9 @@ export const formSchema = z.object({
     })
     .min(2)
     .max(50),
-  title: z
+  slogan: z
     .string({
-      required_error: "Please enter your business title.",
+      required_error: "Please enter your business slogan.",
     })
     .min(2)
     .max(50),
@@ -45,7 +45,8 @@ export const formSchema = z.object({
         key: z.coerce.string(),
       }),
     )
-    .min(1),
+    // .min(1),
+    .nullable(),
   logo: z
     .object({
       url: z.coerce.string(),
@@ -54,4 +55,7 @@ export const formSchema = z.object({
       key: z.coerce.string(),
     })
     .nullable(),
+  pitch: z.string({
+    required_error: "Please enter your pitch.",
+  }),
 });

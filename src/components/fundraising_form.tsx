@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useForm, useFormState, useFieldArray } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import {
@@ -64,6 +64,11 @@ const industries = [
   { label: "Construction", value: "construction" },
   { label: "Consulting", value: "consulting" },
 ] as const;
+import dynamic from "next/dynamic";
+
+const EditorComp = dynamic(() => import("~/components/markdown_editor"), {
+  ssr: false,
+});
 
 function DialogCountdown() {
   const [countdown, setCountdown] = useState(3);
@@ -123,6 +128,7 @@ export function FundraisingForm() {
     defaultValues: {
       deadline: new Date(Date.now()),
       media: [],
+      pitch: "# Test",
     },
     mode: "onChange",
   });
@@ -164,15 +170,15 @@ export function FundraisingForm() {
           />
           <FormField
             control={form.control}
-            name="title"
+            name="slogan"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Your title</FormLabel>
+                <FormLabel>Your Company Slogan Or Short introduction</FormLabel>
                 <FormControl>
-                  <Input placeholder="CTO" {...field} />
+                  <Input placeholder="" {...field} />
                 </FormControl>
                 <FormDescription>
-                  What position are you working in this business
+                  Your Company Slogan Or Short introduction
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -520,6 +526,26 @@ export function FundraisingForm() {
                   Upload your company logo (maximum 2MB, PNG or JPEG)
                 </FormDescription>
                 <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="pitch"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Pitch</FormLabel>
+                <FormControl>
+                  <Suspense fallback={null}>
+                    <EditorComp
+                      markdown={field.value}
+                      onChangeFn={field.onChange}
+                    />
+                  </Suspense>
+                </FormControl>
+                <FormDescription>Company Valuation</FormDescription>
+                <FormMessage />
+                <input type="hidden" name="pitch" value={field.value} />
               </FormItem>
             )}
           />

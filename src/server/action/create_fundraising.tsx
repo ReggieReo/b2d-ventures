@@ -10,6 +10,7 @@ import {
 export async function createFundraising(formData: FormData) {
   "use server";
 
+  console.log("Creating fundraising with form data:", formData);
   // Parse JSON strings for media and logo
   let mediaData: unknown[] = [];
   let logoData: unknown = null;
@@ -31,7 +32,7 @@ export async function createFundraising(formData: FormData) {
   // Validate the form data with parsed JSON values
   const validatedFields = formSchema.safeParse({
     company: formData.get("company"),
-    title: formData.get("title"),
+    slogan: formData.get("slogan"),
     website: formData.get("website"),
     target_fund: formData.get("target_fund"), // Fixed typo: removed colon
     min_investment: formData.get("min_investment"),
@@ -42,6 +43,7 @@ export async function createFundraising(formData: FormData) {
     industry: formData.get("industry"),
     media: mediaData, // Use parsed media array
     logo: logoData, // Use parsed logo object
+    pitch: formData.get("pitch"),
   });
 
   if (!validatedFields.success) {
@@ -51,25 +53,25 @@ export async function createFundraising(formData: FormData) {
     };
   }
 
-  try {
-    // Uncomment this when ready to create business
-    const id = await createBusiness(validatedFields.data);
-    await updateMediaImageTypeByMediaURLe(
-      validatedFields.data.media.map((m) => m.url),
-      id[0]!.id,
-    );
-    await updateMediaLogoTypeByMediaURLe(
-      validatedFields.data.logo!.url,
-      id[0]!.id,
-    );
-
-    return { success: true };
-  } catch (error) {
-    console.error("Error creating business:", error);
-    return {
-      errors: {
-        form: ["Failed to create business. Please try again."],
-      },
-    };
-  }
+  // try {
+  //   // Uncomment this when ready to create business
+  //   const id = await createBusiness(validatedFields.data);
+  //   await updateMediaImageTypeByMediaURLe(
+  //     validatedFields.data.media.map((m) => m.url),
+  //     id[0]!.id,
+  //   );
+  //   await updateMediaLogoTypeByMediaURLe(
+  //     validatedFields.data.logo!.url,
+  //     id[0]!.id,
+  //   );
+  //
+  //   return { success: true };
+  // } catch (error) {
+  //   console.error("Error creating business:", error);
+  //   return {
+  //     errors: {
+  //       form: ["Failed to create business. Please try again."],
+  //     },
+  //   };
+  // }
 }

@@ -42,7 +42,6 @@ export const business = createTable("business", {
     () => new Date(),
   ),
   company: varchar("company", { length: 256 }),
-  title: varchar("title", { length: 256 }),
   website: varchar("website", { length: 256 }),
   target_fund: integer("target_fund"),
   min_investment: integer("min_investment"),
@@ -51,6 +50,7 @@ export const business = createTable("business", {
   deadline: date("deadline"),
   industry: varchar("industry", { length: 256 }),
   approve: boolean("approve").default(false).notNull(),
+  slogan: text("slogan").notNull(),
 });
 
 export const investment = createTable("investment", {

@@ -11,20 +11,16 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import React from "react";
-import { getBusinessByID } from "~/server/fetchQuery";
+import { getBusinessByID, getMediaByBusinessID } from "~/server/fetchQuery";
 import { redirect } from "next/navigation";
-
-const mockUrls = [
-  "https://utfs.io/f/bb1dabab-7c7c-40d7-8ea5-030fdc7f1d96-ny8zu1.jpg",
-  "https://utfs.io/f/7f073d8d-ade3-4ba3-ade5-165386c8a815-186s3o.png",
-];
+import Gallery from "~/components/carousel_with_thumbnail";
 
 export default async function Page({ params }: { params: { id: number } }) {
   const business = await getBusinessByID(params.id);
   if (!business) {
     redirect("/browse_business");
   }
-
+  const media = await getMediaByBusinessID(9);
   return (
     <div className="font-geist-sans my-10 flex flex-col">
       <div className="flex flex-col place-content-center gap-10 md:flex-row">
@@ -49,14 +45,7 @@ export default async function Page({ params }: { params: { id: number } }) {
           </div>
 
           <div>
-            <Image
-              src="https://utfs.io/f/7f073d8d-ade3-4ba3-ade5-165386c8a815-186s3o.png"
-              alt="Main Content"
-              layout="responsive"
-              objectFit="cover"
-              width={1}
-              height={1}
-            />
+            <Gallery images={media} />
           </div>
         </div>
 

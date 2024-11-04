@@ -29,3 +29,8 @@ export async function getBusinessByID(businessID: number) {
   });
 }
 
+export async function getMediaByBusinessID(businessID: number) {
+  return db.query.media.findMany({
+    where: (model, { eq }) => eq(model.businessID, businessID),
+  });
+}
