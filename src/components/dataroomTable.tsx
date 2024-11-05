@@ -17,6 +17,7 @@ import {
 } from "~/components/ui/select";
 import { RequestDataroomStatusEnum } from "~/utils/enum/requestDataroomStatusEnum";
 import * as React from "react";
+import {updateDataroomRequestAction} from "~/server/action/dataroom_request_action";
 
 export type DataroomRequestWithUser = {
   requestID: number;
@@ -56,7 +57,10 @@ export function DataroomTable({
             <TableCell className="text-right">
               <Select
                 defaultValue={request.requestStatus.toString()}
-                onValueChange={(value) => console.log("asdf", value)}
+                onValueChange={
+                async(value) => {await updateDataroomRequestAction(request.businessID, request.userID, Number(value))}
+                //   (value)=>{console.log(request.businessID, request.userID, Number(value))}
+              }
               >
                 <SelectTrigger className="w-[120px]">
                   <SelectValue placeholder={request.requestStatus.toString()} />

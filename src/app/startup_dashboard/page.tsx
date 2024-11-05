@@ -52,10 +52,9 @@ export default async function StartupDashboard() {
     }
   }));
 
+  const dataroomRequestParsed = validatedRequests
 
-  const onSelect = async (userID: string, newStatus: number) => {
-    await updateDataroomRequestAction(businessID, userID, newStatus);
-  };
+
 
   return (
     <main className="justify-left m-4 flex min-h-screen flex-col">
@@ -148,7 +147,7 @@ export default async function StartupDashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <DataroomTable dataroomRequestData={dataroomRequests}/>
+            <DataroomTable dataroomRequestData={dataroomRequestParsed}/>
           </CardContent>
         </Card>
         <Card className={"w-full"}>

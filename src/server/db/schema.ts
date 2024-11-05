@@ -43,7 +43,6 @@ export const business = createTable("business", {
       () => new Date(),
   ),
   company: varchar("company", { length: 256 }),
-  title: varchar("title", { length: 256 }),
   website: varchar("website", { length: 256 }),
   target_fund: integer("target_fund"),
   min_investment: integer("min_investment"),
