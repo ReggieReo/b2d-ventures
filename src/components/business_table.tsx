@@ -13,7 +13,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-
 import { Button } from "~/components/ui/button";
 import {
   Table,
@@ -25,6 +24,7 @@ import {
 } from "~/components/ui/table";
 import { CampaignData } from "~/models/fund";
 import InvestmentTable from "~/components/investment_table";
+import { approveBusiness } from "~/server/action/approve_business";
 
 export default function CampaignApprovalTable({ data: initialData }: { data: CampaignData[] }) {
   const [data, setData] = React.useState<CampaignData[]>(initialData);
@@ -44,24 +44,11 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Cam
   const handleApprove = (rowData: CampaignData) => {
     if (confirm(`Are you sure you want to approve the campaign for ${rowData.company}?`)) {
       startTransition(async () => {
-        try {
-          const response = await fetch("/api/approve_business", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ businessID: rowData.businessID }),
-          });
-
-          if (response.ok) {
-            await fetchData();
-          } else {
-            const errorData = await response.json();
-            alert(`Error: ${errorData.error}`);
-          }
-        } catch (error) {
-          console.error("Error approving campaign:", error);
-          alert("There was an error approving the campaign.");
+        const result = await approveBusiness(Number(rowData.businessID));
+        if (result.success) {
+          await fetchData();
+        } else {
+          alert(`Error: ${result.error}`);
         }
       });
     }
