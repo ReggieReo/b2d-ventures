@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { Sidebar } from "~/components/sidebar";
 import {
   ColumnDef,
@@ -30,23 +31,14 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Cam
   const [data, setData] = React.useState<CampaignData[]>(initialData);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [isPending, startTransition] = useTransition();
-
-  const fetchData = async () => {
-    const response = await fetch("/api/campaigns");
-    if (response.ok) {
-      const updatedData: CampaignData[] = await response.json();
-      setData(updatedData);
-    } else {
-      console.error("Error fetching campaigns data");
-    }
-  };
+  const router = useRouter();
 
   const handleApprove = (rowData: CampaignData) => {
     if (confirm(`Are you sure you want to approve the campaign for ${rowData.company}?`)) {
       startTransition(async () => {
         const result = await approveBusiness(Number(rowData.businessID));
         if (result.success) {
-          await fetchData();
+          router.refresh(); // Refresh the page to update the table data
         } else {
           alert(`Error: ${result.error}`);
         }
