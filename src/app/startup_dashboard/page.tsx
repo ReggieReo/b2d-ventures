@@ -11,7 +11,7 @@ import { Button } from "~/components/ui/button";
 import * as React from "react";
 
 import { Progress } from "~/components/ui/progress";
-import { getBusinessByUserID, getRequestByID } from "~/server/fetchQuery";
+import {getBusinessByUserID, getInvestmentByBusinessID, getRequestByID} from "~/server/fetchQuery";
 import { redirect } from "next/navigation";
 
 import {
@@ -30,8 +30,6 @@ export default async function StartupDashboard() {
 
   const dataroomRequests = await getRequestByID(businessID);
 
-  const businessUpdateAt = business.updatedAt?.toLocaleDateString('en-US');
-
   const validatedRequests: DataroomRequestWithUser[] = dataroomRequests.map(
     (request) => ({
       requestID: request.requestID,
@@ -46,6 +44,15 @@ export default async function StartupDashboard() {
     }),
   );
 
+  const businessUpdateAt = business.updatedAt?.toLocaleDateString('en-US');
+  const investment = await getInvestmentByBusinessID(businessID);
+  const totalInvestment = investment
+      .flatMap(investment => investment.fund || [])  // Get all funds, with fallback to empty if undefined
+      .reduce((acc, val) => acc + val, 0);           // Sum all values
+  const countInvestment = investment
+      .flatMap(investment => investment || [])
+      .reduce((acc) => acc + 1, 0);
+
   return (
     <main className="justify-left m-4 flex min-h-screen flex-col">
       <p className={"mb-5 text-3xl font-bold"}>My Fundraising</p>
@@ -53,7 +60,6 @@ export default async function StartupDashboard() {
         <Card className={"w-full"}>
           <CardHeader>
             <CardTitle>Fundraising Summary</CardTitle>
-            {/*TODO: Change the CardDescription to the time the info updated*/}
             <CardDescription>Last Updated: {businessUpdateAt}</CardDescription>
           </CardHeader>
           <CardContent>
@@ -62,8 +68,7 @@ export default async function StartupDashboard() {
                 <div className={"flex-col"}>
                   <p className={"text-2xl"}>Fund Raised</p>
                   <div className={"ml-3 flex flex-row items-end gap-2"}>
-                    {/*TODO: Implement logic for total fund raised*/}
-                    <p className={"text-3xl font-bold"}>$10,000</p>
+                    <p className={"text-3xl font-bold"}>{totalInvestment}</p>
                     {/*TODO: Implement logic for fund diff to last week*/}
                     <p>(+$1000 from last week)</p>
                   </div>
@@ -71,8 +76,7 @@ export default async function StartupDashboard() {
                 <div className={"flex flex-col"}>
                   <p className={"text-2xl"}>Investor</p>
                   <div className={"ml-3 flex flex-row items-end gap-2"}>
-                    {/*TODO: Implement logic for Total investor*/}
-                    <p className={"text-3xl font-bold"}>41</p>
+                    <p className={"text-3xl font-bold"}>{countInvestment}</p>
                     {/*TODO: Implement logic for diff investor to last week*/}
                     <p>(+3 from last week)</p>
                   </div>
