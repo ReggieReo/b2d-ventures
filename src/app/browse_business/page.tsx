@@ -13,11 +13,13 @@ export default async function HomePage() {
         <p>Explore emerging investment opportunities on our platform.</p>
       </div>
       <div className="grid max-w-5xl grid-cols-1 items-center gap-10 md:grid-cols-2 lg:grid-cols-3">
-        {business.map((b) => (
-          <Link href={`/business/${b.businessID}`} key={b.businessID}>
-            <BusinessCard className={"h-full"} cBusiness={b} />
-          </Link>
-        ))}
+        {business
+          .filter((b) => b.approve === true)
+          .map((b) => (
+            <Link href={`/business/${b.businessID}`} key={b.businessID}>
+              <BusinessCard className={"h-full"} cBusiness={b} />
+            </Link>
+          ))}
       </div>
     </main>
   );
