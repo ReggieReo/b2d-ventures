@@ -17,11 +17,6 @@ import {RequestDataroomStatusEnum} from "~/utils/enum/requestDataroomStatusEnum"
 import {useRouter} from "next/navigation";
 import {createDataroomRequestAction, getRequestAction} from "~/server/action/dataroom_request_action";
 
-// function onClickhandler() {
-//   useEffect(() => {
-//
-//   }, []);
-// }
 
 function RequestDataroomButton({
                                  initialRequestStatus, pageID

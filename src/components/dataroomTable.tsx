@@ -59,7 +59,6 @@ export function DataroomTable({
                 defaultValue={request.requestStatus.toString()}
                 onValueChange={
                 async(value) => {await updateDataroomRequestAction(request.businessID, request.userID, Number(value))}
-                //   (value)=>{console.log(request.businessID, request.userID, Number(value))}
               }
               >
                 <SelectTrigger className="w-[120px]">
