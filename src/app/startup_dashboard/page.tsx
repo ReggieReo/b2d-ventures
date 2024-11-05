@@ -30,6 +30,8 @@ export default async function StartupDashboard() {
 
   const dataroomRequests = await getRequestByID(businessID);
 
+  const businessUpdateAt = business.updatedAt?.toLocaleDateString('en-US');
+
   const validatedRequests: DataroomRequestWithUser[] = dataroomRequests.map(
     (request) => ({
       requestID: request.requestID,
@@ -52,7 +54,7 @@ export default async function StartupDashboard() {
           <CardHeader>
             <CardTitle>Fundraising Summary</CardTitle>
             {/*TODO: Change the CardDescription to the time the info updated*/}
-            <CardDescription>Last Updated: Date</CardDescription>
+            <CardDescription>Last Updated: {businessUpdateAt}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className={"flex flex-col gap-y-5"}>
