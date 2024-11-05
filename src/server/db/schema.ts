@@ -4,14 +4,13 @@
 import { relations, sql } from "drizzle-orm";
 import {
   pgTableCreator,
-  numeric,
   serial,
   timestamp,
   varchar,
   date,
   integer,
   text,
-  boolean
+  boolean,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -43,7 +42,6 @@ export const business = createTable("business", {
     () => new Date(),
   ),
   company: varchar("company", { length: 256 }),
-  title: varchar("title", { length: 256 }),
   website: varchar("website", { length: 256 }),
   target_fund: integer("target_fund"),
   min_investment: integer("min_investment"),
@@ -52,6 +50,7 @@ export const business = createTable("business", {
   deadline: date("deadline"),
   industry: varchar("industry", { length: 256 }),
   approve: boolean("approve").default(false).notNull(),
+  slogan: text("slogan"),
 });
 
 export const investment = createTable("investment", {
@@ -73,6 +72,7 @@ export const media = createTable("media", {
   userID: varchar("userID", { length: 256 }).references(() => user.userID),
   url: varchar("url", { length: 1024 }).notNull(),
   name: varchar("name", { length: 256 }).notNull(),
+  type: text("type"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -85,7 +85,14 @@ export const dataroomRequest = createTable("dataroom_request", {
   requestID: serial("requestID").primaryKey(),
   userID: varchar("userID", { length: 256 }).references(() => user.userID),
   businessID: serial("businessID").references(() => business.businessID),
-  requestStatus: integer("requestStatus").default(0).notNull()
+  requestStatus: integer("requestStatus").default(0).notNull(),
+
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+    () => new Date(),
+  ),
 });
 
 export const businessRelation = relations(business, ({ many, one }) => ({
