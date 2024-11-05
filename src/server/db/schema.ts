@@ -129,3 +129,4 @@ export const userRelation = relations(user, ({ many, one }) => ({
   business: one(business),
   investment: many(investment),
 }));
+
