@@ -38,7 +38,7 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Cam
       startTransition(async () => {
         const result = await approveBusiness(Number(rowData.businessID));
         if (result.success) {
-          router.refresh(); // Refresh the page to update the table data
+          router.refresh();
         } else {
           alert(`Error: ${result.error}`);
         }
