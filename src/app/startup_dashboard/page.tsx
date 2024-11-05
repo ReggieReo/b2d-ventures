@@ -11,25 +11,15 @@ import { Button } from "~/components/ui/button";
 import * as React from "react";
 
 import { Progress } from "~/components/ui/progress";
-import {
-  getBusinessByUserID,
-  getRequestByID,
-
-} from "~/server/fetchQuery";
+import { getBusinessByUserID, getRequestByID } from "~/server/fetchQuery";
 import { redirect } from "next/navigation";
 
-import { RequestDataroomStatusEnum } from "~/utils/enum/requestDataroomStatusEnum";
 import {
-  createDataroomRequestAction,
-  getRequestAction,
-  updateDataroomRequestAction
-} from "~/server/action/dataroom_request_action";
-import {DataroomRequestWithUser, DataroomTable} from "~/components/dataroomTable";
-import {dataroomRequest} from "~/server/db/schema";
-
+  DataroomRequestWithUser,
+  DataroomTable,
+} from "~/components/dataroomTable";
 
 export const dynamic = "force-dynamic";
-
 
 export default async function StartupDashboard() {
   const business = await getBusinessByUserID();
@@ -40,21 +30,19 @@ export default async function StartupDashboard() {
 
   const dataroomRequests = await getRequestByID(businessID);
 
-  const validatedRequests: DataroomRequestWithUser[] = dataroomRequests.map(request => ({
-    requestID: request.requestID,
-    userID: request.userID!,
-    businessID: request.businessID,
-    requestStatus: request.requestStatus,
-    createdAt: new Date(request.createdAt),
-    user: {
-      userID: request.user?.userID,
-      name: request.user?.name
-    }
-  }));
-
-  const dataroomRequestParsed = validatedRequests
-
-
+  const validatedRequests: DataroomRequestWithUser[] = dataroomRequests.map(
+    (request) => ({
+      requestID: request.requestID,
+      userID: request.userID!,
+      businessID: request.businessID,
+      requestStatus: request.requestStatus,
+      createdAt: new Date(request.createdAt),
+      user: {
+        userID: request.user?.userID,
+        name: request.user?.name,
+      },
+    }),
+  );
 
   return (
     <main className="justify-left m-4 flex min-h-screen flex-col">
@@ -147,7 +135,7 @@ export default async function StartupDashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <DataroomTable dataroomRequestData={dataroomRequestParsed}/>
+            <DataroomTable dataroomRequestData={validatedRequests} />
           </CardContent>
         </Card>
         <Card className={"w-full"}>
