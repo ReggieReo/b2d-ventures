@@ -28,7 +28,8 @@ import InvestmentTable from "~/components/investment_table";
 import { approveBusiness } from "~/server/action/approve_business";
 
 export default function CampaignApprovalTable({ data: initialData }: { data: CampaignData[] }) {
-  const [data, setData] = React.useState<CampaignData[]>(initialData);
+  const filteredData = initialData.filter(campaign => !campaign.approve);
+  const [data, setData] = React.useState<CampaignData[]>(filteredData);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
