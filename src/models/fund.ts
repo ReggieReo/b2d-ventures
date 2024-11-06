@@ -7,4 +7,5 @@ export type CampaignData = {
     target_fund: number;
     allocation: string;
     deadline: string;
+    approve: boolean;
   };
