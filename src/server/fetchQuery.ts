@@ -35,9 +35,17 @@ export async function getBusinessByID(businessID: number) {
   });
 }
 
-export async function getMediaByBusinessID(businessID: number) {
+export async function getImageByBusinessID(businessID: number) {
   return db.query.media.findMany({
-    where: (model, { eq }) => eq(model.businessID, businessID),
+    where: (model, { eq, and }) =>
+      and(eq(model.businessID, businessID), eq(model.type, "image")),
+  });
+}
+
+export async function getLogoByBusinessID(businessID: number) {
+  return db.query.media.findFirst({
+    where: (model, { eq, and }) =>
+      and(eq(model.businessID, businessID), eq(model.type, "logo")),
   });
 }
 

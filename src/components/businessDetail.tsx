@@ -1,8 +1,8 @@
-"use client"
-import type { business } from "~/server/db/schema";
+"use client";
+import { business, investment, media } from "~/server/db/schema";
 import Image from "next/image";
 import Link from "next/link";
-import {useState} from "react";
+import { useState } from "react";
 
 import {
   Dialog,
@@ -13,30 +13,42 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import React from "react";
-import {RequestDataroomStatusEnum} from "~/utils/enum/requestDataroomStatusEnum";
-import {useRouter} from "next/navigation";
-import {createDataroomRequestAction, getRequestAction} from "~/server/action/dataroom_request_action";
-
+import { RequestDataroomStatusEnum } from "~/utils/enum/requestDataroomStatusEnum";
+import { useRouter } from "next/navigation";
+import {
+  createDataroomRequestAction,
+  getRequestAction,
+} from "~/server/action/dataroom_request_action";
 
 function RequestDataroomButton({
-                                 initialRequestStatus, pageID
-                               }: {
-  initialRequestStatus: number,
-  pageID: number,
+  initialRequestStatus,
+  pageID,
+  onClick,
+}: {
+  initialRequestStatus: number;
+  pageID: number;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const buttonStyle = "w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500"
+  const buttonStyle =
+    "w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500";
   const [requestStatus, setRequestStatus] = useState(initialRequestStatus);
 
-  const onclickHandler = async () => {
-    await createDataroomRequestAction(pageID);
-    const status = await getRequestAction(pageID)
-    if (!status) {
-      setRequestStatus(RequestDataroomStatusEnum.Error.valueOf());
-    } else {
-      setRequestStatus(status.requestStatus);
+  const onclickHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (onClick) {
+      onClick(e);
+    }
+
+    if (!e.defaultPrevented) {
+      await createDataroomRequestAction(pageID);
+      const status = await getRequestAction(pageID);
+      if (!status) {
+        setRequestStatus(RequestDataroomStatusEnum.Error.valueOf());
+      } else {
+        setRequestStatus(status.requestStatus);
+      }
     }
   };
-  const rounter = useRouter()
+  const rounter = useRouter();
 
   if (requestStatus === RequestDataroomStatusEnum.Pending.valueOf()) {
     return (
@@ -46,38 +58,39 @@ function RequestDataroomButton({
     );
   }
   if (requestStatus === RequestDataroomStatusEnum.Accepted.valueOf()) {
-
     return (
-        // TODO: Redirect to Dataroom page
-        <button onClick={()=>rounter.push(`/dataroom/${pageID}`)} className={buttonStyle}>
-          Access Dataroom
-        </button>
+      <button
+        onClick={() => rounter.push(`/dataroom/${pageID}`)}
+        className={buttonStyle}
+      >
+        Access Dataroom
+      </button>
     );
   }
-  
+
   if (requestStatus === RequestDataroomStatusEnum.Rejected.valueOf()) {
     return (
-        <button disabled={true} className={buttonStyle}>
-          Business Rejected the Dataroom Access
-        </button>
+      <button disabled={true} className={buttonStyle}>
+        Business Rejected the Dataroom Access
+      </button>
     );
   }
   if (requestStatus === RequestDataroomStatusEnum.NoRequest.valueOf()) {
     return (
-        <button onClick={onclickHandler} className={buttonStyle}>
-          Request Access to the Dataroom
-        </button>
+      <button onClick={onclickHandler} className={buttonStyle}>
+        Request Access to the Dataroom
+      </button>
     );
   }
 
   if (requestStatus === RequestDataroomStatusEnum.Error.valueOf()) {
     return (
-        <button onClick={onclickHandler} className={buttonStyle}>
-          Error Please Try Again Later
-        </button>
+      <button onClick={onclickHandler} className={buttonStyle}>
+        Error Please Try Again Later
+      </button>
     );
   }
-  
+
   return (
     <button disabled={true} className={buttonStyle}>
       Login to Request Access to the Dataroom
@@ -88,9 +101,15 @@ function RequestDataroomButton({
 export function BusinessDetail({
   businessData,
   initialRequestStatus,
+  allInvestment,
+  allImage,
+  logo,
 }: {
   businessData: typeof business.$inferSelect;
+  allInvestment: (typeof investment.$inferSelect)[];
   initialRequestStatus: number;
+  logo: typeof media.$inferSelect;
+  allImage: (typeof media.$inferSelect)[];
 }) {
   const [status, setStatus] = useState(initialRequestStatus);
   return (
@@ -100,7 +119,7 @@ export function BusinessDetail({
           <div className="mb-6 flex items-center gap-4">
             <div className="relative h-[60px] w-[60px] min-w-[60px]">
               <Image
-                src="https://utfs.io/f/bb1dabab-7c7c-40d7-8ea5-030fdc7f1d96-ny8zu1.jpg"
+                src={logo.url}
                 alt="Logo"
                 layout="fill"
                 objectFit="cover"
@@ -111,7 +130,7 @@ export function BusinessDetail({
                 {businessData.company}
               </div>
               <div className="text-center text-sm md:text-left md:text-base">
-                Peer-to-Peer Rental Platform
+                {businessData.slogan}
               </div>
             </div>
           </div>
@@ -163,10 +182,12 @@ export function BusinessDetail({
               Invest in {businessData.company}
             </button>
           </Link>
-          {/*TODO: pop upppp*/}
           <Dialog>
-            <DialogTrigger>
-              <RequestDataroomButton pageID={businessData.businessID} initialRequestStatus={initialRequestStatus}/>
+            <DialogTrigger asChild>
+              <RequestDataroomButton
+                pageID={businessData.businessID}
+                initialRequestStatus={initialRequestStatus}
+              />
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>

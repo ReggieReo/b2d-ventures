@@ -8,7 +8,9 @@ import Gallery from "~/components/carousel_with_thumbnail";
 import {
   getRequest,
   getBusinessByID,
-  getMediaByBusinessID,
+  getInvestmentByBusinessID,
+  getImageByBusinessID,
+  getLogoByBusinessID,
 } from "~/server/fetchQuery";
 import { BusinessDetail } from "~/components/businessDetail";
 import { auth } from "@clerk/nextjs/server";
@@ -37,11 +39,17 @@ export default async function Page({ params }: { params: { id: number } }) {
   } else {
     initialStatus = await getRequestStatus(business.businessID);
   }
+  const investment = await getInvestmentByBusinessID(business.businessID);
+  const media = await getImageByBusinessID(business.businessID);
+  const logo = await getLogoByBusinessID(business.businessID);
 
   return (
     <BusinessDetail
       businessData={business}
+      allInvestment={investment}
       initialRequestStatus={initialStatus}
+      allImage={media}
+      logo={logo!}
     />
   );
 }
