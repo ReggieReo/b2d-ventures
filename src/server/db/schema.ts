@@ -97,12 +97,26 @@ export const dataroomRequest = createTable("dataroom_request", {
 });
 
 export const businessRelation = relations(business, ({ many, one }) => ({
-  posts: many(investment),
+  investment: many(investment),
   user: one(user, {
     fields: [business.userID],
     references: [user.userID],
   }),
 }));
+
+export const dataroomRequestRelation = relations(
+  dataroomRequest,
+  ({ many, one }) => ({
+    user: one(user, {
+      fields: [dataroomRequest.userID],
+      references: [user.userID],
+    }),
+    business: one(business, {
+      fields: [dataroomRequest.businessID],
+      references: [business.businessID],
+    }),
+  }),
+);
 
 export const investmentRelation = relations(investment, ({ one }) => ({
   business: one(business, {
