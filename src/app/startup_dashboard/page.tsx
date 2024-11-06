@@ -43,15 +43,36 @@ export default async function StartupDashboard() {
       },
     }),
   );
+  const isInCurrentWeek = (date: Date) => {
+    const today = new Date();
+    const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 1));
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const endOfWeek = new Date(today.setDate(today.getDate() + 7));
+    endOfWeek.setHours(23, 59, 59, 999);
+
+    return date >= startOfWeek && date <= endOfWeek;
+  };
+
+  const investment = await getInvestmentByBusinessID(businessID);
+
 
   const businessUpdateAt = business.updatedAt?.toLocaleDateString('en-US');
-  const investment = await getInvestmentByBusinessID(businessID);
+
   const totalInvestment = investment
       .flatMap(investment => investment.fund || [])  // Get all funds, with fallback to empty if undefined
       .reduce((acc, val) => acc + val, 0);           // Sum all values
+
   const countInvestment = investment
       .flatMap(investment => investment || [])
       .reduce((acc) => acc + 1, 0);
+
+  const thisWeekInvestment = investment
+      .filter(inv => isInCurrentWeek(new Date(inv.createdAt))) // Assuming there's a createdAt field
+      .flatMap(investment => investment.fund || [])
+      .reduce((acc, val) => acc + val, 0);
+
+  const investmentDiff = thisWeekInvestment;
 
   return (
     <main className="justify-left m-4 flex min-h-screen flex-col">
@@ -69,8 +90,7 @@ export default async function StartupDashboard() {
                   <p className={"text-2xl"}>Fund Raised</p>
                   <div className={"ml-3 flex flex-row items-end gap-2"}>
                     <p className={"text-3xl font-bold"}>{totalInvestment}</p>
-                    {/*TODO: Implement logic for fund diff to last week*/}
-                    <p>(+$1000 from last week)</p>
+                    <p>({investmentDiff} from last week)</p>
                   </div>
                 </div>
                 <div className={"flex flex-col"}>
