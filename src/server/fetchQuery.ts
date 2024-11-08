@@ -85,3 +85,29 @@ export async function getConfirmBusinesses() {
     where: (model, { eq }) => eq(model.approve, true),
   });
 }
+
+export async function acceptUserStatus(businessID: number) {
+  try {
+    await db
+      .update(business)
+      .set({ userStatus: 'accepted' })
+      .where(eq(business.businessID, businessID));
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating user status:", error);
+    return { success: false, error: "Failed to update user status" };
+  }
+}
+
+export async function declineUserStatus(businessID: number) {
+  try {
+    await db
+      .update(business)
+      .set({ userStatus: 'declined' })
+      .where(eq(business.businessID, businessID));
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating user status:", error);
+    return { success: false, error: "Failed to update user status" };
+  }
+}
