@@ -109,12 +109,17 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
       cell: ({ row }) => <div>{row.getValue("deadline")}</div>,
     },
     {
-      id: "approve",
-      header: "Action",
+      id: "actions",
+      header: "Actions",
       cell: ({ row }) => (
-        <Button onClick={() => handleApprove(row.original)} disabled={isPending}>
-          {isPending ? "Approving..." : "Approve Campaign"}
-        </Button>
+        <div className="flex space-x-2">
+          <Button onClick={() => handleApprove(row.original)} disabled={isPending}>
+            {isPending ? "Approving..." : "Approve"}
+          </Button>
+          <Button variant="destructive" disabled={isPending}>
+            Decline
+          </Button>
+        </div>
       ),
       enableSorting: false,
     },
