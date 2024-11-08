@@ -1,6 +1,8 @@
 import "server-only";
 import { db } from "~/server/db";
 import { auth } from "@clerk/nextjs/server";
+import { business } from "~/server/db/schema";
+import { eq } from "drizzle-orm";
 // user client -> ship js to the client but code still on the server
 // user server -> expose endpoint to the client
 // running on the server
@@ -65,3 +67,21 @@ export async function getBusinessByUserID() {
   });
 }
 
+export async function approveBusiness(businessID: number) {
+  try {
+    await db
+      .update(business)
+      .set({ approve: true })
+      .where(eq(business.businessID, businessID));
+    return { success: true };
+  } catch (error) {
+    console.error("Error approving business:", error);
+    return { success: false, error: "Failed to approve business" };
+  }
+}
+
+export async function getConfirmBusinesses() {
+  return db.query.business.findMany({
+    where: (model, { eq }) => eq(model.approve, true),
+  });
+}
