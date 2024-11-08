@@ -1,19 +1,18 @@
 "use server";
 
-import { db } from "~/server/db";
-import { business } from "~/server/db/schema";
-import { eq } from "drizzle-orm";
+import { approveBusiness } from "~/server/fetchQuery";
 
-export async function approveBusiness(businessID: number) {
+export async function approveBusinessAction(businessID: number) {
   try {
-    await db
-      .update(business)
-      .set({ approve: true })
-      .where(eq(business.businessID, businessID))
-      .execute();
-    return { success: true };
+    const result = await approveBusiness(businessID);
+
+    if (result.success) {
+      return { status: 200, message: "Business approved successfully" };
+    } else {
+      return { status: 500, message: result.error || "Approval failed" };
+    }
   } catch (error) {
-    console.error("Error approving business:", error);
-    return { success: false, error: "Failed to approve business" };
+    console.error("Server action error:", error);
+    return { status: 500, message: "Internal server error" };
   }
 }
