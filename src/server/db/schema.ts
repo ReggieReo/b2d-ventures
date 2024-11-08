@@ -1,8 +1,6 @@
-// Example model schema from the Drizzle docs
-// https://orm.drizzle.team/docs/sql-schema-declaration
-
 import { relations, sql } from "drizzle-orm";
 import {
+  pgEnum,
   pgTableCreator,
   serial,
   timestamp,
@@ -21,14 +19,16 @@ import {
  */
 export const createTable = pgTableCreator((name) => `b2d_ventures_${name}`);
 
+export const userStatusEnum = pgEnum('user_status', ['pending', 'accepted', 'declined']);
+
 export const user = createTable("user", {
   userID: varchar("userID", { length: 256 }).primaryKey(),
   name: text("name"),
   createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date(),
+    () => new Date(),
   ),
 });
 
@@ -36,10 +36,10 @@ export const business = createTable("business", {
   businessID: serial("businessID").primaryKey(),
   userID: varchar("userID", { length: 256 }).references(() => user.userID),
   createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date(),
+    () => new Date(),
   ),
   company: varchar("company", { length: 256 }),
   website: varchar("website", { length: 256 }),
@@ -51,6 +51,8 @@ export const business = createTable("business", {
   industry: varchar("industry", { length: 256 }),
   approve: boolean("approve").default(false).notNull(),
   slogan: text("slogan"),
+  pitch: text("pitch"),
+  userStatus: userStatusEnum('user_status').default('pending').notNull(),
 });
 
 export const investment = createTable("investment", {
@@ -59,10 +61,10 @@ export const investment = createTable("investment", {
   userID: varchar("userID", { length: 256 }).references(() => user.userID),
   fund: integer("fund").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date(),
+    () => new Date(),
   ),
 });
 
@@ -86,12 +88,11 @@ export const dataroomRequest = createTable("dataroom_request", {
   userID: varchar("userID", { length: 256 }).references(() => user.userID),
   businessID: serial("businessID").references(() => business.businessID),
   requestStatus: integer("requestStatus").default(0).notNull(),
-
   createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date(),
+    () => new Date(),
   ),
 });
 
@@ -103,16 +104,19 @@ export const businessRelation = relations(business, ({ many, one }) => ({
   }),
 }));
 
-export const dataroomRequestRelation = relations(dataroomRequest, ({many, one}) => ({
-  user: one(user, {
-    fields: [dataroomRequest.userID],
-    references: [user.userID],
+export const dataroomRequestRelation = relations(
+  dataroomRequest,
+  ({ many, one }) => ({
+    user: one(user, {
+      fields: [dataroomRequest.userID],
+      references: [user.userID],
+    }),
+    business: one(business, {
+      fields: [dataroomRequest.businessID],
+      references: [business.businessID],
+    }),
   }),
-  business: one(business, {
-    fields: [dataroomRequest.businessID],
-    references: [business.businessID],
-  })
-}))
+);
 
 export const investmentRelation = relations(investment, ({ one }) => ({
   business: one(business, {
@@ -129,4 +133,3 @@ export const userRelation = relations(user, ({ many, one }) => ({
   business: one(business),
   investment: many(investment),
 }));
-
