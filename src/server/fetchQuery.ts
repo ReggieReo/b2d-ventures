@@ -78,3 +78,9 @@ export async function getBusinessByUserID() {
     where: (model, { eq }) => eq(model.userID, userID),
   });
 }
+
+export async function getBusinessByUserIDExplicit(userID: string) {
+  return db.query.business.findFirst({
+    where: (model, { eq }) => eq(model.userID, userID),
+  });
+}

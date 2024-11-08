@@ -1,9 +1,8 @@
-"use client";
-import { business, investment, media } from "~/server/db/schema";
+"use server";
+import { type business, type investment, type media } from "~/server/db/schema";
 import Image from "next/image";
+import Gallery from "~/components/carousel_with_thumbnail";
 import Link from "next/link";
-import { useState } from "react";
-
 import {
   Dialog,
   DialogContentNoClose as DialogContent,
@@ -12,93 +11,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import React from "react";
-import { RequestDataroomStatusEnum } from "~/utils/enum/requestDataroomStatusEnum";
-import { useRouter } from "next/navigation";
-import {
-  createDataroomRequestAction,
-  getRequestAction,
-} from "~/server/action/dataroom_request_action";
+import { RequestDataroomButton } from "~/components/businessDetailDataroomRequestButton";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
-function RequestDataroomButton({
-  initialRequestStatus,
-  pageID,
-  onClick,
-}: {
-  initialRequestStatus: number;
-  pageID: number;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-}) {
-  const buttonStyle =
-    "w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500";
-  const [requestStatus, setRequestStatus] = useState(initialRequestStatus);
-
-  const onclickHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (onClick) {
-      onClick(e);
-    }
-
-    if (!e.defaultPrevented) {
-      await createDataroomRequestAction(pageID);
-      const status = await getRequestAction(pageID);
-      if (!status) {
-        setRequestStatus(RequestDataroomStatusEnum.Error.valueOf());
-      } else {
-        setRequestStatus(status.requestStatus);
-      }
-    }
-  };
-  const rounter = useRouter();
-
-  if (requestStatus === RequestDataroomStatusEnum.Pending.valueOf()) {
-    return (
-      <button disabled={true} className={buttonStyle}>
-        Request Pending
-      </button>
-    );
-  }
-  if (requestStatus === RequestDataroomStatusEnum.Accepted.valueOf()) {
-    return (
-      <button
-        onClick={() => rounter.push(`/dataroom/${pageID}`)}
-        className={buttonStyle}
-      >
-        Access Dataroom
-      </button>
-    );
-  }
-
-  if (requestStatus === RequestDataroomStatusEnum.Rejected.valueOf()) {
-    return (
-      <button disabled={true} className={buttonStyle}>
-        Business Rejected the Dataroom Access
-      </button>
-    );
-  }
-  if (requestStatus === RequestDataroomStatusEnum.NoRequest.valueOf()) {
-    return (
-      <button onClick={onclickHandler} className={buttonStyle}>
-        Request Access to the Dataroom
-      </button>
-    );
-  }
-
-  if (requestStatus === RequestDataroomStatusEnum.Error.valueOf()) {
-    return (
-      <button onClick={onclickHandler} className={buttonStyle}>
-        Error Please Try Again Later
-      </button>
-    );
-  }
-
-  return (
-    <button disabled={true} className={buttonStyle}>
-      Login to Request Access to the Dataroom
-    </button>
-  );
-}
-
-export function BusinessDetail({
+export async function BusinessDetail({
   businessData,
   initialRequestStatus,
   allInvestment,
@@ -111,7 +28,6 @@ export function BusinessDetail({
   logo: typeof media.$inferSelect;
   allImage: (typeof media.$inferSelect)[];
 }) {
-  const [status, setStatus] = useState(initialRequestStatus);
   return (
     <div className="font-geist-sans my-10 flex flex-col">
       <div className="flex flex-col place-content-center gap-10 md:flex-row">
@@ -119,7 +35,10 @@ export function BusinessDetail({
           <div className="mb-6 flex items-center gap-4">
             <div className="relative h-[60px] w-[60px] min-w-[60px]">
               <Image
-                src={logo.url}
+                src={
+                  logo?.url ??
+                  "https://utfs.io/f/5SEK9Sxco94yBr3PU81ebWaXIzlQds7Af13tvCKGqkPirZOg"
+                }
                 alt="Logo"
                 layout="fill"
                 objectFit="cover"
@@ -136,14 +55,7 @@ export function BusinessDetail({
           </div>
 
           <div>
-            <Image
-              src="https://utfs.io/f/7f073d8d-ade3-4ba3-ade5-165386c8a815-186s3o.png"
-              alt="Main Content"
-              layout="responsive"
-              objectFit="cover"
-              width={1}
-              height={1}
-            />
+            <Gallery images={allImage} />
           </div>
         </div>
 
@@ -213,17 +125,9 @@ export function BusinessDetail({
           role="tablist"
           aria-orientation="horizontal"
         >
-          <button
-            type="button"
-            className="hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 active inline-flex items-center gap-x-2 whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-lg font-bold text-gray-500 hover:text-blue-600 focus:text-blue-600 focus:outline-none disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-400 dark:hover:text-blue-500"
-            id="tabs-with-underline-item-1"
-            aria-selected="true"
-            data-hs-tab="#tabs-with-underline-1"
-            aria-controls="tabs-with-underline-1"
-            role="tab"
-          >
+          <p className="self-centerhs-tab-active:font-semibold inline-flex items-center justify-start gap-x-2 border-b-2 border-transparent px-1 py-4 text-lg font-bold text-gray-500">
             Pitch
-          </button>
+          </p>
         </nav>
       </div>
 
@@ -232,35 +136,14 @@ export function BusinessDetail({
           id="tabs-with-underline-1"
           role="tabpanel"
           aria-labelledby="tabs-with-underline-item-1"
-        >
-          <h2 className="mb-4 text-2xl font-bold">Why Invest in Rento?</h2>
-          <p className="mb-4 text-gray-700">
-            Rento is revolutionizing the peer-to-peer rental market by providing
-            a seamless platform for people to rent out items they own but seldom
-            use. Our mission is to create a sustainable sharing economy where
-            everyone can benefit from renting rather than buying.
-          </p>
-          <h3 className="mb-2 text-xl font-semibold">Key Highlights:</h3>
-          <ul className="list-disc pl-6 text-gray-700">
-            <li className="mb-2">
-              Strong market demand with over 1 million registered users.
-            </li>
-            <li className="mb-2">
-              Proprietary technology ensures secure and smooth transactions.
-            </li>
-            <li className="mb-2">
-              Partnered with top insurance providers to protect users and their
-              assets.
-            </li>
-            <li className="mb-2">
-              Experienced team with a proven track record in tech and finance.
-            </li>
-          </ul>
-          <p className="mt-4 text-gray-700">
-            Join us in this exciting journey and be part of the future of
-            sharing!
-          </p>
-        </div>
+        ></div>
+      </div>
+      <div
+        className={"prose flex max-w-[85%] flex-col justify-start self-center"}
+      >
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {businessData.pitch ?? "No pitch available."}
+        </ReactMarkdown>
       </div>
     </div>
   );

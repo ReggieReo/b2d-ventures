@@ -16,6 +16,11 @@ import {
   diffSourcePlugin,
   InsertThematicBreak,
   DiffSourceToggleWrapper,
+  codeMirrorPlugin,
+  sandpackPlugin,
+  SandpackConfig,
+  tablePlugin,
+  linkPlugin,
 } from "@mdxeditor/editor";
 import { type FC } from "react";
 import "@mdxeditor/editor/style.css";
@@ -33,6 +38,20 @@ interface EditorProps {
  * Extend this Component further with the necessary plugins or props you need.
  * proxying the ref is necessary. Next.js dynamically imported components don't support refs.
  */
+const simpleSandpackConfig: SandpackConfig = {
+  defaultPreset: "react",
+  presets: [
+    {
+      label: "React",
+      name: "react",
+      meta: "live react",
+      sandpackTemplate: "react",
+      sandpackTheme: "light",
+      snippetFileName: "/App.js",
+      snippetLanguage: "jsx",
+    },
+  ],
+};
 
 const Editor: FC<EditorProps> = ({
   markdown,
@@ -59,6 +78,18 @@ const Editor: FC<EditorProps> = ({
           diffSourcePlugin({
             viewMode: "rich-text",
           }),
+          sandpackPlugin({ sandpackConfig: simpleSandpackConfig }),
+          codeMirrorPlugin({
+            codeBlockLanguages: {
+              js: "JavaScript",
+              css: "CSS",
+              html: "HTML",
+              jsx: "JSX",
+            },
+          }),
+          tablePlugin(),
+          linkPlugin(),
+
           toolbarPlugin({
             // toolbarClassName: "flex flex-row gap-2",
             toolbarContents: () => (

@@ -12,9 +12,9 @@ import {
   getImageByBusinessID,
   getLogoByBusinessID,
 } from "~/server/fetchQuery";
-import { BusinessDetail } from "~/components/businessDetail";
 import { auth } from "@clerk/nextjs/server";
 import { RequestDataroomStatusEnum } from "~/utils/enum/requestDataroomStatusEnum";
+import { BusinessDetail } from "~/components/businessDetail";
 
 async function getRequestStatus(business: number, curUserID?: string) {
   if (!curUserID) {

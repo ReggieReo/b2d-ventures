@@ -10,6 +10,11 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
+import {
+  getBusinessByUserID,
+  getBusinessByUserIDExplicit,
+} from "~/server/fetchQuery";
+import { auth } from "@clerk/nextjs/server";
 
 function Logo() {
   return (
@@ -26,6 +31,11 @@ function Logo() {
 }
 
 export async function TopNav() {
+  const curUser = auth();
+  let business;
+  if (curUser) {
+    business = await getBusinessByUserIDExplicit(curUser.userId!);
+  }
   return (
     <nav
       className={
@@ -41,14 +51,18 @@ export async function TopNav() {
           <Link className={"font-light"} href={"/browse_business"}>
             Browse Business
           </Link>
-
           <SignedOut>
             <SignInButton />
           </SignedOut>
           <SignedIn>
-            <Link className={"font-light"} href={"/create_fundraising"}>
-              Start Raising
-            </Link>
+            {/*<Link className={"font-light"} href={"/create_fundraising"}>*/}
+            {/*  Start Raising*/}
+            {/*</Link>*/}
+            {!business && (
+              <Link className={"font-light"} href={"/create_fundraising"}>
+                Start Raising
+              </Link>
+            )}
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center font-light">
                 Dashboard <ChevronDown className="ml-1 h-4 w-4" />
