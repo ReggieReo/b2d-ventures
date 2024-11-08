@@ -7,12 +7,33 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 
-import { InvestorPortPieChart } from "~/components/pie_chart";
+import {InvestmentWithBusiness, InvestorPortPieChart} from "~/components/pie_chart";
 import { InvestmentHistoryTable } from "~/components/investment_history";
+import {auth} from "@clerk/nextjs/server";
+import {getInvestmentByUserID} from "~/server/fetchQuery";
 
 export const dynamic = "force-dynamic";
 
 export default async function InvestorPortfolioPage() {
+  const userID = auth().userId
+  const allInvestment = await getInvestmentByUserID(userID!)
+
+    const validatedInvestment: InvestmentWithBusiness[] = allInvestment.map(
+        (inv) => ({
+            investmentID: inv.investmentID,
+            businessID: inv.businessID,
+            userID: inv.userID,
+            createdAt: inv.createdAt,
+            updatedAt: inv.updatedAt,
+            fund: inv.fund,
+            industry: inv.business.industry ?? "", // Default to empty string if null
+            business: inv.business ? {
+                businessID: inv.business.businessID, // This should be a number
+                company: inv.business.company ?? "", // Default to empty string if null
+            } : null
+        })
+    );
+
   return (
     <main className="justify-left items-left m-4 flex min-h-screen flex-col gap-y-5">
       <p className={"text-3xl font-bold"}>My Business Portfolio</p>
@@ -65,7 +86,7 @@ export default async function InvestorPortfolioPage() {
             </div>
           </CardContent>
         </Card>
-        <InvestorPortPieChart />
+        <InvestorPortPieChart allInvestment={validatedInvestment} />
       </div>
       <div
         className={

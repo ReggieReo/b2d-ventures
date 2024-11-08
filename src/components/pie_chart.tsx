@@ -21,46 +21,110 @@ import {
   ChartLegendContent,
 } from "~/components/ui/chart";
 
-export const description = "A donut chart with text";
+const industryColors = {
+  tech: "hsl(var(--chart-1))",
+  health: "hsl(var(--chart-2))",
+  finance: "hsl(var(--chart-3))",
+  education: "hsl(var(--chart-4))",
+  retail: "hsl(var(--chart-5))",
+  manufacturing: "hsl(var(--chart-6))",
+  hospitality: "hsl(var(--chart-7))",
+  transport: "hsl(var(--chart-8))",
+  real_estate: "hsl(var(--chart-9))",
+  energy: "hsl(var(--chart-10))",
+  food_beverage: "hsl(var(--chart-11))",
+  entertainment: "hsl(var(--chart-12))",
+  telecom: "hsl(var(--chart-1))",
+  construction: "hsl(var(--chart-2))",
+  consulting: "hsl(var(--chart-3))",
+};
 
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 190, fill: "var(--color-other)" },
-];
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  industry: {
+    label: "Industries",
+  },tech: {
+    label: "Technology",
+    color: industryColors.tech,
   },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
+  health: {
+    label: "Healthcare",
+    color: industryColors.health,
   },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
+  finance: {
+    label: "Finance",
+    color: industryColors.finance,
   },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
+  education: {
+    label: "Education",
+    color: industryColors.education,
   },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
+  retail: {
+    label: "Retail",
+    color: industryColors.retail,
   },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
+  manufacturing: {
+    label: "Manufacturing",
+    color: industryColors.manufacturing,
+  },
+  hospitality: {
+    label: "Hospitality",
+    color: industryColors.hospitality,
+  },
+  transport: {
+    label: "Transportation",
+    color: industryColors.transport,
+  },
+  real_estate: {
+    label: "Real Estate",
+    color: industryColors.real_estate,
+  },
+  energy: {
+    label: "Energy",
+    color: industryColors.energy,
+  },
+  food_beverage: {
+    label: "Food & Beverage",
+    color: industryColors.food_beverage,
+  },
+  entertainment: {
+    label: "Entertainment",
+    color: industryColors.entertainment,
+  },
+  telecom: {
+    label: "Telecommunications",
+    color: industryColors.telecom,
+  },
+  construction: {
+    label: "Construction",
+    color: industryColors.construction,
+  },
+  consulting: {
+    label: "Consulting",
+    color: industryColors.consulting,
   },
 } satisfies ChartConfig;
 
-export function InvestorPortPieChart() {
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
-  }, []);
+export type InvestmentWithBusiness = {
+  investmentID: number;
+  businessID: number;
+  userID: string | null;
+  createdAt: Date;
+  updatedAt: Date | null;
+  fund: number;
+  industry: string;
+  business: {
+    businessID: number, // Changed from string to number to match schema
+    company: string,
+  } | null;
+};
+
+export function InvestorPortPieChart({
+  allInvestment,
+}: {
+  allInvestment: InvestmentWithBusiness[];
+}) {
+
 
   return (
     <Card className={"justify-center md:w-1/2"}>
@@ -81,9 +145,9 @@ export function InvestorPortPieChart() {
               content={<ChartTooltipContent hideLabel />}
             />
             <Pie
-              data={chartData}
-              dataKey="visitors"
-              nameKey="browser"
+              data={allInvestment}
+              dataKey="fund"
+              nameKey="industry"
               innerRadius={60}
               strokeWidth={5}
             >
@@ -102,7 +166,7 @@ export function InvestorPortPieChart() {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {totalVisitors.toLocaleString()}
+                          {/*{totalVisitors.toLocaleString()}*/}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
