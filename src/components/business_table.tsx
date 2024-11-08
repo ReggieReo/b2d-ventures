@@ -25,6 +25,7 @@ import {
 import { business } from "~/server/db/schema";
 import InvestmentTable from "~/components/investment_table";
 import { approveBusinessAction } from "~/server/action/approve_business";
+import { declineBusinessAction } from "~/server/action/decline_business";
 
 export type Business = typeof business.$inferSelect;
 
@@ -40,7 +41,6 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
         const result = await approveBusinessAction(Number(rowData.businessID));
         if (result.status === 200) {
           setData((prevData) => prevData.filter(item => item.businessID !== rowData.businessID));
-          
           router.refresh();
         } else {
           alert(`Error: ${result.message}`);
@@ -48,6 +48,23 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
       } catch (error) {
         console.error("Error approving campaign:", error);
         alert("An unexpected error occurred while approving the campaign.");
+      }
+    }
+  };
+
+  const handleDecline = async (rowData: Business) => {
+    if (confirm(`Are you sure you want to decline the campaign for ${rowData.company}?`)) {
+      try {
+        const result = await declineBusinessAction(Number(rowData.businessID));
+        if (result.status === 200) {
+          setData((prevData) => prevData.filter(item => item.businessID !== rowData.businessID));
+          router.refresh();
+        } else {
+          alert(`Error: ${result.message}`);
+        }
+      } catch (error) {
+        console.error("Error declining campaign:", error);
+        alert("An unexpected error occurred while declining the campaign.");
       }
     }
   };
@@ -114,7 +131,7 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
           <Button onClick={() => handleApprove(row.original)}>
             Approve
           </Button>
-          <Button variant="destructive">
+          <Button variant="destructive" onClick={() => handleDecline(row.original)}>
             Decline
           </Button>
         </div>
