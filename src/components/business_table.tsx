@@ -23,31 +23,38 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { CampaignData } from "~/models/fund";
+import { business } from "~/server/db/schema";
 import InvestmentTable from "~/components/investment_table";
-import { approveBusiness } from "~/server/action/approve_business";
+import { approveBusinessAction } from "~/server/action/approve_business";
 
-export default function CampaignApprovalTable({ data: initialData }: { data: CampaignData[] }) {
+export type Business = typeof business.$inferSelect;
+
+export default function CampaignApprovalTable({ data: initialData }: { data: Business[] }) {
   const filteredData = initialData.filter(campaign => !campaign.approve);
-  const [data, setData] = React.useState<CampaignData[]>(filteredData);
+  const [data, setData] = React.useState<Business[]>(filteredData);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  const handleApprove = (rowData: CampaignData) => {
+  const handleApprove = (rowData: Business) => {
     if (confirm(`Are you sure you want to approve the campaign for ${rowData.company}?`)) {
       startTransition(async () => {
-        const result = await approveBusiness(Number(rowData.businessID));
-        if (result.success) {
-          router.refresh();
-        } else {
-          alert(`Error: ${result.error}`);
+        try {
+          const result = await approveBusinessAction(Number(rowData.businessID));
+          if (result.status === 200) {
+            router.refresh();
+          } else {
+            alert(`Error: ${result.message}`);
+          }
+        } catch (error) {
+          console.error("Error approving campaign:", error);
+          alert("An unexpected error occurred while approving the campaign.");
         }
       });
     }
   };
 
-  const campaignColumns: ColumnDef<CampaignData>[] = [
+  const campaignColumns: ColumnDef<Business>[] = [
     {
       accessorKey: "company",
       header: ({ column }) => (
