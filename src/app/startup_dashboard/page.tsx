@@ -167,14 +167,12 @@ export default async function StartupDashboard() {
                       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
                 </div>
                 <div className={"flex flex-col"}>
-                  {/*TODO: Implement maximum check-size logic*/}
                   <p className={"text-2xl"}>Highest Check-size Value</p>
                   <p className={"ml-3 text-3xl font-bold"}>${maxInvestment
                       .toString()
                       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
                 </div>
                 <div className={"flex flex-col"}>
-                  {/*TODO: Implement average check-size logic*/}
                   <p className={"text-2xl"}>Average Check-size Value</p>
                   <p className={"ml-3 text-3xl font-bold"}>${avgInvestment.toString()
                     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
