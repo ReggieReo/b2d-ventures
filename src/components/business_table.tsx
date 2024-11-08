@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Sidebar } from "~/components/sidebar";
 import {
@@ -33,24 +32,23 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
   const filteredData = initialData.filter(campaign => !campaign.approve);
   const [data, setData] = React.useState<Business[]>(filteredData);
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  const handleApprove = (rowData: Business) => {
+  const handleApprove = async (rowData: Business) => {
     if (confirm(`Are you sure you want to approve the campaign for ${rowData.company}?`)) {
-      startTransition(async () => {
-        try {
-          const result = await approveBusinessAction(Number(rowData.businessID));
-          if (result.status === 200) {
-            router.refresh();
-          } else {
-            alert(`Error: ${result.message}`);
-          }
-        } catch (error) {
-          console.error("Error approving campaign:", error);
-          alert("An unexpected error occurred while approving the campaign.");
+      try {
+        const result = await approveBusinessAction(Number(rowData.businessID));
+        if (result.status === 200) {
+          setData((prevData) => prevData.filter(item => item.businessID !== rowData.businessID));
+          
+          router.refresh();
+        } else {
+          alert(`Error: ${result.message}`);
         }
-      });
+      } catch (error) {
+        console.error("Error approving campaign:", error);
+        alert("An unexpected error occurred while approving the campaign.");
+      }
     }
   };
 
@@ -113,10 +111,10 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
       header: "Actions",
       cell: ({ row }) => (
         <div className="flex space-x-2">
-          <Button onClick={() => handleApprove(row.original)} disabled={isPending}>
-            {isPending ? "Approving..." : "Approve"}
+          <Button onClick={() => handleApprove(row.original)}>
+            Approve
           </Button>
-          <Button variant="destructive" disabled={isPending}>
+          <Button variant="destructive">
             Decline
           </Button>
         </div>
