@@ -18,10 +18,10 @@ export default async function InvestorPortfolioPage() {
       <p className={"text-3xl font-bold"}>My Business Portfolio</p>
       <div
         className={
-          "m-4 flex w-full max-w-7xl flex-row justify-center gap-4 self-center"
+          "flex flex-col md:flex-row w-full max-w-7xl  justify-center gap-4 self-center"
         }
       >
-        <Card className={"w-1/2"}>
+        <Card className={"justify-center md:w-1/2"}>
           <CardHeader>
             <CardTitle>Portfolio Summary</CardTitle>
             <CardDescription>

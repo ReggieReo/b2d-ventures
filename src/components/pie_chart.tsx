@@ -63,7 +63,7 @@ export function InvestorPortPieChart() {
   }, []);
 
   return (
-    <Card className={"w-1/2"}>
+    <Card className={"justify-center md:w-1/2"}>
       <CardHeader className="items-left pb-0">
         <CardTitle>Investment Visualization</CardTitle>
         <CardDescription>
@@ -106,7 +106,7 @@ export function InvestorPortPieChart() {
                         </tspan>
                         <tspan
                           x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
+                          y={(viewBox.cy ?? 0) + 24}
                           className="fill-muted-foreground"
                         >
                           Visitors
