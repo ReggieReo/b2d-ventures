@@ -1,10 +1,10 @@
 import Ip3Card from "~/components/ip3-card";
-import { getAllBusiness } from "~/server/fetchQuery";
+import { getConfirmBusinesses } from "~/server/fetchQuery";
 import Link from "next/link";
 import BusinessCard from "~/components/business_card";
 
 export default async function HomePage() {
-  const business = await getAllBusiness();
+  const business = await getConfirmBusinesses();
 
   return (
     <main className={"mt-12 flex h-screen w-screen flex-col items-center"}>
@@ -13,13 +13,11 @@ export default async function HomePage() {
         <p>Explore emerging investment opportunities on our platform.</p>
       </div>
       <div className="grid max-w-5xl grid-cols-1 items-center gap-10 md:grid-cols-2 lg:grid-cols-3">
-        {business
-          .filter((b) => b.approve === true)
-          .map((b) => (
-            <Link href={`/business/${b.businessID}`} key={b.businessID}>
-              <BusinessCard className={"h-full"} cBusiness={b} />
-            </Link>
-          ))}
+        {business.map((b) => (
+          <Link href={`/business/${b.businessID}`} key={b.businessID}>
+            <BusinessCard className={"h-full"} cBusiness={b} />
+          </Link>
+        ))}
       </div>
     </main>
   );
