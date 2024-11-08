@@ -52,7 +52,7 @@ export function DataroomTable({
           <TableRow key={`${request.userID}-${index}`}>
             <TableCell>{request.user?.name}</TableCell>
             <TableCell>
-              {new Date(request.createdAt).toLocaleDateString()}
+              {new Date(request.createdAt).toLocaleDateString('en-US')}
             </TableCell>
             <TableCell className="text-right">
               <Select
