@@ -13,8 +13,10 @@ import {
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
   ChartTooltip,
   ChartTooltipContent,
+  ChartLegendContent,
 } from "~/components/ui/chart";
 
 const industryColors = {
@@ -197,6 +199,7 @@ export function InvestorPortPieChart({
                     }}
                 />
               </Pie>
+              <ChartLegend content={<ChartLegendContent />} />
             </PieChart>
           </ChartContainer>
         </CardContent>
