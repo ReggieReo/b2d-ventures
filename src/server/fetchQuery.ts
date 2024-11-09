@@ -67,22 +67,15 @@ export async function getBusinessByUserID() {
   });
 }
 
-export async function approveBusiness(businessID: number) {
-  try {
-    await db
-      .update(business)
-      .set({ approve: true })
-      .where(eq(business.businessID, businessID));
-    return { success: true };
-  } catch (error) {
-    console.error("Error approving business:", error);
-    return { success: false, error: "Failed to approve business" };
-  }
+export async function getPendingBusinesses() {
+  return db.query.business.findMany({
+    where: (model, { eq }) => eq(model.status, 0),
+  });
 }
 
-export async function getConfirmBusinesses() {
+export async function getAcceptedBusinesses() {
   return db.query.business.findMany({
-    where: (model, { eq }) => eq(model.approve, true),
+    where: (model, { eq }) => eq(model.status, 1),
   });
 }
 
@@ -90,7 +83,7 @@ export async function acceptUserStatus(businessID: number) {
   try {
     await db
       .update(business)
-      .set({ userStatus: 'accepted' })
+      .set({ status: 1 })
       .where(eq(business.businessID, businessID));
     return { success: true };
   } catch (error) {
@@ -103,7 +96,7 @@ export async function declineUserStatus(businessID: number) {
   try {
     await db
       .update(business)
-      .set({ userStatus: 'declined' })
+      .set({ status: 2 })
       .where(eq(business.businessID, businessID));
     return { success: true };
   } catch (error) {
