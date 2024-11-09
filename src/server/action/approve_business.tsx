@@ -1,21 +1,15 @@
 "use server";
 
-import { approveBusiness, acceptUserStatus } from "~/server/fetchQuery";
+import { acceptUserStatus } from "~/server/fetchQuery";
 
 export async function approveBusinessAction(businessID: number) {
   try {
-    const approvalResult = await approveBusiness(businessID);
+    const statusResult = await acceptUserStatus(businessID);
 
-    if (approvalResult.success) {
-      const statusResult = await acceptUserStatus(businessID);
-
-      if (statusResult.success) {
-        return { status: 200, message: "Business approved and user status updated successfully" };
-      } else {
-        return { status: 500, message: statusResult.error || "Failed to update user status" };
-      }
+    if (statusResult.success) {
+      return { status: 200, message: "User status updated successfully" };
     } else {
-      return { status: 500, message: approvalResult.error || "Approval failed" };
+      return { status: 500, message: statusResult.error || "Failed to update user status" };
     }
   } catch (error) {
     console.error("Server action error:", error);
