@@ -1,14 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { TrendingUp } from "lucide-react";
 import { Label, Pie, PieChart } from "recharts";
 
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
@@ -17,33 +15,31 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
 } from "~/components/ui/chart";
 
 const industryColors = {
-  tech: "hsl(var(--chart-1))",
-  health: "hsl(var(--chart-2))",
-  finance: "hsl(var(--chart-3))",
-  education: "hsl(var(--chart-4))",
-  retail: "hsl(var(--chart-5))",
-  manufacturing: "hsl(var(--chart-6))",
-  hospitality: "hsl(var(--chart-7))",
-  transport: "hsl(var(--chart-8))",
-  real_estate: "hsl(var(--chart-9))",
-  energy: "hsl(var(--chart-10))",
-  food_beverage: "hsl(var(--chart-11))",
-  entertainment: "hsl(var(--chart-12))",
-  telecom: "hsl(var(--chart-1))",
-  construction: "hsl(var(--chart-2))",
-  consulting: "hsl(var(--chart-3))",
+  tech: "#3B82F6",         // Soft blue
+  health: "#0EA5E9",       // Muted cyan
+  finance: "#14B8A6",      // Teal
+  education: "#10B981",    // Soft green
+  retail: "#22C55E",       // Lime green
+  manufacturing: "#84CC16",// Olive green
+  hospitality: "#A3E635",  // Yellow-green
+  transport: "#FACC15",    // Soft amber
+  real_estate: "#F59E0B",  // Golden orange
+  energy: "#EF4444",       // Muted red
+  food_beverage: "#DB2777",// Soft pink
+  entertainment: "#D946EF",// Soft purple
+  telecom: "#8B5CF6",      // Muted indigo
+  construction: "#6366F1", // Muted blue-violet
+  consulting: "#3B82F6",   // Slightly brighter blue
 };
-
 
 const chartConfig = {
   industry: {
     label: "Industries",
-  },tech: {
+  },
+  tech: {
     label: "Technology",
     color: industryColors.tech,
   },
@@ -114,77 +110,96 @@ export type InvestmentWithBusiness = {
   fund: number;
   industry: string;
   business: {
-    businessID: number, // Changed from string to number to match schema
+    businessID: number,
     company: string,
   } | null;
 };
 
 export function InvestorPortPieChart({
-  allInvestment,
-}: {
+                                       allInvestment,
+                                     }: {
   allInvestment: InvestmentWithBusiness[];
 }) {
 
+  const aggregatedData = allInvestment.reduce((acc, investment) => {
+    if (acc[investment.industry]) {
+      acc[investment.industry].fund += investment.fund;
+    } else {
+      acc[investment.industry] = {
+        industry: investment.industry,
+        fund: investment.fund,
+        fill: industryColors[investment.industry as keyof typeof industryColors] || "#ffffff",
+      };
+    }
+    return acc;
+  }, {} as Record<string, { industry: string; fund: number; fill: string }>);
+
+  const industryCount = Object.keys(
+      allInvestment.reduce((acc, investment) => {
+        acc[investment.industry] = true;
+        return acc;
+      }, {} as Record<string, boolean>)
+  ).length;
+
+  const chartData = Object.values(aggregatedData);
 
   return (
-    <Card className={"justify-center md:w-1/2"}>
-      <CardHeader className="items-left pb-0">
-        <CardTitle>Investment Visualization</CardTitle>
-        <CardDescription>
-          A breakdown visualization of investment
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
-        >
-          <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Pie
-              data={allInvestment}
-              dataKey="fund"
-              nameKey="industry"
-              innerRadius={60}
-              strokeWidth={5}
-            >
-              <Label
-                content={({ viewBox }) => {
-                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                    return (
-                      <text
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                      >
-                        <tspan
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
-                        >
-                          {/*{totalVisitors.toLocaleString()}*/}
-                        </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy ?? 0) + 24}
-                          className="fill-muted-foreground"
-                        >
-                          Visitors
-                        </tspan>
-                      </text>
-                    );
-                  }
-                }}
+      <Card className={"justify-center md:w-1/2"}>
+        <CardHeader className="items-left pb-0">
+          <CardTitle>Investment Visualization</CardTitle>
+          <CardDescription>
+            A breakdown visualization of investment
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex-1 pb-0">
+          <ChartContainer
+              config={chartConfig}
+              className="mx-auto aspect-square max-h-[250px]"
+          >
+            <PieChart>
+              <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent hideLabel />}
               />
-            </Pie>
-            <ChartLegend content={<ChartLegendContent />} />
-          </PieChart>
-        </ChartContainer>
-      </CardContent>
-    </Card>
+              <Pie
+                  data={chartData}
+                  dataKey="fund"
+                  nameKey="industry"
+                  innerRadius={60}
+              >
+                <Label
+                    content={({ viewBox }) => {
+                      if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                        return (
+                            <text
+                                x={viewBox.cx}
+                                y={viewBox.cy}
+                                textAnchor="middle"
+                                dominantBaseline="middle"
+                            >
+                              <tspan
+                                  x={viewBox.cx}
+                                  y={viewBox.cy}
+                                  className="fill-foreground text-3xl font-bold"
+                              >
+                                {industryCount.toLocaleString()}
+                              </tspan>
+                              <tspan
+                                  x={viewBox.cx}
+                                  y={(viewBox.cy ?? 0) + 24}
+                                  className="fill-muted-foreground"
+                              >
+                                Industry
+                              </tspan>
+                            </text>
+                        )
+                      }
+                    }}
+                />
+              </Pie>
+            </PieChart>
+          </ChartContainer>
+        </CardContent>
+      </Card>
   );
 }
