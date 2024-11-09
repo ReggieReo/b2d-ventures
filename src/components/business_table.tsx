@@ -27,10 +27,10 @@ import InvestmentTable from "~/components/investment_table";
 import { approveBusinessAction } from "~/server/action/approve_business";
 import { declineBusinessAction } from "~/server/action/decline_business";
 
-export type Business = typeof business.$inferSelect;
+export type Business = typeof business.$inferSelect & { userStatus: string };
 
 export default function CampaignApprovalTable({ data: initialData }: { data: Business[] }) {
-  const filteredData = initialData.filter(campaign => !campaign.approve);
+  const filteredData = initialData.filter(campaign => campaign.userStatus === "pending");
   const [data, setData] = React.useState<Business[]>(filteredData);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const router = useRouter();
