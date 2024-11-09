@@ -26,11 +26,12 @@ import { business } from "~/server/db/schema";
 import InvestmentTable from "~/components/investment_table";
 import { approveBusinessAction } from "~/server/action/approve_business";
 import { declineBusinessAction } from "~/server/action/decline_business";
+import { businessStatusEnum } from "~/utils/enum/businessStatusEnum";
 
-export type Business = typeof business.$inferSelect & { userStatus: string };
+export type Business = typeof business.$inferSelect & { status: string };
 
 export default function CampaignApprovalTable({ data: initialData }: { data: Business[] }) {
-  const filteredData = initialData.filter(campaign => campaign.userStatus === "pending");
+  const filteredData = initialData.filter(campaign => campaign.status === businessStatusEnum.pending);
   const [data, setData] = React.useState<Business[]>(filteredData);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const router = useRouter();
