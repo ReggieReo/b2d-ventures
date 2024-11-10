@@ -12,7 +12,7 @@ export async function getUser() {
 export async function getUserByID(id: string) {
   return db.query.user.findFirst({
     where: (model, { eq }) => eq(model.userID, id),
-  })
+  });
 }
 
 export async function getAllImages() {
@@ -44,6 +44,20 @@ export async function getBusinessByID(businessID: number) {
   });
 }
 
+export async function getImageByBusinessID(businessID: number) {
+  return db.query.media.findMany({
+    where: (model, { eq, and }) =>
+      and(eq(model.businessID, businessID), eq(model.type, "image")),
+  });
+}
+
+export async function getLogoByBusinessID(businessID: number) {
+  return db.query.media.findFirst({
+    where: (model, { eq, and }) =>
+      and(eq(model.businessID, businessID), eq(model.type, "logo")),
+  });
+}
+
 export async function getRequest(businessID: number) {
   const curUserID = auth().userId;
   if (!curUserID) throw new Error("Unauthorized");
@@ -58,8 +72,8 @@ export async function getRequestByID(businessID: number) {
   return db.query.dataroomRequest.findMany({
     where: (model, { eq }) => eq(model.businessID, businessID),
     with: {
-      user: true
-    }
+      user: true,
+    },
   });
 }
 
@@ -74,3 +88,8 @@ export async function getBusinessByUserID() {
   });
 }
 
+export async function getBusinessByUserIDExplicit(userID: string) {
+  return db.query.business.findFirst({
+    where: (model, { eq }) => eq(model.userID, userID),
+  });
+}

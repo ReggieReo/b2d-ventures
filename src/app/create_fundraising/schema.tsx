@@ -7,9 +7,9 @@ export const formSchema = z.object({
     })
     .min(2)
     .max(50),
-  title: z
+  slogan: z
     .string({
-      required_error: "Please enter your business title.",
+      required_error: "Please enter your business slogan.",
     })
     .min(2)
     .max(50),
@@ -36,4 +36,29 @@ export const formSchema = z.object({
   deadline: z.coerce.date({
     required_error: "Please select a date and time",
   }),
+  media: z
+    .array(
+      z.object({
+        url: z.coerce.string(),
+        name: z.coerce.string(),
+        size: z.coerce.number(),
+        key: z.coerce.string(),
+      }),
+    )
+    .min(1, "Please upload at least one media file"),
+  logo: z.object(
+    {
+      url: z.coerce.string(),
+      name: z.coerce.string(),
+      size: z.coerce.number(),
+      key: z.coerce.string(),
+    },
+    { message: "Please upload a logo." },
+  ),
+
+  pitch: z
+    .string({
+      required_error: "Please enter your pitch.",
+    })
+    .min(1, "Please enter a pitch"),
 });
