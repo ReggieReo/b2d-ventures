@@ -11,7 +11,11 @@ import { Button } from "~/components/ui/button";
 import * as React from "react";
 
 import { Progress } from "~/components/ui/progress";
-import {getBusinessByUserID, getInvestmentByBusinessID, getRequestByID} from "~/server/fetchQuery";
+import {
+  getBusinessByUserID,
+  getInvestmentByBusinessID,
+  getRequestByID,
+} from "~/server/fetchQuery";
 import { redirect } from "next/navigation";
 
 import {
@@ -27,14 +31,14 @@ export default async function StartupDashboard() {
 
   if (!business) {
     return (
-        <main>
-          <div className={"flex flex-col items-center gap-y-4"}>
-            <p className={"text-3xl font-bold"}>No Business Found</p>
-            <Button>
-              <Link href={"/create_fundraising"}>Create Business</Link>
-            </Button>
-          </div>
-        </main>
+      <main>
+        <div className={"flex flex-col items-center gap-y-4"}>
+          <p className={"text-3xl font-bold"}>No Business Found</p>
+          <Button>
+            <Link href={"/create_fundraising"}>Create Business</Link>
+          </Button>
+        </div>
+      </main>
     );
   }
 
@@ -57,7 +61,9 @@ export default async function StartupDashboard() {
   );
   const isInCurrentWeek = (date: Date) => {
     const today = new Date();
-    const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 1));
+    const startOfWeek = new Date(
+      today.setDate(today.getDate() - today.getDay() + 1),
+    );
     startOfWeek.setHours(0, 0, 0, 0);
 
     const endOfWeek = new Date(today.setDate(today.getDate() + 7));
@@ -68,37 +74,46 @@ export default async function StartupDashboard() {
 
   const investment = await getInvestmentByBusinessID(businessID);
 
-
-  const businessUpdateAt = business.updatedAt?.toLocaleDateString('en-US');
+  const businessUpdateAt = business.updatedAt?.toLocaleDateString("en-US");
 
   const totalInvestment = investment
-      .flatMap(investment => investment.fund || [])  // Get all funds, with fallback to empty if undefined
-      .reduce((acc, val) => acc + val, 0);           // Sum all values
+    .flatMap((investment) => investment.fund || []) // Get all funds, with fallback to empty if undefined
+    .reduce((acc, val) => acc + val, 0); // Sum all values
 
   const countInvestment = investment
-      .flatMap(investment => investment || [])
-      .reduce((acc) => acc + 1, 0);
+    .flatMap((investment) => investment || [])
+    .reduce((acc) => acc + 1, 0);
 
   const thisWeekInvestmentAmount = investment
-      .filter(inv => isInCurrentWeek(new Date(inv.createdAt))) // Assuming there's a createdAt field
-      .flatMap(investment => investment.fund || [])
-      .reduce((acc, val) => acc + val, 0);
+    .filter((inv) => isInCurrentWeek(new Date(inv.createdAt))) // Assuming there's a createdAt field
+    .flatMap((investment) => investment.fund || [])
+    .reduce((acc, val) => acc + val, 0);
 
   const thisWeekInvestmentCount = investment
-      .filter(inv => isInCurrentWeek(new Date(inv.createdAt))) // Assuming there's a createdAt field
-      .flatMap(investment => investment.fund || [])
-      .reduce((acc) => acc + 1, 0);
-  const minInvestment = Math.min(...investment.flatMap(investment => investment.fund || []));
-  const maxInvestment = Math.max(...investment.flatMap(investment => investment.fund || []));
-  const avgInvestment = Math.floor((totalInvestment/countInvestment))
+    .filter((inv) => isInCurrentWeek(new Date(inv.createdAt))) // Assuming there's a createdAt field
+    .flatMap((investment) => investment.fund || [])
+    .reduce((acc) => acc + 1, 0);
+  const minInvestment = Math.min(
+    ...investment.flatMap((investment) => investment.fund || []),
+  );
+  const maxInvestment = Math.max(
+    ...investment.flatMap((investment) => investment.fund || []),
+  );
+  const avgInvestment = Math.floor(totalInvestment / countInvestment);
 
+  const dayStartFundRaise = business.createdAt;
+  const dayDeadline = business.deadline
+    ? new Date(business.deadline)
+    : new Date("2025-01-28");
+  const today = new Date();
+  const daysToGo = Math.floor(
+    (dayDeadline.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+  );
+  const daysSinceStart = Math.ceil(
+    (today.getTime() - dayStartFundRaise.getTime()) / (1000 * 60 * 60 * 24),
+  );
 
-  const dayStartFundRaise = business.createdAt
-  const dayDeadline = business.deadline ? new Date(business.deadline) : new Date('2025-01-28');  const today = new Date();
-  const daysToGo = Math.floor((dayDeadline.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-  const daysSinceStart = Math.ceil((today.getTime() - dayStartFundRaise.getTime()) / (1000 * 60 * 60 * 24));
-
-  const percentageFund = (totalInvestment/business.target_fund!) * 100
+  const percentageFund = (totalInvestment / business.target_fund!) * 100;
 
   return (
     <main className="justify-left m-4 flex min-h-screen flex-col">
@@ -116,7 +131,8 @@ export default async function StartupDashboard() {
                   <p className={"text-2xl"}>Fund Raised</p>
                   <div className={"ml-3 flex flex-col gap-2 lg:flex-row"}>
                     <p className={"text-3xl font-bold"}>
-                      ${totalInvestment
+                      $
+                      {totalInvestment
                         .toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                     </p>
@@ -138,7 +154,7 @@ export default async function StartupDashboard() {
                 </div>
                 <div className={"flex flex-col"}>
                   <p className={"text-2xl"}>Day to go</p>
-                  <div className={"ml-3 flex flex-col  gap-2 lg:flex-row"}>
+                  <div className={"ml-3 flex flex-col gap-2 lg:flex-row"}>
                     <p className={"text-3xl font-bold"}>{daysToGo}</p>
                     <p>({daysSinceStart} days from start)</p>
                   </div>
@@ -159,28 +175,43 @@ export default async function StartupDashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className={"flex flex-col items-center"}>
-              <div className={"flex flex-row gap-x-10"}>
-                <div className={"flex flex-col"}><p className={"text-2xl"}>Lowest Check-size Value</p>
-                  <p className={"ml-3 text-3xl font-bold"}>${minInvestment
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                </div>
-                <div className={"flex flex-col"}>
-                  {/*TODO: Implement maximum check-size logic*/}
-                  <p className={"text-2xl"}>Highest Check-size Value</p>
-                  <p className={"ml-3 text-3xl font-bold"}>${maxInvestment
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                </div>
-                <div className={"flex flex-col"}>
-                  {/*TODO: Implement average check-size logic*/}
-                  <p className={"text-2xl"}>Average Check-size Value</p>
-                  <p className={"ml-3 text-3xl font-bold"}>${avgInvestment.toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+            {investment.length > 0 ? (
+              <div className={"flex flex-col items-center"}>
+                <div className={"flex flex-row gap-x-10"}>
+                  <div className={"flex flex-col"}>
+                    <p className={"text-2xl"}>Lowest Check-size Value</p>
+                    <p className={"ml-3 text-3xl font-bold"}>
+                      $
+                      {minInvestment
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </p>
+                  </div>
+                  <div className={"flex flex-col"}>
+                    {/*TODO: Implement maximum check-size logic*/}
+                    <p className={"text-2xl"}>Highest Check-size Value</p>
+                    <p className={"ml-3 text-3xl font-bold"}>
+                      $
+                      {maxInvestment
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </p>
+                  </div>
+                  <div className={"flex flex-col"}>
+                    {/*TODO: Implement average check-size logic*/}
+                    <p className={"text-2xl"}>Average Check-size Value</p>
+                    <p className={"ml-3 text-3xl font-bold"}>
+                      $
+                      {avgInvestment
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              "There is no investment."
+            )}
           </CardContent>
         </Card>
         <Card className={"w-full"}>
