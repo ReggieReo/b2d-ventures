@@ -69,13 +69,13 @@ export async function getBusinessByUserID() {
 
 export async function getPendingBusinesses() {
   return db.query.business.findMany({
-    where: (model, { eq }) => eq(model.status, 0),
+    where: (model, { eq }) => eq(model.business_status, 0),
   });
 }
 
 export async function getAcceptedBusinesses() {
   return db.query.business.findMany({
-    where: (model, { eq }) => eq(model.status, 1),
+    where: (model, { eq }) => eq(model.business_status, 1),
   });
 }
 
@@ -83,7 +83,7 @@ export async function acceptUserStatus(businessID: number) {
   try {
     await db
       .update(business)
-      .set({ status: 1 })
+      .set({ business_status: 1 })
       .where(eq(business.businessID, businessID));
     return { success: true };
   } catch (error) {
@@ -96,7 +96,7 @@ export async function declineUserStatus(businessID: number) {
   try {
     await db
       .update(business)
-      .set({ status: 2 })
+      .set({ business_status: 2 })
       .where(eq(business.businessID, businessID));
     return { success: true };
   } catch (error) {
