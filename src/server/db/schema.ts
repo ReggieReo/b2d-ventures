@@ -19,8 +19,6 @@ import {
  */
 export const createTable = pgTableCreator((name) => `b2d_ventures_${name}`);
 
-export const userStatusEnum = pgEnum('user_status', ['pending', 'accepted', 'declined']);
-
 export const user = createTable("user", {
   userID: varchar("userID", { length: 256 }).primaryKey(),
   name: text("name"),
@@ -49,10 +47,9 @@ export const business = createTable("business", {
   valuation: integer("valuation"),
   deadline: date("deadline"),
   industry: varchar("industry", { length: 256 }),
-  approve: boolean("approve").default(false).notNull(),
   slogan: text("slogan"),
   pitch: text("pitch"),
-  userStatus: userStatusEnum('user_status').default('pending').notNull(),
+  business_status: integer("business_status").default(0).notNull(),
 });
 
 export const investment = createTable("investment", {
