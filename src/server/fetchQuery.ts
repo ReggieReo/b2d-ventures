@@ -25,7 +25,16 @@ export async function getAllBusiness() {
 
 export async function getInvestmentByBusinessID(businessID: number) {
   return db.query.investment.findMany({
-    where: (model, { eq }) => eq(model.businessID, businessID),
+    where: (model, { eq }) => eq(model.businessID, businessID)
+  });
+}
+
+export async function getInvestmentByUserID(userID: string) {
+  return db.query.investment.findMany({
+    where: (model, { eq }) => eq(model.userID, userID),
+    with: {
+      business: true
+    }
   });
 }
 
