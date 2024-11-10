@@ -127,7 +127,7 @@ export default async function InvestorPortfolioPage() {
           }
         >
           <p className={"text-2xl font-bold"}>Investment Breakdown</p>
-          <InvestmentHistoryTable />
+          <InvestmentHistoryTable allInvestment={validatedInvestment}/>
         </div>
       </main>
     );
