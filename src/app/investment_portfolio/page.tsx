@@ -7,39 +7,44 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 
-import {InvestmentWithBusiness, InvestorPortPieChart} from "~/components/pie_chart";
+import {
+  type InvestmentWithBusiness,
+  InvestorPortPieChart,
+} from "~/components/pie_chart";
 import { InvestmentHistoryTable } from "~/components/investment_history";
-import {auth} from "@clerk/nextjs/server";
-import {getInvestmentByUserID} from "~/server/fetchQuery";
+import { auth } from "@clerk/nextjs/server";
+import { getInvestmentByUserID } from "~/server/fetchQuery";
 
 export const dynamic = "force-dynamic";
 
 export default async function InvestorPortfolioPage() {
-  const userID = auth().userId
-  const allInvestment = await getInvestmentByUserID(userID!)
+  const userID = auth().userId;
+  const [allInvestment] = await Promise.all([getInvestmentByUserID(userID!)]);
 
-    const validatedInvestment: InvestmentWithBusiness[] = allInvestment.map(
-        (inv) => ({
-            investmentID: inv.investmentID,
-            businessID: inv.businessID,
-            userID: inv.userID,
-            createdAt: inv.createdAt,
-            updatedAt: inv.updatedAt,
-            fund: inv.fund,
-            industry: inv.business.industry ?? "", // Default to empty string if null
-            business: inv.business ? {
-                businessID: inv.business.businessID, // This should be a number
-                company: inv.business.company ?? "", // Default to empty string if null
-            } : null
-        })
-    );
+  const validatedInvestment: InvestmentWithBusiness[] = allInvestment.map(
+    (inv) => ({
+      investmentID: inv.investmentID,
+      businessID: inv.businessID,
+      userID: inv.userID,
+      createdAt: inv.createdAt,
+      updatedAt: inv.updatedAt,
+      fund: inv.fund,
+      industry: inv.business.industry ?? "", // Default to empty string if null
+      business: inv.business
+        ? {
+            businessID: inv.business.businessID, // This should be a number
+            company: inv.business.company ?? "", // Default to empty string if null
+          }
+        : null,
+    }),
+  );
 
   return (
     <main className="justify-left items-left m-4 flex min-h-screen flex-col gap-y-5">
       <p className={"text-3xl font-bold"}>My Business Portfolio</p>
       <div
         className={
-          "flex flex-col md:flex-row w-full max-w-7xl  justify-center gap-4 self-center"
+          "flex w-full max-w-7xl flex-col justify-center gap-4 self-center md:flex-row"
         }
       >
         <Card className={"justify-center md:w-1/2"}>

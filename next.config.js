@@ -3,6 +3,8 @@
  * for Docker builds.
  */
 await import("./src/env.js");
+import createMDX from "@next/mdx";
+import remarkGfm from "remark-gfm";
 
 /** @type {import("next").NextConfig} */
 const config = {
@@ -15,6 +17,15 @@ const config = {
   images: {
     remotePatterns: [{ hostname: "utfs.io" }],
   },
+  pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
+  transpilePackages: ["next-mdx-remote"],
 };
 
-export default config;
+const withMDX = createMDX({
+  extension: /\.mdx?$/,
+  options: {
+    remarkPlugins: [remarkGfm],
+    rehypePlugins: [],
+  },
+});
+export default withMDX(config);
