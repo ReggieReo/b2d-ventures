@@ -28,10 +28,10 @@ import { approveBusinessAction } from "~/server/action/approve_business";
 import { declineBusinessAction } from "~/server/action/decline_business";
 import { businessStatusEnum } from "~/utils/enum/businessStatusEnum";
 
-export type Business = typeof business.$inferSelect & { status: string };
+export type Business = typeof business.$inferSelect;
 
 export default function CampaignApprovalTable({ data: initialData }: { data: Business[] }) {
-  const filteredData = initialData.filter(campaign => campaign.status === businessStatusEnum.pending);
+  const filteredData = initialData.filter(campaign => campaign.business_status === businessStatusEnum.pending);
   const [data, setData] = React.useState<Business[]>(filteredData);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const router = useRouter();
@@ -82,7 +82,7 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => <div>{row.getValue("company")}</div>,
+      cell: ({ row }) => <div className="text-center">{row.getValue("company")}</div>,
     },
     {
       accessorKey: "website",
@@ -92,6 +92,7 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
           href={row.getValue("website")}
           target="_blank"
           rel="noopener noreferrer"
+          className="block text-center"
         >
           {row.getValue("website")}
         </a>
@@ -100,35 +101,35 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
     {
       accessorKey: "industry",
       header: "Industry",
-      cell: ({ row }) => <div>{row.getValue("industry")}</div>,
+      cell: ({ row }) => <div className="text-center">{row.getValue("industry")}</div>,
     },
     {
       accessorKey: "target_fund",
-      header: () => <div className="text-right">Amount to Raise</div>,
+      header: () => <div className="text-center">Amount to Raise</div>,
       cell: ({ row }) => {
         const amount = parseFloat(row.getValue("target_fund"));
         const formatted = new Intl.NumberFormat("en-US", {
           style: "currency",
           currency: "USD",
         }).format(amount);
-        return <div className="text-right font-medium">{formatted}</div>;
+        return <div className="text-center font-medium">{formatted}</div>;
       },
     },
     {
       accessorKey: "allocation",
       header: "Allocation",
-      cell: ({ row }) => <div>{row.getValue("allocation")}</div>,
+      cell: ({ row }) => <div className="text-center">{row.getValue("allocation")}</div>,
     },
     {
       accessorKey: "deadline",
       header: "Deadline",
-      cell: ({ row }) => <div>{row.getValue("deadline")}</div>,
+      cell: ({ row }) => <div className="text-center">{row.getValue("deadline")}</div>,
     },
     {
       id: "actions",
       header: "Actions",
       cell: ({ row }) => (
-        <div className="flex space-x-2">
+        <div className="flex justify-center space-x-2">
           <Button onClick={() => handleApprove(row.original)}>
             Approve
           </Button>
@@ -165,7 +166,7 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
                 {campaignTable.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
-                      <TableHead key={header.id}>
+                      <TableHead key={header.id} className="text-center">
                         {header.isPlaceholder
                           ? null
                           : flexRender(header.column.columnDef.header, header.getContext())}
@@ -179,7 +180,7 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
                   campaignTable.getRowModel().rows.map((row) => (
                     <TableRow key={row.id}>
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
+                        <TableCell key={cell.id} className="text-center">
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </TableCell>
                       ))}
