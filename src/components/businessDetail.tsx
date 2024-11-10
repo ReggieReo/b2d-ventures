@@ -14,6 +14,7 @@ import {
 import { RequestDataroomButton } from "~/components/businessDetailDataroomRequestButton";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { getDayUntilDeadline } from "~/utils/util";
 
 export async function BusinessDetail({
   businessData,
@@ -28,6 +29,14 @@ export async function BusinessDetail({
   logo: typeof media.$inferSelect;
   allImage: (typeof media.$inferSelect)[];
 }) {
+  const totalInvestemntAmount = allInvestment
+    .flatMap((ob) => ob.fund)
+    .reduce((a, b) => a + b, 0);
+  const totalNumberOfInvester = allInvestment.length;
+  const percentInvestment =
+    (totalInvestemntAmount / businessData.target_fund!) * 100;
+  const daysToGo = getDayUntilDeadline(businessData.deadline!);
+
   return (
     <div className="font-geist-sans my-10 flex flex-col">
       <div className="flex flex-col place-content-center gap-10 md:flex-row">
@@ -58,60 +67,98 @@ export async function BusinessDetail({
             <Gallery images={allImage} />
           </div>
         </div>
-
         <div className="flex flex-col gap-5 p-3 md:mt-20 md:w-1/4">
           <div className="text-[24px] font-bold md:text-[28px]">
-            Fund Raised
+            Target Fund
           </div>
-          <div className="text-3xl font-bold md:text-4xl">$332,160</div>
-          <div className="text-sm text-gray-500 md:text-base">
-            6% raised of $5M max goal
+          <div className="text-3xl font-bold md:text-4xl">
+            ${businessData.target_fund!.toLocaleString()}
           </div>
+          {allInvestment.length > 0 ? (
+            <>
+              <div className="text-[24px] font-bold md:text-[28px]">
+                Fund Raised
+              </div>
+              <div className="text-3xl font-bold md:text-4xl">
+                ${totalInvestemntAmount.toLocaleString()}
+              </div>
+              <div className="text-sm text-gray-500 md:text-base">
+                {`${percentInvestment}% raised of 100% of target fund.`}
+              </div>
+              <div
+                className="my-3 h-2 w-full overflow-hidden rounded-full bg-gray-200"
+                role="progressbar"
+                aria-valuenow={percentInvestment}
+                aria-valuemin={0}
+                aria-valuemax={100}
+              >
+                <div
+                  className="h-full bg-green-600" // You can change the color by modifying bg-blue-600
+                  style={{ width: `${percentInvestment}%` }}
+                ></div>
+              </div>
+              <div className="flex flex-row justify-evenly gap-5 md:flex-col">
+                <div>
+                  <div className="text-3xl font-bold md:text-4xl">
+                    {totalNumberOfInvester}
+                  </div>
+                  <div className="text-lg md:text-xl">Investors</div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <p className={"text-3xl font-bold"}>Be the first investor!!!</p>
+          )}
 
-          <div
-            className="my-3 h-2 w-full overflow-hidden rounded-full bg-gray-200"
-            role="progressbar"
-            aria-valuenow={25}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          >
-            <div className="h-full bg-green-600" style={{ width: "25%" }}></div>
-          </div>
-
-          <div className="flex flex-row justify-evenly gap-5 md:flex-col">
+          {daysToGo > 0 ? (
             <div>
-              <div className="text-3xl font-bold md:text-4xl">302</div>
-              <div className="text-lg md:text-xl">Investors</div>
+              <div className="text-3xl font-bold md:text-4xl">
+                {daysToGo} days
+                <div className="text-lg md:text-xl">Left to invest</div>
+              </div>
             </div>
+          ) : daysToGo === 0 ? (
             <div>
-              <div className="text-3xl font-bold md:text-4xl">🔥 4 hours</div>
-              <div className="text-lg md:text-xl">Left to invest</div>
+              <div className="text-3xl font-bold md:text-4xl">The Last Day</div>
+              <div className="text-lg md:text-xl">To Invest</div>
             </div>
-          </div>
-
-          <Link href={`/create_investment/${businessData.businessID}`}>
-            <button className="w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500">
+          ) : (
+            <div>
+              <div className="text-lg md:text-xl">
+                This fundraising has been closed
+              </div>
+            </div>
+          )}
+          {daysToGo >= 0 ? (
+            <div className={"grid gap-y-2"}>
+              <Link href={`/create_investment/${businessData.businessID}`}>
+                <button className="w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500">
+                  Invest in {businessData.company}
+                </button>
+              </Link>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <RequestDataroomButton
+                    pageID={businessData.businessID}
+                    initialRequestStatus={initialRequestStatus}
+                  />
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Data room request has been sent.</DialogTitle>
+                    <DialogDescription>
+                      You can access Rentos data room after admin approves the
+                      request.
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
+            </div>
+          ) : (
+            <button className="w-full rounded bg-gray-700 px-4 py-2 font-bold text-white">
               Invest in {businessData.company}
             </button>
-          </Link>
-          <Dialog>
-            <DialogTrigger asChild>
-              <RequestDataroomButton
-                pageID={businessData.businessID}
-                initialRequestStatus={initialRequestStatus}
-              />
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Data room request has been sent.</DialogTitle>
-                <DialogDescription>
-                  You can access Rentos data room after admin approves the
-                  request.
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
-
+          )}
           <div className="mt-2 text-center text-sm text-gray-500">
             {businessData.min_investment!.toLocaleString()}$ minimum investment
           </div>
