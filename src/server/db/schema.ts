@@ -4,7 +4,6 @@
 import { relations, sql } from "drizzle-orm";
 import {
   pgTableCreator,
-  numeric,
   serial,
   timestamp,
   varchar,
@@ -50,7 +49,8 @@ export const business = createTable("business", {
   valuation: integer("valuation"),
   deadline: date("deadline"),
   industry: varchar("industry", { length: 256 }),
-  approve: boolean("approve").default(false).notNull(),
+  slogan: text("slogan"),
+  pitch: text("pitch"),
 });
 
 export const investment = createTable("investment", {
@@ -72,6 +72,7 @@ export const media = createTable("media", {
   userID: varchar("userID", { length: 256 }).references(() => user.userID),
   url: varchar("url", { length: 1024 }).notNull(),
   name: varchar("name", { length: 256 }).notNull(),
+  type: text("type"),
   createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -102,16 +103,19 @@ export const businessRelation = relations(business, ({ many, one }) => ({
   }),
 }));
 
-export const dataroomRequestRelation = relations(dataroomRequest, ({many, one}) => ({
-  user: one(user, {
-    fields: [dataroomRequest.userID],
-    references: [user.userID],
-  }),
-  business: one(business, {
-    fields: [dataroomRequest.businessID],
-    references: [business.businessID],
-  })
-}))
+export const dataroomRequestRelation = relations(
+    dataroomRequest,
+    ({ many, one }) => ({
+      user: one(user, {
+        fields: [dataroomRequest.userID],
+        references: [user.userID],
+      }),
+      business: one(business, {
+        fields: [dataroomRequest.businessID],
+        references: [business.businessID],
+      }),
+    }),
+);
 
 export const investmentRelation = relations(investment, ({ one }) => ({
   business: one(business, {
@@ -128,5 +132,3 @@ export const userRelation = relations(user, ({ many, one }) => ({
   business: one(business),
   investment: many(investment),
 }));
-
-
