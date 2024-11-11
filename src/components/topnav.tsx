@@ -1,11 +1,20 @@
-"use client";
+"use server";
 
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-// import { useRouter } from "next/navigation";
-// import { z } from "zod";
-// import Link from "next/link";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
+import {
+  getBusinessByUserID,
+  getBusinessByUserIDExplicit,
+} from "~/server/fetchQuery";
+import { auth } from "@clerk/nextjs/server";
 
 function Logo() {
   return (
@@ -21,9 +30,12 @@ function Logo() {
   );
 }
 
-export function TopNav() {
-  // const router = useRouter(); to refresh
-
+export async function TopNav() {
+  const curUser = auth();
+  let business;
+  if (curUser) {
+    business = await getBusinessByUserIDExplicit(curUser.userId!);
+  }
   return (
     <nav
       className={
@@ -39,16 +51,35 @@ export function TopNav() {
           <Link className={"font-light"} href={"/browse_business"}>
             Browse Business
           </Link>
-          <Link className={"font-light"} href={"/create_fundraising"}>
-            Start Raising
-          </Link>
-          <Link className={"font-light"} href={"/investor_portfolio"}>
-            My Portfolio
-          </Link>
           <SignedOut>
             <SignInButton />
           </SignedOut>
           <SignedIn>
+            {/*<Link className={"font-light"} href={"/create_fundraising"}>*/}
+            {/*  Start Raising*/}
+            {/*</Link>*/}
+            {!business && (
+              <Link className={"font-light"} href={"/create_fundraising"}>
+                Start Raising
+              </Link>
+            )}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center font-light">
+                Dashboard <ChevronDown className="ml-1 h-4 w-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem>
+                  <a href="/investment_portfolio" className="w-full">
+                    Investment Portfolio
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <a href="/startup_dashboard" className="w-full">
+                    Business Dashboard
+                  </a>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <UserButton />
           </SignedIn>
         </div>

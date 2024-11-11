@@ -1,9 +1,14 @@
 import { SignedOut, SignedIn } from "@clerk/nextjs";
 
-import { UploadButtonCom } from "~/components/uploadbuttton";
+import {
+  LogoUploadButton,
+  TestBut,
+  UploadButtonCom,
+} from "~/components/uploadbuttton";
 import { getAllImages } from "~/server/fetchQuery";
 import Image from "next/image";
-
+import { UploadButton } from "~/utils/uploadthings";
+import * as React from "react";
 export default async function HomePage() {
   const images = await getAllImages();
   return (
@@ -19,6 +24,7 @@ export default async function HomePage() {
         </SignedIn>
 
         <UploadButtonCom />
+        <LogoUploadButton />
       </div>
       <div>
         {images.map((image, i) => (
@@ -33,6 +39,7 @@ export default async function HomePage() {
           </div>
         ))}
       </div>
+      <TestBut />
     </main>
   );
 }

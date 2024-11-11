@@ -43,7 +43,7 @@ function DialogCountdown({ isFormValid }: { isFormValid: boolean }) {
       timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
     } else if (countdown === 0) {
-      router.push("/investor_portfolio");
+      router.push("/startup_dashboard");
     }
     return () => clearTimeout(timer);
   }, [countdown, router, startCountdown]);
@@ -65,7 +65,7 @@ function DialogCountdown({ isFormValid }: { isFormValid: boolean }) {
           <DialogTitle>Investing request has been sent.</DialogTitle>
           <DialogDescription>
             Redirecting you to your portfolio in {countdown} seconds.
-            <Link href="/investor_portfolio">
+            <Link href="/startup_dashboard">
               <Button className="mt-6 w-full bg-blue-500 py-3 text-lg font-semibold text-white hover:bg-blue-600">
                 Go to your portfolio
               </Button>
@@ -212,14 +212,6 @@ export function InvestingForm({
             <div className="mt-6">
               <h2 className="text-lg font-semibold">Terms</h2>
               <div className="mt-4 space-y-2 rounded-md bg-gray-100 p-4 text-sm text-gray-700">
-                <p>
-                  I understand that I can cancel my investment up until 10/30/24
-                  (48 hours prior to the deal deadline).
-                </p>
-                <p>
-                  I understand that Republic will receive a cash and securities
-                  commission as further detailed in the offering documents.
-                </p>
                 <p>
                   I understand that investing this amount into several deals
                   would better diversify my risk.

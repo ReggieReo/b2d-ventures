@@ -14,7 +14,7 @@ export async function getUser() {
 export async function getUserByID(id: string) {
   return db.query.user.findFirst({
     where: (model, { eq }) => eq(model.userID, id),
-  })
+  });
 }
 
 export async function getAllImages() {
@@ -27,13 +27,36 @@ export async function getAllBusiness() {
 
 export async function getInvestmentByBusinessID(businessID: number) {
   return db.query.investment.findMany({
-    where: (model, { eq }) => eq(model.businessID, businessID),
+    where: (model, { eq }) => eq(model.businessID, businessID)
+  });
+}
+
+export async function getInvestmentByUserID(userID: string) {
+  return db.query.investment.findMany({
+    where: (model, { eq }) => eq(model.userID, userID),
+    with: {
+      business: true
+    }
   });
 }
 
 export async function getBusinessByID(businessID: number) {
   return db.query.business.findFirst({
     where: (model, { eq }) => eq(model.businessID, businessID),
+  });
+}
+
+export async function getImageByBusinessID(businessID: number) {
+  return db.query.media.findMany({
+    where: (model, { eq, and }) =>
+      and(eq(model.businessID, businessID), eq(model.type, "image")),
+  });
+}
+
+export async function getLogoByBusinessID(businessID: number) {
+  return db.query.media.findFirst({
+    where: (model, { eq, and }) =>
+      and(eq(model.businessID, businessID), eq(model.type, "logo")),
   });
 }
 
@@ -51,8 +74,8 @@ export async function getRequestByID(businessID: number) {
   return db.query.dataroomRequest.findMany({
     where: (model, { eq }) => eq(model.businessID, businessID),
     with: {
-      user: true
-    }
+      user: true,
+    },
   });
 }
 
@@ -103,4 +126,9 @@ export async function declineUserStatus(businessID: number) {
     console.error("Error updating user status:", error);
     return { success: false, error: "Failed to update user status" };
   }
+}
+export async function getBusinessByUserIDExplicit(userID: string) {
+  return db.query.business.findFirst({
+    where: (model, { eq }) => eq(model.userID, userID),
+  });
 }

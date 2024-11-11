@@ -47,9 +47,7 @@ export const business = createTable("business", {
   valuation: integer("valuation"),
   deadline: date("deadline"),
   industry: varchar("industry", { length: 256 }),
-  slogan: text("slogan"),
-  pitch: text("pitch"),
-  business_status: integer("business_status").default(0).notNull(),
+  approve: boolean("approve").default(false).notNull(),
 });
 
 export const investment = createTable("investment", {

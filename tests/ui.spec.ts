@@ -41,7 +41,7 @@ test("invest form testing", async ({ page }) => {
   await page.getByRole("checkbox").click();
 
   await page.getByText("Confirm investment").click();
-  await page.waitForURL("**/investor_portfolio");
+  await page.waitForURL("**/startup_dashboard");
   await page.waitForTimeout(1000);
 });
 
