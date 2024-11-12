@@ -1,6 +1,8 @@
 import "server-only";
 import { db } from "~/server/db";
 import { auth } from "@clerk/nextjs/server";
+import { business } from "~/server/db/schema";
+import { eq } from "drizzle-orm";
 // user client -> ship js to the client but code still on the server
 // user server -> expose endpoint to the client
 // running on the server
@@ -88,6 +90,43 @@ export async function getBusinessByUserID() {
   });
 }
 
+export async function getPendingBusinesses() {
+  return db.query.business.findMany({
+    where: (model, { eq }) => eq(model.business_status, 0),
+  });
+}
+
+export async function getAcceptedBusinesses() {
+  return db.query.business.findMany({
+    where: (model, { eq }) => eq(model.business_status, 1),
+  });
+}
+
+export async function acceptUserStatus(businessID: number) {
+  try {
+    await db
+      .update(business)
+      .set({ business_status: 1 })
+      .where(eq(business.businessID, businessID));
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating user status:", error);
+    return { success: false, error: "Failed to update user status" };
+  }
+}
+
+export async function declineUserStatus(businessID: number) {
+  try {
+    await db
+      .update(business)
+      .set({ business_status: 2 })
+      .where(eq(business.businessID, businessID));
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating user status:", error);
+    return { success: false, error: "Failed to update user status" };
+  }
+}
 export async function getBusinessByUserIDExplicit(userID: string) {
   return db.query.business.findFirst({
     where: (model, { eq }) => eq(model.userID, userID),

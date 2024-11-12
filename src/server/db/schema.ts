@@ -1,8 +1,6 @@
-// Example model schema from the Drizzle docs
-// https://orm.drizzle.team/docs/sql-schema-declaration
-
 import { relations, sql } from "drizzle-orm";
 import {
+  pgEnum,
   pgTableCreator,
   serial,
   timestamp,
@@ -51,6 +49,7 @@ export const business = createTable("business", {
   industry: varchar("industry", { length: 256 }),
   slogan: text("slogan"),
   pitch: text("pitch"),
+  business_status: integer("business_status").default(0).notNull(),
 });
 
 export const investment = createTable("investment", {
@@ -86,7 +85,6 @@ export const dataroomRequest = createTable("dataroom_request", {
   userID: varchar("userID", { length: 256 }).references(() => user.userID),
   businessID: serial("businessID").references(() => business.businessID),
   requestStatus: integer("requestStatus").default(0).notNull(),
-
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
