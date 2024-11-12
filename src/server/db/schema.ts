@@ -25,10 +25,10 @@ export const user = createTable("user", {
   userID: varchar("userID", { length: 256 }).primaryKey(),
   name: text("name"),
   createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-    () => new Date(),
+      () => new Date(),
   ),
 });
 
