@@ -633,7 +633,6 @@ export function FundraisingForm() {
                     />
                   </Suspense>
                 </FormControl>
-                <FormDescription>Company Valuation</FormDescription>
                 <FormMessage />
                 <input
                   type="hidden"

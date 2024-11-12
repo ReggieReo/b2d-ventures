@@ -76,30 +76,46 @@ export default async function StartupDashboard() {
 
   const businessUpdateAt = business.updatedAt?.toLocaleDateString("en-US");
 
-  const totalInvestment = investment
-    .flatMap((investment) => investment.fund || []) // Get all funds, with fallback to empty if undefined
-    .reduce((acc, val) => acc + val, 0); // Sum all values
+  if (investment.length === 0) {
+    const noInvestmentStats = {
+      totalInvestment: 0,
+      countInvestment: 0,
+      thisWeekInvestmentAmount: 0,
+      thisWeekInvestmentCount: 0,
+      minInvestment: 0,
+      maxInvestment: 0,
+      avgInvestment: 0,
+    };
+    
+    const { totalInvestment, countInvestment, thisWeekInvestmentAmount, 
+            thisWeekInvestmentCount, minInvestment, maxInvestment, 
+            avgInvestment } = noInvestmentStats;
+  } else {
+    const totalInvestment = investment
+      .flatMap((investment) => investment.fund || [])
+      .reduce((acc, val) => acc + val, 0);
 
-  const countInvestment = investment
-    .flatMap((investment) => investment || [])
-    .reduce((acc) => acc + 1, 0);
+    const countInvestment = investment
+      .flatMap((investment) => investment || [])
+      .reduce((acc) => acc + 1, 0);
 
-  const thisWeekInvestmentAmount = investment
-    .filter((inv) => isInCurrentWeek(new Date(inv.createdAt))) // Assuming there's a createdAt field
-    .flatMap((investment) => investment.fund || [])
-    .reduce((acc, val) => acc + val, 0);
+    const thisWeekInvestmentAmount = investment
+      .filter((inv) => isInCurrentWeek(new Date(inv.createdAt))) // Assuming there's a createdAt field
+      .flatMap((investment) => investment.fund || [])
+      .reduce((acc, val) => acc + val, 0);
 
-  const thisWeekInvestmentCount = investment
-    .filter((inv) => isInCurrentWeek(new Date(inv.createdAt))) // Assuming there's a createdAt field
-    .flatMap((investment) => investment.fund || [])
-    .reduce((acc) => acc + 1, 0);
-  const minInvestment = Math.min(
-    ...investment.flatMap((investment) => investment.fund || []),
-  );
-  const maxInvestment = Math.max(
-    ...investment.flatMap((investment) => investment.fund || []),
-  );
-  const avgInvestment = Math.floor(totalInvestment / countInvestment);
+    const thisWeekInvestmentCount = investment
+      .filter((inv) => isInCurrentWeek(new Date(inv.createdAt))) // Assuming there's a createdAt field
+      .flatMap((investment) => investment.fund || [])
+      .reduce((acc) => acc + 1, 0);
+    const minInvestment = Math.min(
+      ...investment.flatMap((investment) => investment.fund || []),
+    );
+    const maxInvestment = Math.max(
+      ...investment.flatMap((investment) => investment.fund || []),
+    );
+    const avgInvestment = Math.floor(totalInvestment / countInvestment);
+  }
 
   const dayStartFundRaise = business.createdAt;
   const dayDeadline = business.deadline
@@ -175,37 +191,43 @@ export default async function StartupDashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className={"flex flex-col items-center"}>
-              <div className={"flex flex-row gap-x-10"}>
-                <div className={"flex flex-col"}>
-                  <p className={"text-2xl"}>Lowest Check-size Value</p>
-                  <p className={"ml-3 text-3xl font-bold"}>
-                    $
-                    {minInvestment
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                  </p>
-                </div>
-                <div className={"flex flex-col"}>
-                  <p className={"text-2xl"}>Highest Check-size Value</p>
-                  <p className={"ml-3 text-3xl font-bold"}>
-                    $
-                    {maxInvestment
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                  </p>
-                </div>
-                <div className={"flex flex-col"}>
-                  <p className={"text-2xl"}>Average Check-size Value</p>
-                  <p className={"ml-3 text-3xl font-bold"}>
-                    $
-                    {avgInvestment
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                  </p>
+            {investment.length === 0 ? (
+              <div className="flex justify-center items-center p-4">
+                <p className="text-gray-500">No investment has been made yet</p>
+              </div>
+            ) : (
+              <div className={"flex flex-col items-center"}>
+                <div className={"flex flex-row gap-x-10"}>
+                  <div className={"flex flex-col"}>
+                    <p className={"text-2xl"}>Lowest Check-size Value</p>
+                    <p className={"ml-3 text-3xl font-bold"}>
+                      $
+                      {minInvestment
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </p>
+                  </div>
+                  <div className={"flex flex-col"}>
+                    <p className={"text-2xl"}>Highest Check-size Value</p>
+                    <p className={"ml-3 text-3xl font-bold"}>
+                      $
+                      {maxInvestment
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </p>
+                  </div>
+                  <div className={"flex flex-col"}>
+                    <p className={"text-2xl"}>Average Check-size Value</p>
+                    <p className={"ml-3 text-3xl font-bold"}>
+                      $
+                      {avgInvestment
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </CardContent>
         </Card>
         <Card className={"w-full"}>

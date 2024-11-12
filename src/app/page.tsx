@@ -24,11 +24,7 @@ export default async function HomePage() {
           </div>
         </div>
         <p className={"ml-5 mr-5 max-w-fit"}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore
+          Empowering visionaries to transform ideas into reality. At B2D Ventures, we bridge the gap between ambitious entrepreneurs and strategic investors, creating opportunities that shape tomorrow's innovations. Join us in building the next generation of groundbreaking businesses.
         </p>
       </div>
       <div className={"relative h-screen w-1/2"}>
