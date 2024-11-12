@@ -2,16 +2,14 @@ import "server-only";
 
 import * as React from "react";
 import {
-  getAllImages,
   getBusinessByID,
-  getInvestmentByBusinessID,
+  getDataroomFiles,
+  getLogoByBusinessID,
 } from "~/server/fetchQuery";
 
 import {
   Card,
-  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
@@ -21,30 +19,38 @@ import {
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-
 import Image from "next/image";
 import { redirect } from "next/navigation";
-
+import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 export default async function Dataroom({ params }: { params: { id: number } }) {
-  const files = await getAllImages();
+  const files = await getDataroomFiles(params.id);
   const business = await getBusinessByID(params.id);
+  const logo = await getLogoByBusinessID(params.id);
   if (!business) {
     redirect("/browse_business");
   }
+  if (!files) {
+    return (
+      <>
+        <div>No files found</div>
+        <Link href={`/business/${params.id}`}>Go to the business page</Link>
+      </>
+    );
+  }
+
   return (
     <main className="justify-left m-4 flex min-h-screen flex-col">
       <Card className={"w-full"}>
         <CardHeader className={"flex flex-row items-center gap-x-5"}>
           <div className="h-16 w-16 overflow-hidden rounded-lg">
             <Image
-              src="https://utfs.io/f/bb1dabab-7c7c-40d7-8ea5-030fdc7f1d96-ny8zu1.jpg"
+              src={logo!.url}
               alt="IP3 Logo"
               width={64}
               height={64}
