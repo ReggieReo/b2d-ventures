@@ -46,6 +46,16 @@ export const formSchema = z.object({
       }),
     )
     .min(1, "Please upload at least one media file"),
+  dataroom: z
+    .array(
+      z.object({
+        url: z.coerce.string(),
+        name: z.coerce.string(),
+        size: z.coerce.number(),
+        key: z.coerce.string(),
+      }),
+    )
+    .optional(),
   logo: z.object(
     {
       url: z.coerce.string(),

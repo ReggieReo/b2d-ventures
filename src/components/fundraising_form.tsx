@@ -65,6 +65,7 @@ const industries = [
   { label: "Consulting", value: "consulting" },
 ] as const;
 import dynamic from "next/dynamic";
+import { FileIcon } from "lucide-react";
 
 const EditorComp = dynamic(() => import("~/components/markdown_editor"), {
   ssr: false,
@@ -136,6 +137,7 @@ export function FundraisingForm() {
       allocation: 0,
       deadline: new Date(Date.now()),
       media: [],
+      dataroom: [],
       pitch: "# Test",
     },
     mode: "onChange",
@@ -144,6 +146,15 @@ export function FundraisingForm() {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "media",
+  });
+
+  const { 
+    fields: dataroomFields, 
+    append: appendDataroom, 
+    remove: removeDataroom 
+  } = useFieldArray({
+    control: form.control,
+    name: "dataroom",
   });
 
   const createFundraisingBind = createFundraising.bind(null);
@@ -395,7 +406,6 @@ export function FundraisingForm() {
                     <UploadButton
                       endpoint="imageUploader"
                       onClientUploadComplete={async (res) => {
-                        // Add uploaded files to the form's media array
                         res?.forEach((file) => {
                           append({
                             url: file.url,
@@ -411,37 +421,38 @@ export function FundraisingForm() {
                       }}
                     />
 
-                    {/* Display uploaded files */}
                     <div className="mt-4 space-y-2">
                       {fields.map((field, index) => (
                         <div
                           key={field.id}
-                          className="flex items-center justify-between rounded-md border border-gray-200 p-2"
+                          className="relative rounded-lg border-2 border-dashed border-gray-200 p-4"
                         >
-                          <div className="h-16 w-16 overflow-hidden rounded-md border">
-                            <img
-                              src={field.url}
-                              alt="Company logo"
-                              className="h-full w-full object-cover"
-                            />
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-4">
+                              <div className="h-16 w-16 overflow-hidden rounded-md border">
+                                <img
+                                  src={field.url}
+                                  alt="Media preview"
+                                  className="h-full w-full object-cover"
+                                />
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium">{field.name}</p>
+                                <p className="text-xs text-gray-500">
+                                  {(field.size / 1024 / 1024).toFixed(2)} MB
+                                </p>
+                              </div>
+                            </div>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => remove(index)}
+                              className="text-red-500 hover:bg-red-50 hover:text-red-600"
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
                           </div>
-
-                          <div className="flex items-center space-x-2">
-                            <span className="text-sm font-medium">
-                              {field.name}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              ({(field.size / 1024 / 1024).toFixed(2)} MB)
-                            </span>
-                          </div>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => remove(index)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
                         </div>
                       ))}
                     </div>
@@ -453,14 +464,12 @@ export function FundraisingForm() {
                   </div>
                 </FormControl>
                 <FormDescription>
-                  Upload images, documents, or other media files related to your
-                  fundraising campaign
+                  Upload images, documents, or other media files related to your fundraising campaign
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="logo"
@@ -539,6 +548,76 @@ export function FundraisingForm() {
               </FormItem>
             )}
           />
+          
+          <FormField
+            control={form.control}
+            name="dataroom"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Dataroom</FormLabel>
+                <FormControl>
+                  <div className="space-y-4">
+                    <UploadButton
+                      endpoint="dataroomUploader"
+                      onClientUploadComplete={async (res) => {
+                        res?.forEach((file) => {
+                          appendDataroom({
+                            url: file.url,
+                            name: file.name,
+                            size: file.size,
+                            key: file.key,
+                          });
+                        });
+                        await trigger("dataroom");
+                      }}
+                      onUploadError={(error: Error) => {
+                        console.error("Dataroom upload error:", error);
+                      }}
+                    />
+
+                    <div className="mt-4 space-y-2">
+                      {dataroomFields.map((field, index) => (
+                        <div
+                          key={field.id}
+                          className="flex items-center justify-between rounded-md border border-gray-200 p-2"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <FileIcon className="h-8 w-8 text-gray-400" />
+                            <div>
+                              <span className="text-sm font-medium">
+                                {field.name}
+                              </span>
+                              <span className="ml-2 text-xs text-gray-500">
+                                ({(field.size / 1024 / 1024).toFixed(2)} MB)
+                              </span>
+                            </div>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeDataroom(index)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                    <input
+                      type="hidden"
+                      name="dataroom"
+                      value={JSON.stringify(dataroomFields)}
+                    />
+                  </div>
+                </FormControl>
+                <FormDescription>
+                  Upload documents for your dataroom
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="pitch"
@@ -558,13 +637,13 @@ export function FundraisingForm() {
                 <FormMessage />
                 <input
                   type="hidden"
-                  onChange={(v) => console.log(v, "from input")}
                   name="pitch"
                   value={field.value}
                 />
               </FormItem>
             )}
           />
+
           {/* DIALOG เด้งๆ */}
           <DialogCountdown />
         </form>

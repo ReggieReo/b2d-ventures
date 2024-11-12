@@ -62,6 +62,21 @@ export const ourFileRouter = {
       console.log("insert complete");
       return { uploadedBy: metadata.userId };
     }),
+  dataroomUploader: f({ pdf: { maxFileSize: "4MB", maxFileCount: 40 } })
+    .middleware(async ({ req, input }) => {
+      const user = auth();
+      if (!user) throw new UploadThingError("Unauthorized");
+      return { userId: user.userId, input };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      await db.insert(media).values({
+        userID: metadata.userId ?? "",
+        url: file.url,
+        name: file.name,
+        businessID: 1,
+      });
+      return { uploadedBy: metadata.userId };
+    }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

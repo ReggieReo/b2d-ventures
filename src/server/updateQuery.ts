@@ -32,3 +32,16 @@ export async function updateMediaLogoTypeByMediaURLe(
     })
     .where(eq(media.url, mediaURL));
 }
+
+export async function updateDataroomTypeByMediaURLe(
+  mediaURL: string[],
+  businessID: number,
+) {
+  await db
+    .update(media)
+    .set({
+      businessID,
+      type: "dataroom",
+    })
+    .where(inArray(media.url, mediaURL));
+}

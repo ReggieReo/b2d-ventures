@@ -16,13 +16,13 @@ import {
   getInvestmentByBusinessID,
   getRequestByID,
 } from "~/server/fetchQuery";
-import { redirect } from "next/navigation";
 
 import {
   DataroomRequestWithUser,
   DataroomTable,
 } from "~/components/dataroomTable";
 import Link from "next/link";
+import { DataroomManager } from "~/components/dataroom_manager";
 
 export const dynamic = "force-dynamic";
 
@@ -217,6 +217,17 @@ export default async function StartupDashboard() {
           </CardHeader>
           <CardContent>
             <DataroomTable dataroomRequestData={validatedRequests} />
+          </CardContent>
+        </Card>
+        <Card className={"w-full"}>
+          <CardHeader>
+            <CardTitle>Manage Dataroom Files</CardTitle>
+            <CardDescription>
+              Upload or remove files from your dataroom
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DataroomManager businessId={businessID} />
           </CardContent>
         </Card>
         <Card className={"w-full"}>

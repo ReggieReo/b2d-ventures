@@ -3,6 +3,7 @@
 import { formSchema } from "~/app/create_fundraising/schema";
 import { createBusiness } from "~/server/createQuery";
 import {
+  updateDataroomTypeByMediaURLe,
   updateMediaImageTypeByMediaURLe,
   updateMediaLogoTypeByMediaURLe,
 } from "~/server/updateQuery";
@@ -14,6 +15,7 @@ export async function createFundraising(formData: FormData) {
   // Parse JSON strings for media and logo
   let mediaData: unknown[] = [];
   let logoData: unknown = null;
+  let dataroomData: unknown[] = [];
 
   try {
     const mediaString = formData.get("media");
@@ -24,6 +26,11 @@ export async function createFundraising(formData: FormData) {
     const logoString = formData.get("logo");
     if (logoString && typeof logoString === "string") {
       logoData = JSON.parse(logoString);
+    }
+
+    const dataroomString = formData.get("dataroom");
+    if (dataroomString && typeof dataroomString === "string") {
+      dataroomData = JSON.parse(dataroomString) as unknown[];
     }
   } catch (error) {
     console.error("Error parsing JSON data:", error);
@@ -43,6 +50,7 @@ export async function createFundraising(formData: FormData) {
     industry: formData.get("industry"),
     media: mediaData, // Use parsed media array
     logo: logoData, // Use parsed logo object
+    dataroom: dataroomData, // Use parsed dataroom array
     pitch: formData.get("pitch"),
   });
 
@@ -53,6 +61,7 @@ export async function createFundraising(formData: FormData) {
     };
   }
 
+  console.log("Validated fields:", validatedFields.data);
   try {
     // Uncomment this when ready to create business
     const id = await createBusiness(validatedFields.data);
@@ -62,6 +71,10 @@ export async function createFundraising(formData: FormData) {
     );
     await updateMediaLogoTypeByMediaURLe(
       validatedFields.data.logo!.url,
+      id[0]!.id,
+    );
+    await updateDataroomTypeByMediaURLe(
+      validatedFields.data.dataroom!.map((d) => d.url),
       id[0]!.id,
     );
 
