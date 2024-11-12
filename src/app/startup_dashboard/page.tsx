@@ -16,6 +16,7 @@ import {
   getInvestmentByBusinessID,
   getRequestByID,
 } from "~/server/fetchQuery";
+import { redirect } from "next/navigation";
 
 import {
   DataroomRequestWithUser,
@@ -76,46 +77,30 @@ export default async function StartupDashboard() {
 
   const businessUpdateAt = business.updatedAt?.toLocaleDateString("en-US");
 
-  if (investment.length === 0) {
-    const noInvestmentStats = {
-      totalInvestment: 0,
-      countInvestment: 0,
-      thisWeekInvestmentAmount: 0,
-      thisWeekInvestmentCount: 0,
-      minInvestment: 0,
-      maxInvestment: 0,
-      avgInvestment: 0,
-    };
-    
-    const { totalInvestment, countInvestment, thisWeekInvestmentAmount, 
-            thisWeekInvestmentCount, minInvestment, maxInvestment, 
-            avgInvestment } = noInvestmentStats;
-  } else {
-    const totalInvestment = investment
-      .flatMap((investment) => investment.fund || [])
-      .reduce((acc, val) => acc + val, 0);
+  const totalInvestment = investment
+    .flatMap((investment) => investment.fund || [])
+    .reduce((acc, val) => acc + val, 0);
 
-    const countInvestment = investment
-      .flatMap((investment) => investment || [])
-      .reduce((acc) => acc + 1, 0);
+  const countInvestment = investment
+    .flatMap((investment) => investment || [])
+    .reduce((acc) => acc + 1, 0);
 
-    const thisWeekInvestmentAmount = investment
-      .filter((inv) => isInCurrentWeek(new Date(inv.createdAt))) // Assuming there's a createdAt field
-      .flatMap((investment) => investment.fund || [])
-      .reduce((acc, val) => acc + val, 0);
+  const thisWeekInvestmentAmount = investment
+    .filter((inv) => isInCurrentWeek(new Date(inv.createdAt))) // Assuming there's a createdAt field
+    .flatMap((investment) => investment.fund || [])
+    .reduce((acc, val) => acc + val, 0);
 
-    const thisWeekInvestmentCount = investment
-      .filter((inv) => isInCurrentWeek(new Date(inv.createdAt))) // Assuming there's a createdAt field
-      .flatMap((investment) => investment.fund || [])
-      .reduce((acc) => acc + 1, 0);
-    const minInvestment = Math.min(
-      ...investment.flatMap((investment) => investment.fund || []),
-    );
-    const maxInvestment = Math.max(
-      ...investment.flatMap((investment) => investment.fund || []),
-    );
-    const avgInvestment = Math.floor(totalInvestment / countInvestment);
-  }
+  const thisWeekInvestmentCount = investment
+    .filter((inv) => isInCurrentWeek(new Date(inv.createdAt))) // Assuming there's a createdAt field
+    .flatMap((investment) => investment.fund || [])
+    .reduce((acc) => acc + 1, 0);
+  const minInvestment = Math.min(
+    ...investment.flatMap((investment) => investment.fund || []),
+  );
+  const maxInvestment = Math.max(
+    ...investment.flatMap((investment) => investment.fund || []),
+  );
+  const avgInvestment = Math.floor(totalInvestment / countInvestment);
 
   const dayStartFundRaise = business.createdAt;
   const dayDeadline = business.deadline
@@ -192,7 +177,7 @@ export default async function StartupDashboard() {
           </CardHeader>
           <CardContent>
             {investment.length === 0 ? (
-              <div className="flex justify-center items-center p-4">
+              <div className="flex items-center justify-center p-4">
                 <p className="text-gray-500">No investment has been made yet</p>
               </div>
             ) : (
