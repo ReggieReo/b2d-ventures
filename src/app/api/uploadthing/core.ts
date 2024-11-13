@@ -10,7 +10,7 @@ const f = createUploadthing();
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
   // Define as many FileRoutes as you like, each with a unique routeSlug
-  imageUploader: f({ image: { maxFileSize: "4MB", maxFileCount: 40} })
+  imageUploader: f({"image/webp": { maxFileSize: "4MB", maxFileCount: 40}, "image/jpeg": { maxFileSize: "4MB", maxFileCount: 40}})
     // Set permissions and file types for this FileRoute
     .middleware(async ({ req, input }) => {
       // This code runs on your server before upload
@@ -37,7 +37,7 @@ export const ourFileRouter = {
       return { uploadedBy: metadata.userId };
     }),
 
-  logoUploader: f({"image/webp": { maxFileSize: "512KB" }, "image/jpeg": { maxFileSize: "512KB" },})
+  logoUploader: f({"image/webp": { maxFileSize: "512KB" }, "image/jpeg": { maxFileSize: "512KB" }})
     .middleware(async ({ req, input }) => {
       // This code runs on your server before upload
       const user = auth();
