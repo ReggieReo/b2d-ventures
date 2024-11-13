@@ -21,8 +21,6 @@ export default async function BusinessCard({
 
   return (
     <Card className={cn("relative w-full min-w-40 max-w-md", className)}>
-      {/*  header */}
-      {/*TODO implement media for business*/}
       <CardHeader className="border-b">
         <div className="relative h-32 w-full">
           <Image
