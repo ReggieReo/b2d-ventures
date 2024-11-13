@@ -21,7 +21,6 @@ export default function SearchBusinessInput() {
 
   return (
     <Input
-      className="mt-4"
       placeholder="Search businesses"
       onChange={(e) => handleSearch(e.target.value)}
       defaultValue={searchParams.get("query") ?? ""}
