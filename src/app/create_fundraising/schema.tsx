@@ -11,8 +11,8 @@ export const formSchema = z.object({
     .string({
       required_error: "Please enter your business slogan.",
     })
-    .min(2)
-    .max(50),
+    .min(10)
+    .max(100),
   website: z
     .string({
       required_error: "Please enter your company's website.",
@@ -46,6 +46,16 @@ export const formSchema = z.object({
       }),
     )
     .min(1, "Please upload at least one media file"),
+  dataroom: z
+    .array(
+      z.object({
+        url: z.coerce.string(),
+        name: z.coerce.string(),
+        size: z.coerce.number(),
+        key: z.coerce.string(),
+      }),
+    )
+    .optional(),
   logo: z.object(
     {
       url: z.coerce.string(),

@@ -178,19 +178,55 @@ export async function BusinessDetail({
         </nav>
       </div>
 
-      <div className="mx-auto mt-8 max-w-[85%]">
-        <div
-          id="tabs-with-underline-1"
-          role="tabpanel"
-          aria-labelledby="tabs-with-underline-item-1"
-        ></div>
-      </div>
-      <div
-        className={"prose flex max-w-[85%] flex-col justify-start self-center"}
-      >
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {businessData.pitch ?? "No pitch available."}
-        </ReactMarkdown>
+      <div className="mx-auto mt-8 w-[80%]">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Pitch Section - Takes up 60% of the screen (3/4 of the 80%) */}
+          <div className="md:col-span-3 prose max-w-none">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {businessData.pitch ?? "No pitch available."}
+            </ReactMarkdown>
+          </div>
+
+          {/* Company Details Section - Takes up 20% of the screen (1/4 of the 80%) */}
+          <div className="space-y-4">
+            <h3 className="text-2xl font-bold">Company Details</h3>
+            
+            <div className="space-y-2 bg-gray-50 rounded-lg p-4">
+              <div className="flex justify-between items-center border-b py-2">
+                <span className="text-gray-600">Valuation</span>
+                <span className="font-semibold">
+                  ${businessData.valuation?.toLocaleString() ?? 'N/A'}
+                </span>
+              </div>
+              
+              <div className="flex justify-between items-center border-b py-2">
+                <span className="text-gray-600">Allocation</span>
+                <span className="font-semibold">
+                  {businessData.allocation ?? 'N/A'}%
+                </span>
+              </div>
+              
+              <div className="flex justify-between items-center border-b py-2">
+                <span className="text-gray-600">Industry</span>
+                <span className="font-semibold">
+                  {businessData.industry ?? 'N/A'}
+                </span>
+              </div>
+              
+              <div className="flex justify-between items-center py-2">
+                <span className="text-gray-600">Website</span>
+                <a 
+                  href={businessData.website ?? '#'} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline font-semibold"
+                >
+                  Visit
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

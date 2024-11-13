@@ -23,6 +23,8 @@ import {
   DataroomTable,
 } from "~/components/dataroomTable";
 import Link from "next/link";
+import { DataroomManager } from "~/components/dataroom_manager";
+import { getDayUntilDeadline } from "~/utils/util";
 
 export const dynamic = "force-dynamic";
 
@@ -77,8 +79,8 @@ export default async function StartupDashboard() {
   const businessUpdateAt = business.updatedAt?.toLocaleDateString("en-US");
 
   const totalInvestment = investment
-    .flatMap((investment) => investment.fund || []) // Get all funds, with fallback to empty if undefined
-    .reduce((acc, val) => acc + val, 0); // Sum all values
+    .flatMap((investment) => investment.fund || [])
+    .reduce((acc, val) => acc + val, 0);
 
   const countInvestment = investment
     .flatMap((investment) => investment || [])
@@ -106,9 +108,7 @@ export default async function StartupDashboard() {
     ? new Date(business.deadline)
     : new Date("2025-01-28");
   const today = new Date();
-  const daysToGo = Math.floor(
-    (dayDeadline.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
-  );
+  const daysToGo = getDayUntilDeadline(business.deadline!);
   const daysSinceStart = Math.ceil(
     (today.getTime() - dayStartFundRaise.getTime()) / (1000 * 60 * 60 * 24),
   );
@@ -155,7 +155,9 @@ export default async function StartupDashboard() {
                 <div className={"flex flex-col"}>
                   <p className={"text-2xl"}>Day to go</p>
                   <div className={"ml-3 flex flex-col gap-2 lg:flex-row"}>
-                    <p className={"text-3xl font-bold"}>{daysToGo}</p>
+                    <p className={"text-3xl font-bold"}>{
+                    daysToGo === 0 ? "Last day" : daysToGo
+                    }</p>
                     <p>({daysSinceStart} days from start)</p>
                   </div>
                 </div>
@@ -175,37 +177,43 @@ export default async function StartupDashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className={"flex flex-col items-center"}>
-              <div className={"flex flex-row gap-x-10"}>
-                <div className={"flex flex-col"}>
-                  <p className={"text-2xl"}>Lowest Check-size Value</p>
-                  <p className={"ml-3 text-3xl font-bold"}>
-                    $
-                    {minInvestment
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                  </p>
-                </div>
-                <div className={"flex flex-col"}>
-                  <p className={"text-2xl"}>Highest Check-size Value</p>
-                  <p className={"ml-3 text-3xl font-bold"}>
-                    $
-                    {maxInvestment
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                  </p>
-                </div>
-                <div className={"flex flex-col"}>
-                  <p className={"text-2xl"}>Average Check-size Value</p>
-                  <p className={"ml-3 text-3xl font-bold"}>
-                    $
-                    {avgInvestment
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                  </p>
+            {investment.length === 0 ? (
+              <div className="flex items-center justify-center p-4">
+                <p className="text-gray-500">No investment has been made yet</p>
+              </div>
+            ) : (
+              <div className={"flex flex-col items-center"}>
+                <div className={"flex flex-row gap-x-10"}>
+                  <div className={"flex flex-col"}>
+                    <p className={"text-2xl"}>Lowest Check-size Value</p>
+                    <p className={"ml-3 text-3xl font-bold"}>
+                      $
+                      {minInvestment
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </p>
+                  </div>
+                  <div className={"flex flex-col"}>
+                    <p className={"text-2xl"}>Highest Check-size Value</p>
+                    <p className={"ml-3 text-3xl font-bold"}>
+                      $
+                      {maxInvestment
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </p>
+                  </div>
+                  <div className={"flex flex-col"}>
+                    <p className={"text-2xl"}>Average Check-size Value</p>
+                    <p className={"ml-3 text-3xl font-bold"}>
+                      $
+                      {avgInvestment
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </CardContent>
         </Card>
         <Card className={"w-full"}>
@@ -217,6 +225,17 @@ export default async function StartupDashboard() {
           </CardHeader>
           <CardContent>
             <DataroomTable dataroomRequestData={validatedRequests} />
+          </CardContent>
+        </Card>
+        <Card className={"w-full"}>
+          <CardHeader>
+            <CardTitle>Manage Dataroom Files</CardTitle>
+            <CardDescription>
+              Upload or remove files from your dataroom
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DataroomManager businessId={businessID} />
           </CardContent>
         </Card>
         <Card className={"w-full"}>

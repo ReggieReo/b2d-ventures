@@ -70,6 +70,14 @@ export async function getRequest(businessID: number) {
   });
 }
 
+export async function getRequestByUserIDAndBusinessID(userID: string, businessID: number) {
+  if (!userID) throw new Error("Unauthorized");
+
+  return db.query.dataroomRequest.findFirst({
+    where: (model, { eq, and }) =>
+      and(eq(model.userID, userID), eq(model.businessID, businessID)),
+  });
+}
 export async function getRequestByID(businessID: number) {
   return db.query.dataroomRequest.findMany({
     where: (model, { eq }) => eq(model.businessID, businessID),
@@ -130,5 +138,12 @@ export async function declineUserStatus(businessID: number) {
 export async function getBusinessByUserIDExplicit(userID: string) {
   return db.query.business.findFirst({
     where: (model, { eq }) => eq(model.userID, userID),
+  });
+}
+
+export async function getDataroomFiles(businessID: number) {
+  return db.query.media.findMany({
+    where: (model, { eq, and }) =>
+      and(eq(model.businessID, businessID), eq(model.type, "dataroom")),
   });
 }

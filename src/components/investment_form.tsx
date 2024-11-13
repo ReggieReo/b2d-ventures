@@ -43,7 +43,7 @@ function DialogCountdown({ isFormValid }: { isFormValid: boolean }) {
       timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
     } else if (countdown === 0) {
-      router.push("/startup_dashboard");
+      router.push("/investment_portfolio");
     }
     return () => clearTimeout(timer);
   }, [countdown, router, startCountdown]);
@@ -79,8 +79,10 @@ function DialogCountdown({ isFormValid }: { isFormValid: boolean }) {
 
 export function InvestingForm({
   businessData,
+  logo,
 }: {
   businessData: typeof business.$inferSelect;
+  logo: typeof image.$inferSelect;
 }) {
   const createInvestmentBind = createInvestment.bind(
     null,
@@ -107,7 +109,7 @@ export function InvestingForm({
     <div className="font-geist-sans mx-auto max-w-lg pb-20">
       <div className="my-6 flex flex-row items-center justify-center gap-2">
         <img
-          src="https://utfs.io/f/bb1dabab-7c7c-40d7-8ea5-030fdc7f1d96-ny8zu1.jpg"
+          src={logo?.url ?? ""}
           alt="B2D Ventures Logo"
           className="h-[60px] w-[60px]"
         />
@@ -221,12 +223,8 @@ export function InvestingForm({
                   agreements as related to my investment.
                 </p>
                 <p>
-                  I understand my investment won&apost be transferable for 12
+                  I understand my investment won't be transferable for 12
                   months and may not have a market for resale.
-                </p>
-                <p>
-                  I have read the educational materials and agree to the Terms
-                  of Service, including arbitration provisions.
                 </p>
                 <p>
                   I understand this investment is risky and that I shouldn&apost

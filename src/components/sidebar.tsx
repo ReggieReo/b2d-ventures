@@ -20,14 +20,6 @@ export function Sidebar() {
           <UsersIcon className="h-5 w-5" />
           <span>Fundraising</span>
         </a>
-        <a
-          href="/admin/investment"
-          className="flex items-center space-x-2 rounded p-2 hover:bg-black hover:text-white"
-          aria-label="Investment"
-        >
-          <BriefcaseBusiness className="h-5 w-5" />
-          <span>Investment</span>
-        </a>
       </nav>
     </div>
   );

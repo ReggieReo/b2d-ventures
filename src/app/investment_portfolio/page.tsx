@@ -126,7 +126,7 @@ export default async function InvestorPortfolioPage() {
             "m-4 flex w-full max-w-7xl flex-col justify-center gap-4 self-center"
           }
         >
-          <p className={"text-2xl font-bold"}>Investment Breakdown</p>
+          <p className={"text-2xl font-bold"}>Invetment Breakdown</p>
           <InvestmentHistoryTable allInvestment={validatedInvestment}/>
         </div>
       </main>
