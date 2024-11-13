@@ -110,6 +110,13 @@ export async function getAcceptedBusinesses() {
   });
 }
 
+export async function getAcceptBusinessesByName(searchKeyword= "") {
+  // Return a get business accordingto the search keyword
+  return db.query.business.findMany({
+    where: (model, { ilike }) => ilike(model.company, `%${searchKeyword}%`),
+  });
+}
+
 export async function acceptUserStatus(businessID: number) {
   try {
     await db

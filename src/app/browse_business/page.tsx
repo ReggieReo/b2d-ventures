@@ -1,11 +1,11 @@
 import Ip3Card from "~/components/ip3-card";
-import { getAcceptedBusinesses } from "~/server/fetchQuery";
+import {getAcceptBusinessesByName, getAcceptedBusinesses} from "~/server/fetchQuery";
 import Link from "next/link";
 import BusinessCard from "~/components/business_card";
 
 export default async function HomePage() {
-  const business = await getAcceptedBusinesses();
-
+  const business = await getAcceptBusinessesByName();
+  
   return (
     <main className={"mt-12 flex h-screen w-screen flex-col items-center"}>
       <div className={"mb-8 flex w-full max-w-5xl flex-col"}>
