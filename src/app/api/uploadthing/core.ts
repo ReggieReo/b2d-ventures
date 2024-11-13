@@ -62,6 +62,32 @@ export const ourFileRouter = {
       console.log("insert complete");
       return { uploadedBy: metadata.userId };
     }),
+
+    bannerUploader: f({"image/webp": { maxFileSize: "2MB" }, "image/jpeg": { maxFileSize: "2MB" }})
+    .middleware(async ({ req, input }) => {
+      // This code runs on your server before upload
+      const user = auth();
+      // If you throw, the user will not be able to upload
+      // eslint-disable-next-line @typescript-eslint/only-throw-error
+      if (!user) throw new UploadThingError("Unauthorized");
+      // Whatever is returned here is accessible in onUploadComplete as `metadata`
+      return { userId: user.userId, input };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      // This code RUNS ON YOUR SERVER after upload
+      console.log("Upload complete for userId:", metadata.userId);
+      console.log(metadata.input, "test test");
+      console.log("file url", file.url);
+      console.log("writing to db");
+      await db.insert(media).values({
+        userID: metadata.userId ?? "",
+        url: file.url,
+        name: file.name,
+        businessID: 1,
+      });
+      console.log("insert complete");
+      return { uploadedBy: metadata.userId };
+    }),
     
   dataroomUploader: f({ pdf: { maxFileSize: "4MB", maxFileCount: 40 } })
     .middleware(async ({ req, input }) => {
