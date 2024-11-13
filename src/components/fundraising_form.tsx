@@ -138,7 +138,7 @@ export function FundraisingForm() {
       deadline: new Date(Date.now()),
       media: [],
       dataroom: [],
-      pitch: "# Test",
+      pitch: "",
     },
     mode: "onChange",
   });

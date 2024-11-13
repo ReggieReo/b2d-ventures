@@ -215,9 +215,9 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
         </div>
 
         {/* Investment Table Section */}
-        <div className="w-full">
+        {/* <div className="w-full">
           <InvestmentTable />
-        </div>
+        </div> */}
       </main>
     </div>
   );

@@ -223,12 +223,8 @@ export function InvestingForm({
                   agreements as related to my investment.
                 </p>
                 <p>
-                  I understand my investment won&apost be transferable for 12
+                  I understand my investment won't be transferable for 12
                   months and may not have a market for resale.
-                </p>
-                <p>
-                  I have read the educational materials and agree to the Terms
-                  of Service, including arbitration provisions.
                 </p>
                 <p>
                   I understand this investment is risky and that I shouldn&apost
