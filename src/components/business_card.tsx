@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { type business } from "~/server/db/schema";
 import { cn } from "~/lib/utils";
-import { getInvestmentByBusinessID } from "~/server/fetchQuery";
+import { getInvestmentByBusinessID, getLogoByBusinessID, getImageByBusinessID } from "~/server/fetchQuery";
 
 export default async function BusinessCard({
   cBusiness,
@@ -15,6 +15,8 @@ export default async function BusinessCard({
   className?: string;
 }) {
   const allInvestment = await getInvestmentByBusinessID(cBusiness.businessID);
+  const logo = await getLogoByBusinessID(cBusiness.businessID);
+  const image = await getImageByBusinessID(cBusiness.businessID);
   const totalInvestment = allInvestment.reduce((acc, cur) => acc + cur.fund, 0);
 
   return (
@@ -24,7 +26,7 @@ export default async function BusinessCard({
       <CardHeader className="border-b">
         <div className="relative h-32 w-full">
           <Image
-            src="/rento_bg.png"
+            src={logo?.url ?? ""}
             alt="IP3 Banner"
             layout="fill"
             objectFit="cover"
@@ -34,7 +36,7 @@ export default async function BusinessCard({
       </CardHeader>
       <div className="absolute left-4 top-[168px] h-16 w-16 -translate-y-1/2 overflow-hidden rounded-lg border-4 border-white bg-white shadow-lg">
         <Image
-          src="https://utfs.io/f/bb1dabab-7c7c-40d7-8ea5-030fdc7f1d96-ny8zu1.jpg"
+          src={image?.[0]?.url ?? ""}
           alt="IP3 Logo"
           width={64}
           height={64}
@@ -62,7 +64,6 @@ export default async function BusinessCard({
           </p>
           <p>minimum investment</p>
         </div>
-        <p className="mb-4 text-gray-500">Studio City, CA</p>
 
         {/*  catagory */}
         <div className="flex flex-wrap gap-2">
@@ -70,10 +71,6 @@ export default async function BusinessCard({
         </div>
       </CardContent>
 
-      {/*/!*  footing *!/*/}
-      {/*<CardFooter className="border-t px-4 py-3 text-sm text-gray-500">*/}
-      {/*  Republic Funding Portal · Reg CF*/}
-      {/*</CardFooter>*/}
     </Card>
   );
 }
