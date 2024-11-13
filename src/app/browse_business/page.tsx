@@ -13,8 +13,9 @@ export default async function HomePage(props: {
 }) {
   const searchParams = await props.searchParams;
   const query = searchParams?.query ?? "";
+  const currentPage = Number(searchParams?.page) || 1;
 
-  const business = await getAcceptBusinessesByName(query);
+  const business = await getAcceptBusinessesByName(query, currentPage);
 
   return (
     <main className={"mt-12 flex h-screen w-screen flex-col items-center"}>
@@ -28,7 +29,7 @@ export default async function HomePage(props: {
         }
       >
         <SearchBusinessInput />
-        <SearchBusinessFilter/>
+        <SearchBusinessFilter />
       </div>
       <div className="grid max-w-5xl grid-cols-1 items-stretch gap-10 md:grid-cols-2 lg:grid-cols-3">
         {business.map((b) => (

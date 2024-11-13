@@ -110,10 +110,14 @@ export async function getAcceptedBusinesses() {
   });
 }
 
-export async function getAcceptBusinessesByName(searchKeyword= "") {
-  // Return a get business accordingto the search keyword
+export async function getAcceptBusinessesByName(searchKeyword: string, currentPage: number) {
+  // Return a get business according to the search keyword
+  const businessesPerPage = 2;
+
   return db.query.business.findMany({
     where: (model, { ilike }) => ilike(model.company, `%${searchKeyword}%`),
+    limit: businessesPerPage,
+    offset: (currentPage-1) * businessesPerPage,
   });
 }
 
