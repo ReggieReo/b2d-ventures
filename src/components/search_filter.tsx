@@ -6,7 +6,7 @@ import {industries} from "~/utils/enum/industryList";
 import {Checkbox} from "~/components/ui/checkbox";
 
 export default function SearchBusinessFilter() {
-    const [checkedIndustries, setCheckedIndustries] = useState(
+    const [checkedIndustries, setCheckedIndustries] = useState<Record<string, boolean>>(
         industries.reduce((acc, industry) => ({ ...acc, [industry.label]: false }), {})
     );
 
@@ -31,7 +31,7 @@ export default function SearchBusinessFilter() {
                             <Checkbox
                                 id={industry.label}
                                 checked={checkedIndustries[industry.label]}
-                                onCheckedChange={(checked) => handleCheckedChange(industry.label, checked)}
+                                onCheckedChange={(checked: boolean) => handleCheckedChange(industry.label, checked)}
                             />
                             <label htmlFor={industry.label}>{industry.label}</label>
                         </div>

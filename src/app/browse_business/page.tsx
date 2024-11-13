@@ -1,9 +1,12 @@
-import { getAcceptBusinessesByName } from "~/server/fetchQuery";
+import {
+  getAcceptBusinessesByName,
+  getAcceptedBusinesses,
+} from "~/server/fetchQuery";
 import Link from "next/link";
 import BusinessCard from "~/components/business_card";
 import SearchBusinessInput from "~/components/search_business_input";
-
 import SearchBusinessFilter from "~/components/search_filter";
+import { BrowsePagePagination } from "~/components/browsePagePagination";
 
 export default async function HomePage(props: {
   searchParams?: Promise<{
@@ -14,8 +17,15 @@ export default async function HomePage(props: {
   const searchParams = await props.searchParams;
   const query = searchParams?.query ?? "";
   const currentPage = Number(searchParams?.page) || 1;
+  const businessPerPage = 9;
 
-  const business = await getAcceptBusinessesByName(query, currentPage);
+  const business = await getAcceptBusinessesByName(
+    query,
+    currentPage,
+    businessPerPage,
+  );
+  const listBusiness = await getAcceptedBusinesses();
+  const totalBusiness = listBusiness.length;
 
   return (
     <main className={"mt-12 flex h-screen w-screen flex-col items-center"}>
@@ -42,6 +52,9 @@ export default async function HomePage(props: {
           </Link>
         ))}
       </div>
+      <BrowsePagePagination
+        totalPages={Math.ceil(totalBusiness / businessPerPage)}
+      />
     </main>
   );
 }
