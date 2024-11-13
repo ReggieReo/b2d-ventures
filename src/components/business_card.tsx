@@ -24,7 +24,7 @@ export default async function BusinessCard({
       <CardHeader className="border-b">
         <div className="relative h-32 w-full">
           <Image
-            src={logo?.url ?? ""}
+            src={image?.[0]?.url ?? ""}
             alt="IP3 Banner"
             layout="fill"
             objectFit="cover"
@@ -34,7 +34,7 @@ export default async function BusinessCard({
       </CardHeader>
       <div className="absolute left-4 top-[168px] h-16 w-16 -translate-y-1/2 overflow-hidden rounded-lg border-4 border-white bg-white shadow-lg">
         <Image
-          src={image?.[0]?.url ?? ""}
+          src={logo?.url ?? ""}
           alt="IP3 Logo"
           width={64}
           height={64}

@@ -24,6 +24,7 @@ import {
 } from "~/components/dataroomTable";
 import Link from "next/link";
 import { DataroomManager } from "~/components/dataroom_manager";
+import { getDayUntilDeadline } from "~/utils/util";
 
 export const dynamic = "force-dynamic";
 
@@ -107,9 +108,7 @@ export default async function StartupDashboard() {
     ? new Date(business.deadline)
     : new Date("2025-01-28");
   const today = new Date();
-  const daysToGo = Math.floor(
-    (dayDeadline.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
-  );
+  const daysToGo = getDayUntilDeadline(business.deadline!);
   const daysSinceStart = Math.ceil(
     (today.getTime() - dayStartFundRaise.getTime()) / (1000 * 60 * 60 * 24),
   );
@@ -156,7 +155,9 @@ export default async function StartupDashboard() {
                 <div className={"flex flex-col"}>
                   <p className={"text-2xl"}>Day to go</p>
                   <div className={"ml-3 flex flex-col gap-2 lg:flex-row"}>
-                    <p className={"text-3xl font-bold"}>{daysToGo}</p>
+                    <p className={"text-3xl font-bold"}>{
+                    daysToGo === 0 ? "Last day" : daysToGo
+                    }</p>
                     <p>({daysSinceStart} days from start)</p>
                   </div>
                 </div>

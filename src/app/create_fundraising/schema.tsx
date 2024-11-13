@@ -11,8 +11,8 @@ export const formSchema = z.object({
     .string({
       required_error: "Please enter your business slogan.",
     })
-    .min(2)
-    .max(50),
+    .min(10)
+    .max(100),
   website: z
     .string({
       required_error: "Please enter your company's website.",
