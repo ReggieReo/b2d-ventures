@@ -1,29 +1,30 @@
 "use client";
 import { Input } from "~/components/ui/input";
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function SearchBusinessInput() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
 
-  function handleSearch(term: string) {
+  const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
 
     if (term) {
-      params.set('query', term);
+      params.set("query", term);
     } else {
-      params.delete('query');
+      params.delete("query");
     }
     router.replace(`${pathname}?${params.toString()}`);
-  }
+  }, 300);
 
   return (
-      <Input
-          className="mt-4"
-          placeholder="Search businesses"
-          onChange={(e) => handleSearch(e.target.value)}
-          defaultValue={searchParams.get('query') ?? ""}
-      />
+    <Input
+      className="mt-4"
+      placeholder="Search businesses"
+      onChange={(e) => handleSearch(e.target.value)}
+      defaultValue={searchParams.get("query") ?? ""}
+    />
   );
 }
