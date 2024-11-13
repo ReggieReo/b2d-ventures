@@ -122,6 +122,19 @@ export function InvestorPortPieChart({
 }: {
   allInvestment: InvestmentWithBusiness[];
 }) {
+  if (!allInvestment || allInvestment.length === 0) {
+    return (
+      <Card className={"justify-center md:w-1/2"}>
+        <CardHeader className="items-left pb-0">
+          <CardTitle>Investment Visualization</CardTitle>
+        </CardHeader>
+        <CardContent className="flex-1 pb-0 mt-8 text-center text-muted-foreground">
+          Your investment visualization will appear here once you make your first investment
+        </CardContent>
+      </Card>
+    );
+  }
+
   const aggregatedData = allInvestment.reduce(
     (acc, investment) => {
       if (acc[investment.industry]) {
