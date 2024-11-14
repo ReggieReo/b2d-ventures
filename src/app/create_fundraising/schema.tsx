@@ -18,8 +18,8 @@ export const formSchema = z.object({
       required_error: "Please enter your company's website.",
     })
     .url(),
-  target_fund: z.coerce.number({
-    required_error: "Please enter the target fund.",
+  target_stock: z.coerce.number({
+    required_error: "Please enter the target stock.",
   }),
   industry: z.string({
     required_error: "Please select the industry.",
