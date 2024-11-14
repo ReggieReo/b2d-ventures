@@ -1,6 +1,6 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
-import { useForm, useFormState, useFieldArray } from "react-hook-form";
+import { useForm, useFormState, useFieldArray, useWatch } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import {
   Dialog,
@@ -131,7 +131,7 @@ export function FundraisingForm() {
       slogan: "",
       website: "",
       industry: "",
-      target_fund: 0,
+      target_stock: 0,
       min_investment: 0,
       valuation: 0,
       allocation: 0,
@@ -158,6 +158,15 @@ export function FundraisingForm() {
   });
 
   const createFundraisingBind = createFundraising.bind(null);
+
+  const valuation = useWatch({ control: form.control, name: "valuation" });
+  const allocation = useWatch({ control: form.control, name: "allocation" });
+  const targetStock = useWatch({ control: form.control, name: "target_stock" });
+
+  const stockPrice =
+    valuation && allocation && targetStock
+      ? (valuation * allocation) / 100 / targetStock
+      : 0;
 
   const { trigger } = form;
   return (
@@ -289,22 +298,6 @@ export function FundraisingForm() {
           />
           <FormField
             control={form.control}
-            name="target_fund"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>How much would you like to raise</FormLabel>
-                <FormControl>
-                  <Input placeholder="$" {...field} />
-                </FormControl>
-                <FormDescription>
-                  The target amount of investment
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
             name="min_investment"
             render={({ field }) => (
               <FormItem>
@@ -347,6 +340,27 @@ export function FundraisingForm() {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="target_stock"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Stock</FormLabel>
+                <FormControl>
+                  <Input placeholder="$" {...field} />
+                </FormControl>
+                <FormDescription>
+                  The target amount of stock
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="mt-2 text-lg">
+            {targetStock > 0 && (
+              <p>Stock price: ${stockPrice.toFixed(2)}</p>
+            )}
+          </div>
           <FormField
             control={form.control}
             name="deadline"
