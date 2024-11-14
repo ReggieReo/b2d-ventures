@@ -63,7 +63,7 @@ export async function getLogoByBusinessID(businessID: number) {
 export async function getBannerByBusinessID(businessID: number) {
   return db.query.media.findFirst({
     where: (model, { eq, and }) =>
-      and(eq(model.businessID, businessID), eq(model.type, "logo")),
+      and(eq(model.businessID, businessID), eq(model.type, "banner")),
   });
 }
 
