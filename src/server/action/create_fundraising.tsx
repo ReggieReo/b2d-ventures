@@ -51,7 +51,11 @@ export async function createFundraising(formData: FormData) {
     media: mediaData, // Use parsed media array
     logo: logoData, // Use parsed logo object
     dataroom: dataroomData, // Use parsed dataroom array
-    pitch: formData.get("pitch"),
+    problem: formData.get("problem"),
+    solution: formData.get("solution"),
+    stage: formData.get("stage"),
+    team: formData.get("team"),
+    investors: formData.get("investors"),
   });
 
   if (!validatedFields.success) {

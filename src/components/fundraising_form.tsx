@@ -163,6 +163,32 @@ export function FundraisingForm() {
   });
 
   const createFundraisingBind = createFundraising.bind(null);
+  const isFormValid = form.formState.isValid;
+  const formErrors = form.formState.errors;
+
+  // Log validation status for each field
+  useEffect(() => {
+    console.log("Form validation status:", {
+      company: form.getFieldState("company"),
+      slogan: form.getFieldState("slogan"), 
+      website: form.getFieldState("website"),
+      industry: form.getFieldState("industry"),
+      target_fund: form.getFieldState("target_fund"),
+      min_investment: form.getFieldState("min_investment"),
+      valuation: form.getFieldState("valuation"),
+      allocation: form.getFieldState("allocation"),
+      deadline: form.getFieldState("deadline"),
+      media: form.getFieldState("media"),
+      dataroom: form.getFieldState("dataroom"),
+      pitch: form.getFieldState("pitch"),
+      problem: form.getFieldState("problem"),
+      solution: form.getFieldState("solution"), 
+      stage: form.getFieldState("stage"),
+      team: form.getFieldState("team"),
+      investors: form.getFieldState("investors")
+    });
+    console.log("Form errors:", formErrors);
+  }, [form.formState]);
 
   const { trigger } = form;
   return (

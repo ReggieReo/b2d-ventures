@@ -25,7 +25,7 @@ import { createInvestment } from "~/server/action/create_investment";
 import { type z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type business } from "~/server/db/schema";
+import { media, type business } from "~/server/db/schema";
 import { getInvestmentSchema } from "~/app/create_investment/schema";
 
 function DialogCountdown({ isFormValid }: { isFormValid: boolean }) {
@@ -82,7 +82,7 @@ export function InvestingForm({
   logo,
 }: {
   businessData: typeof business.$inferSelect;
-  logo: typeof image.$inferSelect;
+  logo: typeof media.$inferSelect;
 }) {
   const createInvestmentBind = createInvestment.bind(
     null,

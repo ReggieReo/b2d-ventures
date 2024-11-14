@@ -85,8 +85,6 @@ const Editor: FC<EditorProps> = ({
                   <UndoRedo />
                   <BlockTypeSelect />
                   <BoldItalicUnderlineToggles />
-                  <CreateLink />
-                  <InsertThematicBreak />
                 </DiffSourceToggleWrapper>
               </div>
             ),

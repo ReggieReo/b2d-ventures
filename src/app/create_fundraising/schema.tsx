@@ -70,7 +70,7 @@ export const formSchema = z.object({
     .string({
       required_error: "Please enter your pitch.",
     })
-    .min(1, "Please enter a pitch"),
+    .optional(),
 
   problem: z
     .string({
