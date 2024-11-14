@@ -48,7 +48,7 @@ export async function createFundraising(formData: FormData) {
     company: formData.get("company"),
     slogan: formData.get("slogan"),
     website: formData.get("website"),
-    target_fund: formData.get("target_fund"), // Fixed typo: removed colon
+    target_stock: formData.get("target_stock"), // Fixed typo: removed colon
     min_investment: formData.get("min_investment"),
     allocation: formData.get("allocation"),
     valuation: formData.get("valuation"),
@@ -59,7 +59,6 @@ export async function createFundraising(formData: FormData) {
     logo: logoData, // Use parsed logo object
     banner: bannerData,
     dataroom: dataroomData, // Use parsed dataroom array
-    pitch: formData.get("pitch"),
   });
 
   if (!validatedFields.success) {
