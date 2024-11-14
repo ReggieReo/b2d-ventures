@@ -46,12 +46,9 @@ export default async function BusinessCard({
       <CardContent className="content-start p-4 pt-6">
         <h2 className="mb-2 text-2xl font-bold">{cBusiness.company}</h2>
         <p className="mb-4 text-gray-600">
-          Rento is revolutionizing the peer-to-peer rental market by providing a
-          seamless platform for people to rent out items they own but seldom
-          use.
+          {cBusiness.slogan}
         </p>
 
-        {/*TODO get information from investment*/}
         <div className={"flex flex-row gap-1"}>
           <p className={"font-bold"}>${totalInvestment.toLocaleString()}</p>
           <p>raise</p>

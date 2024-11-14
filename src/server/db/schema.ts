@@ -32,12 +32,14 @@ export const user = createTable("user", {
 
 export const business = createTable("business", {
   businessID: serial("businessID").primaryKey(),
-  userID: varchar("userID", { length: 256 }).references(() => user.userID),
+  userID: varchar("userID", { length: 256 }).references(() => user.userID, {
+    onDelete: "cascade",
+  }),
   createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-    () => new Date(),
+      () => new Date(),
   ),
   company: varchar("company", { length: 256 }),
   website: varchar("website", { length: 256 }),
@@ -48,48 +50,64 @@ export const business = createTable("business", {
   deadline: date("deadline"),
   industry: varchar("industry", { length: 256 }),
   slogan: text("slogan"),
-  pitch: text("pitch"),
+  problem: text("problem"),
+  solution: text("solution"),
+  stage: text("stage"),
+  team: text("team"),
+  investors: text("investors"),
   business_status: integer("business_status").default(0).notNull(),
 });
 
 export const investment = createTable("investment", {
   investmentID: serial("investmentID").primaryKey(),
-  businessID: serial("businessID").references(() => business.businessID),
-  userID: varchar("userID", { length: 256 }).references(() => user.userID),
+  businessID: serial("businessID").references(() => business.businessID, {
+    onDelete: "cascade",
+  }),
+  userID: varchar("userID", { length: 256 }).references(() => user.userID, {
+    onDelete: "cascade",
+  }),
   fund: integer("fund").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-    () => new Date(),
+      () => new Date(),
   ),
 });
 
 export const media = createTable("media", {
   mediaID: serial("mediaID").primaryKey(),
-  businessID: serial("businessID").references(() => business.businessID),
-  userID: varchar("userID", { length: 256 }).references(() => user.userID),
+  businessID: serial("businessID").references(() => business.businessID, {
+    onDelete: "cascade",
+  }),
+  userID: varchar("userID", { length: 256 }).references(() => user.userID, {
+    onDelete: "cascade",
+  }),
   url: varchar("url", { length: 1024 }).notNull(),
   name: varchar("name", { length: 256 }).notNull(),
   type: text("type"),
   createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-    () => new Date(),
+      () => new Date(),
   ),
 });
 
 export const dataroomRequest = createTable("dataroom_request", {
   requestID: serial("requestID").primaryKey(),
-  userID: varchar("userID", { length: 256 }).references(() => user.userID),
-  businessID: serial("businessID").references(() => business.businessID),
+  userID: varchar("userID", { length: 256 }).references(() => user.userID, {
+    onDelete: "cascade",
+  }),
+  businessID: serial("businessID").references(() => business.businessID, {
+    onDelete: "cascade",
+  }),
   requestStatus: integer("requestStatus").default(0).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-    () => new Date(),
+      () => new Date(),
   ),
 });
 
@@ -102,17 +120,17 @@ export const businessRelation = relations(business, ({ many, one }) => ({
 }));
 
 export const dataroomRequestRelation = relations(
-  dataroomRequest,
-  ({ many, one }) => ({
-    user: one(user, {
-      fields: [dataroomRequest.userID],
-      references: [user.userID],
+    dataroomRequest,
+    ({ many, one }) => ({
+      user: one(user, {
+        fields: [dataroomRequest.userID],
+        references: [user.userID],
+      }),
+      business: one(business, {
+        fields: [dataroomRequest.businessID],
+        references: [business.businessID],
+      }),
     }),
-    business: one(business, {
-      fields: [dataroomRequest.businessID],
-      references: [business.businessID],
-    }),
-  }),
 );
 
 export const investmentRelation = relations(investment, ({ one }) => ({
