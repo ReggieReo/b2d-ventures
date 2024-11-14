@@ -50,7 +50,11 @@ export const business = createTable("business", {
   deadline: date("deadline"),
   industry: varchar("industry", { length: 256 }),
   slogan: text("slogan"),
-  pitch: text("pitch"),
+  problem: text("problem"),
+  solution: text("solution"),
+  stage: text("stage"),
+  team: text("team"),
+  investors: text("investors"),
   business_status: integer("business_status").default(0).notNull(),
 });
 
