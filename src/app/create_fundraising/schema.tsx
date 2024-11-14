@@ -74,4 +74,9 @@ export const formSchema = z.object({
     },
     { message: "Please upload a banner." },
   ),
+  pitch: z
+    .string({
+      required_error: "Please enter your pitch.",
+    })
+    .optional(),
 });
