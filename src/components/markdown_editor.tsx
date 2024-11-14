@@ -3,7 +3,6 @@
 import {
   MDXEditor,
   type MDXEditorMethods,
-  headingsPlugin,
   listsPlugin,
   quotePlugin,
   thematicBreakPlugin,
@@ -12,26 +11,32 @@ import {
   BoldItalicUnderlineToggles,
   toolbarPlugin,
   BlockTypeSelect,
-  CreateLink,
   diffSourcePlugin,
-  InsertThematicBreak,
   DiffSourceToggleWrapper,
-  codeMirrorPlugin,
-  sandpackPlugin,
   SandpackConfig,
-  tablePlugin,
-  linkPlugin,
+  InsertImage,
+  imagePlugin,
 } from "@mdxeditor/editor";
 import { type FC } from "react";
+import { uploadFiles } from "~/utils/uploadthings";
 import "@mdxeditor/editor/style.css";
-import { UseFormTrigger } from "react-hook-form";
-import { formSchema } from "~/app/create_fundraising/schema";
 
 interface EditorProps {
   markdown: string;
   onChangeFn: (markdown: string) => void;
   trigger: () => Promise<boolean>;
   editorRef?: React.MutableRefObject<MDXEditorMethods | null>;
+}
+
+
+async function imageUploadHandler(image: File) {
+  // send the file to your server and return
+  // the URL of the uploaded image in the response
+  const res = await uploadFiles("imageUploader", {
+    files: [image],
+  });
+  if (!res[0]?.url) throw new Error("Failed to upload image");
+  return res[0].url;
 }
 
 /**
@@ -77,14 +82,18 @@ const Editor: FC<EditorProps> = ({
           diffSourcePlugin({
             viewMode: "rich-text",
           }),
+          imagePlugin({
+            disableImageResize: true,
+            imageUploadHandler: imageUploadHandler,
+          }),
           toolbarPlugin({
-            // toolbarClassName: "flex flex-row gap-2",
             toolbarContents: () => (
               <div className="flex w-full items-center gap-2 border-b bg-gray-50 p-1">
                 <DiffSourceToggleWrapper>
                   <UndoRedo />
                   <BlockTypeSelect />
                   <BoldItalicUnderlineToggles />
+                  <InsertImage />
                 </DiffSourceToggleWrapper>
               </div>
             ),
