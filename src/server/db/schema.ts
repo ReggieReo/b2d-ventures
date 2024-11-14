@@ -32,7 +32,9 @@ export const user = createTable("user", {
 
 export const business = createTable("business", {
   businessID: serial("businessID").primaryKey(),
-  userID: varchar("userID", { length: 256 }).references(() => user.userID),
+  userID: varchar("userID", { length: 256 }).references(() => user.userID, {
+    onDelete: "cascade",
+  }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -54,8 +56,12 @@ export const business = createTable("business", {
 
 export const investment = createTable("investment", {
   investmentID: serial("investmentID").primaryKey(),
-  businessID: serial("businessID").references(() => business.businessID),
-  userID: varchar("userID", { length: 256 }).references(() => user.userID),
+  businessID: serial("businessID").references(() => business.businessID, {
+    onDelete: "cascade",
+  }),
+  userID: varchar("userID", { length: 256 }).references(() => user.userID, {
+    onDelete: "cascade",
+  }),
   fund: integer("fund").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
@@ -67,8 +73,12 @@ export const investment = createTable("investment", {
 
 export const media = createTable("media", {
   mediaID: serial("mediaID").primaryKey(),
-  businessID: serial("businessID").references(() => business.businessID),
-  userID: varchar("userID", { length: 256 }).references(() => user.userID),
+  businessID: serial("businessID").references(() => business.businessID, {
+    onDelete: "cascade",
+  }),
+  userID: varchar("userID", { length: 256 }).references(() => user.userID, {
+    onDelete: "cascade",
+  }),
   url: varchar("url", { length: 1024 }).notNull(),
   name: varchar("name", { length: 256 }).notNull(),
   type: text("type"),
@@ -82,8 +92,12 @@ export const media = createTable("media", {
 
 export const dataroomRequest = createTable("dataroom_request", {
   requestID: serial("requestID").primaryKey(),
-  userID: varchar("userID", { length: 256 }).references(() => user.userID),
-  businessID: serial("businessID").references(() => business.businessID),
+  userID: varchar("userID", { length: 256 }).references(() => user.userID, {
+    onDelete: "cascade",
+  }),
+  businessID: serial("businessID").references(() => business.businessID, {
+    onDelete: "cascade",
+  }),
   requestStatus: integer("requestStatus").default(0).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)

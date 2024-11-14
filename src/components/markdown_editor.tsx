@@ -70,7 +70,6 @@ const Editor: FC<EditorProps> = ({
         ref={editorRef}
         markdown={markdown}
         plugins={[
-          headingsPlugin(),
           listsPlugin(),
           quotePlugin(),
           thematicBreakPlugin(),
@@ -78,18 +77,6 @@ const Editor: FC<EditorProps> = ({
           diffSourcePlugin({
             viewMode: "rich-text",
           }),
-          sandpackPlugin({ sandpackConfig: simpleSandpackConfig }),
-          codeMirrorPlugin({
-            codeBlockLanguages: {
-              js: "JavaScript",
-              css: "CSS",
-              html: "HTML",
-              jsx: "JSX",
-            },
-          }),
-          tablePlugin(),
-          linkPlugin(),
-
           toolbarPlugin({
             // toolbarClassName: "flex flex-row gap-2",
             toolbarContents: () => (

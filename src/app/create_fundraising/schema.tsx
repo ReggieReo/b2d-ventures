@@ -71,4 +71,30 @@ export const formSchema = z.object({
       required_error: "Please enter your pitch.",
     })
     .min(1, "Please enter a pitch"),
+
+  problem: z
+    .string({
+      required_error: "Please enter the problem.",
+    })
+    .min(1, "Please enter a problem"),
+  solution: z
+    .string({
+      required_error: "Please enter the solution.",
+    })
+    .min(1, "Please enter a solution"),
+  stage: z
+    .string({
+      required_error: "Please select the stage.",
+    })
+    .min(1, "Please select a stage"),
+  team: z
+    .string({
+      required_error: "Please enter the team.",
+    })
+    .min(1, "Please enter a team"),
+  investors: z
+    .string({ 
+      required_error: "Please enter the investors.",
+    })
+    .optional(),
 });
