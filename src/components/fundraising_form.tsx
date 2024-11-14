@@ -148,10 +148,10 @@ export function FundraisingForm() {
     name: "media",
   });
 
-  const { 
-    fields: dataroomFields, 
-    append: appendDataroom, 
-    remove: removeDataroom 
+  const {
+    fields: dataroomFields,
+    append: appendDataroom,
+    remove: removeDataroom,
   } = useFieldArray({
     control: form.control,
     name: "dataroom",
@@ -437,7 +437,9 @@ export function FundraisingForm() {
                                 />
                               </div>
                               <div>
-                                <p className="text-sm font-medium">{field.name}</p>
+                                <p className="text-sm font-medium">
+                                  {field.name}
+                                </p>
                                 <p className="text-xs text-gray-500">
                                   {(field.size / 1024 / 1024).toFixed(2)} MB
                                 </p>
@@ -464,7 +466,8 @@ export function FundraisingForm() {
                   </div>
                 </FormControl>
                 <FormDescription>
-                  Upload images, documents, or other media files related to your fundraising campaign
+                  Upload images, documents, or other media files related to your
+                  fundraising campaign
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -542,13 +545,92 @@ export function FundraisingForm() {
                   </div>
                 </FormControl>
                 <FormDescription>
-                  Upload your company logo (maximum 2MB, PNG or JPEG)
+                  Upload your company logo (512 KB, WEBP or JPEG)
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          
+
+          <FormField
+            control={form.control}
+            name="banner"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company Banner</FormLabel>
+                <FormControl>
+                  <div className="space-y-4">
+                    {!field.value ? (
+                      <UploadButton
+                        endpoint="bannerUploader"
+                        onClientUploadComplete={async (res) => {
+                          console.log(res);
+                          console.log(res[0]);
+                          if (res?.[0]) {
+                            form.setValue("banner", {
+                              url: res[0].url,
+                              name: res[0].name,
+                              size: res[0].size,
+                              key: res[0].key,
+                            });
+                            await trigger("banner");
+                          }
+                        }}
+                        onUploadError={(error: Error) => {
+                          console.error("Banner upload error:", error);
+                        }}
+                      />
+                    ) : (
+                      <div className="relative rounded-lg border-2 border-dashed border-gray-200 p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className="h-16 w-16 overflow-hidden rounded-md border">
+                              <img
+                                src={field.value.url}
+                                alt="Company banner"
+                                className="h-full w-full object-cover"
+                              />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium">
+                                {field.value.name}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {(field.value.size / 1024 / 1024).toFixed(2)} MB
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={async () => {
+                              // @ts-expect-error user can delete logo but require to have
+                              form.setValue("banner", null);
+                              await form.trigger("banner"); // Trigger validation after removal}
+                            }}
+                            className="text-red-500 hover:bg-red-50 hover:text-red-600"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                    <input
+                      type="hidden"
+                      name="banner"
+                      value={field.value ? JSON.stringify(field.value) : ""}
+                    />
+                  </div>
+                </FormControl>
+                <FormDescription>
+                  Upload your company banner (maximum 2MB, WEBP or JPEG)
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="dataroom"
@@ -634,11 +716,7 @@ export function FundraisingForm() {
                   </Suspense>
                 </FormControl>
                 <FormMessage />
-                <input
-                  type="hidden"
-                  name="pitch"
-                  value={field.value}
-                />
+                <input type="hidden" name="pitch" value={field.value} />
               </FormItem>
             )}
           />
