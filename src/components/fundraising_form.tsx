@@ -1,6 +1,6 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
-import { useForm, useFormState, useFieldArray } from "react-hook-form";
+import { useForm, useFormState, useFieldArray, useWatch } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import {
   Dialog,
@@ -138,7 +138,6 @@ export function FundraisingForm() {
       deadline: new Date(Date.now()),
       media: [],
       dataroom: [],
-      pitch: "",
     },
     mode: "onChange",
   });
@@ -159,15 +158,14 @@ export function FundraisingForm() {
 
   const createFundraisingBind = createFundraising.bind(null);
 
-  // calculate stock price
-  const handleCalculateStockPrice = () => {
-    const { valuation, allocation, target_stock } = form.getValues();
-    return valuation && allocation && target_stock
-      ? (valuation * allocation) / 100 / target_stock
+  const valuation = useWatch({ control: form.control, name: "valuation" });
+  const allocation = useWatch({ control: form.control, name: "allocation" });
+  const targetStock = useWatch({ control: form.control, name: "target_stock" });
+
+  const stockPrice =
+    valuation && allocation && targetStock
+      ? (valuation * allocation) / 100 / targetStock
       : 0;
-  };
-  const stockPrice = handleCalculateStockPrice();
-  
 
   const { trigger } = form;
   return (
@@ -358,7 +356,7 @@ export function FundraisingForm() {
             )}
           />
           <div className="mt-2 text-lg">
-            { form.getValues("target_stock") > 0 && (
+            {targetStock > 0 && (
               <p>Stock price: ${stockPrice.toFixed(2)}</p>
             )}
           </div>
@@ -715,7 +713,7 @@ export function FundraisingForm() {
             )}
           />
 
-          <FormField
+          {/* <FormField
             control={form.control}
             name="pitch"
             render={({ field }) => (
@@ -734,7 +732,7 @@ export function FundraisingForm() {
                 <input type="hidden" name="pitch" value={field.value} />
               </FormItem>
             )}
-          />
+          /> */}
 
           {/* DIALOG เด้งๆ */}
           <DialogCountdown />
