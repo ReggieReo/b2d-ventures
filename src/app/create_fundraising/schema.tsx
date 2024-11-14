@@ -65,7 +65,15 @@ export const formSchema = z.object({
     },
     { message: "Please upload a logo." },
   ),
-
+  banner: z.object(
+    {
+      url: z.coerce.string(),
+      name: z.coerce.string(),
+      size: z.coerce.number(),
+      key: z.coerce.string(),
+    },
+    { message: "Please upload a banner." },
+  ),
   pitch: z
     .string({
       required_error: "Please enter your pitch.",
