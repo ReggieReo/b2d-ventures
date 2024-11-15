@@ -79,11 +79,29 @@ function DialogCountdown({ isFormValid }: { isFormValid: boolean }) {
 
 export function InvestingForm({
   businessData,
+  financialStatement,
   logo,
 }: {
   businessData: typeof business.$inferSelect;
+  financialStatement: typeof media.$inferSelect;
   logo: typeof media.$inferSelect;
 }) {
+
+
+  if (!financialStatement) {
+    return (
+      <div className="max-w-lg mx-auto p-6">
+        <h2 className="text-2xl font-bold mb-4">Financial Statement Required</h2>
+        <p className="text-gray-600 mb-4">
+          Before you can invest, please upload your financial statement in your investment portfolio.
+        </p>
+        <Link href="/investment_portfolio">
+          <Button className="w-full">Go to Investment Portfolio</Button>
+        </Link>
+      </div>
+    );
+  }
+
   const createInvestmentBind = createInvestment.bind(
     null,
     businessData.businessID,

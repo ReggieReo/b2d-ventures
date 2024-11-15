@@ -77,6 +77,21 @@ export const ourFileRouter = {
       });
       return { uploadedBy: metadata.userId };
     }),
+    financialStatementUploader: f({ pdf: { maxFileSize: "16MB", maxFileCount: 1 } })
+    .middleware(async ({ req }) => {
+      const user = auth();
+      if (!user) throw new UploadThingError("Unauthorized");
+      return { userId: user.userId };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      await db.insert(media).values({
+        userID: metadata.userId ?? "",
+        url: file.url,
+        name: file.name,
+        type: "financial_statement",
+      });
+      return { uploadedBy: metadata.userId };
+    }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

@@ -60,6 +60,12 @@ export async function getLogoByBusinessID(businessID: number) {
   });
 }
 
+export async function getFirstMediaByTypeAndUserID(type: string, userID: string) {
+  return db.query.media.findFirst({
+    where: (model, { eq, and }) => and(eq(model.type, type), eq(model.userID, userID))
+  });
+}
+
 export async function getRequest(businessID: number) {
   const curUserID = auth().userId;
   if (!curUserID) throw new Error("Unauthorized");

@@ -13,12 +13,26 @@ import {
 } from "~/components/pie_chart";
 import { InvestmentHistoryTable } from "~/components/investment_history";
 import { auth } from "@clerk/nextjs/server";
-import { getInvestmentByUserID } from "~/server/fetchQuery";
+import { getFirstMediaByTypeAndUserID, getInvestmentByUserID } from "~/server/fetchQuery";
+import { FinancialStatementUpload } from "~/components/financial_statement_upload";
 
 export const dynamic = "force-dynamic";
 
 export default async function InvestorPortfolioPage() {
   const userID = auth().userId;
+  const financialStatement = await getFirstMediaByTypeAndUserID("financial_statement", userID!);
+  if (!financialStatement) {
+    return (
+      <div className="mb-8 flex flex-col items-center">
+        <div className="bg-yellow-50 p-4 rounded-md mb-4">
+        <p className="text-yellow-800">
+          Please upload your financial statement before making any investments.
+        </p>
+      </div>
+      <FinancialStatementUpload />
+    </div>
+  )}
+
   const allInvestment = await getInvestmentByUserID(userID!);
   const validatedInvestment: InvestmentWithBusiness[] = allInvestment.map(
     (inv) => ({
