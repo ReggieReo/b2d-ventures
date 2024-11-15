@@ -105,13 +105,10 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
     },
     {
       accessorKey: "target_stock",
-      header: () => <div className="text-center">Amount to Stock</div>,
+      header: () => <div className="text-center">Shares</div>,
       cell: ({ row }) => {
         const amount = parseFloat(row.getValue("target_stock"));
-        const formatted = new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-        }).format(amount);
+        const formatted = new Intl.NumberFormat("en-US").format(amount);
         return <div className="text-center font-medium">{formatted}</div>;
       },
     },
