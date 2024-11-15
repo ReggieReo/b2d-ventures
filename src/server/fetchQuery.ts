@@ -2,7 +2,8 @@ import "server-only";
 import { db } from "~/server/db";
 import { auth } from "@clerk/nextjs/server";
 import { business } from "~/server/db/schema";
-import { eq } from "drizzle-orm";
+import {eq, inArray} from "drizzle-orm";
+import {industries} from "~/utils/enum/industryList";
 // user client -> ship js to the client but code still on the server
 // user server -> expose endpoint to the client
 // running on the server
@@ -116,10 +117,13 @@ export async function getAcceptedBusinesses() {
   });
 }
 
-export async function getAcceptBusinessesByName(searchKeyword: string, currentPage: number, businessesPerPage: number) {
+export async function getAcceptBusinessesByName(searchKeyword: string, currentPage: number, businessesPerPage: number, industry: string[]) {
   // Return a get business according to the search keyword
+  if (industry.length === 0) {
+    industry = industries.map(ind=>ind.value)
+  }
   return db.query.business.findMany({
-    where: (model, { and, ilike, eq }) => and(ilike(model.company, `%${searchKeyword}%`), eq(model.business_status, 1)),
+    where: (model, { and, ilike, eq }) => and(and(ilike(model.company, `%${searchKeyword}%`), eq(model.business_status, 1)), inArray(model.industry, industry)),
     limit: businessesPerPage,
     offset: (currentPage-1) * businessesPerPage,
   });

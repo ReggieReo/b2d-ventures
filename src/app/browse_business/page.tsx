@@ -25,12 +25,9 @@ export default async function HomePage(props: {
 
   const industries = industryParam ? industryParam.split(",") : [];
 
-  let business = [];
-  if (industries.length > 0) {
-    business = await getBusinessByIndustries(industries);
-  } else {
-    business = await getAcceptBusinessesByName(query, currentPage, businessPerPage);
-  }
+
+  const business = await getAcceptBusinessesByName(query, currentPage, businessPerPage, industries);
+
 
   const listBusiness = await getAcceptedBusinesses();
   let totalBusiness = listBusiness.length;
