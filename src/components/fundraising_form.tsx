@@ -558,7 +558,7 @@ export function FundraisingForm() {
                   </div>
                 </FormControl>
                 <FormDescription>
-                  Upload your company logo (512 KB, WEBP or JPEG)
+                  Upload your company logo (maximum 512 KB, WEBP or JPEG)
                 </FormDescription>
                 <FormMessage />
               </FormItem>
