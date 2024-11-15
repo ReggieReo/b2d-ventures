@@ -161,11 +161,16 @@ export function FundraisingForm() {
   const valuation = useWatch({ control: form.control, name: "valuation" });
   const allocation = useWatch({ control: form.control, name: "allocation" });
   const targetStock = useWatch({ control: form.control, name: "target_stock" });
+  const [stockPrice, setStockPrice] = useState<number | null>(null);
 
-  const stockPrice =
-    valuation && allocation && targetStock
-      ? (valuation * allocation) / 100 / targetStock
-      : 0;
+  useEffect(() => {
+    if (valuation > 0 && allocation > 0 && targetStock > 0) {
+      const calculatedPrice = (valuation * allocation) / 100 / targetStock;
+      setStockPrice(calculatedPrice);
+    } else {
+      setStockPrice(null);
+    }
+  }, [valuation, allocation, targetStock]);
 
   const { trigger } = form;
   return (
@@ -356,8 +361,10 @@ export function FundraisingForm() {
             )}
           />
           <div className="mt-2 text-lg">
-            {targetStock > 0 && (
+            {stockPrice !== null ? (
               <p>Stock price: ${stockPrice.toFixed(2)}</p>
+            ) : (
+              <p>Stock price: to be calculated</p>
             )}
           </div>
           <FormField
