@@ -30,7 +30,7 @@ export const formSchema = z.object({
   min_investment: z.coerce.number({
     required_error: "Please enter the minimum investment.",
   })
-  .min(25000, "Minimum investment must be at least 25000."),
+  .min(10, "Minimum investment must be at least 10."),
   allocation: z.coerce.number({
     required_error: "Please enter the allocation.",
   })
@@ -38,7 +38,8 @@ export const formSchema = z.object({
   .max(49, "Allocation must be less than 50."),
   valuation: z.coerce.number({
     required_error: "Please enter the valuation.",
-  }),
+  })
+  .min(25000, "Minimum valuation must be at least 25000."),
   deadline: z.coerce.date({
     required_error: "Please select a date and time",
   }).refine((date) => date >= minDeadlineDate, {
