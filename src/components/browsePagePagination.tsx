@@ -1,4 +1,5 @@
 "use client";
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
   Pagination,
   PaginationContent,
@@ -7,8 +8,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "~/components/ui/pagination";
-import { usePathname, useSearchParams } from 'next/navigation';
+} from "~/components/ui/pagination"
 
 export function BrowsePagePagination({ totalPages }: { totalPages: number }) {
   const pathname = usePathname();
@@ -21,59 +21,93 @@ export function BrowsePagePagination({ totalPages }: { totalPages: number }) {
     return `${pathname}?${params.toString()}`;
   };
 
-  const getPageNumbers = () => {
-    const pageNumbers = [];
-    const rangeStart = Math.max(1, currentPage - 2);
-    const rangeEnd = Math.min(totalPages, currentPage + 2);
+  // Generate page numbers to display
+  const generatePaginationItems = () => {
+    const items = [];
+    const showAroundCurrent = 2; // How many pages to show before and after current page
 
-    // Always show the first page and two pages before and after the current page
-    if (rangeStart > 2) pageNumbers.push(1);
-    if (rangeStart > 3) pageNumbers.push("...");
+    // Previous button
+    items.push(
+        <PaginationItem key="prev">
+          <PaginationPrevious
+              href={currentPage > 1 ? createPageURL(currentPage - 1) : "#"}
+              className={currentPage <= 1 ? "pointer-events-none opacity-50" : ""}
+          />
+        </PaginationItem>
+    );
 
-    for (let i = rangeStart; i <= rangeEnd; i++) {
-      pageNumbers.push(i);
+    // First page
+    if (currentPage > showAroundCurrent + 1) {
+      items.push(
+          <PaginationItem key={1}>
+            <PaginationLink href={createPageURL(1)}>1</PaginationLink>
+          </PaginationItem>
+      );
+      if (currentPage > showAroundCurrent + 2) {
+        items.push(
+            <PaginationItem key="ellipsis1">
+              <PaginationEllipsis />
+            </PaginationItem>
+        );
+      }
     }
 
-    // Always show the last page and ellipsis before it if necessary
-    if (rangeEnd < totalPages - 2) pageNumbers.push("...");
-    if (rangeEnd < totalPages) pageNumbers.push(totalPages);
+    // Pages around current page
+    for (let i = Math.max(1, currentPage - showAroundCurrent);
+         i <= Math.min(totalPages, currentPage + showAroundCurrent);
+         i++) {
+      items.push(
+          <PaginationItem key={i}>
+            <PaginationLink
+                href={createPageURL(i)}
+                isActive={currentPage === i}
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+      );
+    }
 
-    return pageNumbers;
+    // Last page
+    if (currentPage < totalPages - showAroundCurrent) {
+      if (currentPage < totalPages - showAroundCurrent - 1) {
+        items.push(
+            <PaginationItem key="ellipsis2">
+              <PaginationEllipsis />
+            </PaginationItem>
+        );
+      }
+      items.push(
+          <PaginationItem key={totalPages}>
+            <PaginationLink href={createPageURL(totalPages)}>
+              {totalPages}
+            </PaginationLink>
+          </PaginationItem>
+      );
+    }
+
+    // Next button
+    items.push(
+        <PaginationItem key="next">
+          <PaginationNext
+              href={currentPage < totalPages ? createPageURL(currentPage + 1) : "#"}
+              className={currentPage >= totalPages ? "pointer-events-none opacity-50" : ""}
+          />
+        </PaginationItem>
+    );
+
+    return items;
   };
 
-  const pageNumbers = getPageNumbers();
-
   return (
-      <div>
+      <div className="flex justify-center py-4">
         <Pagination>
           <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                  href={currentPage > 1 ? createPageURL(currentPage - 1) : "#"}
-              />
-            </PaginationItem>
-
-            {pageNumbers.map((page, index) => (
-                <PaginationItem key={index}>
-                  {page === "..." ? (
-                      <PaginationEllipsis />
-                  ) : (
-                      <PaginationLink
-                          href={createPageURL(page as number)}
-                      >
-                        {page}
-                      </PaginationLink>
-                  )}
-                </PaginationItem>
-            ))}
-
-            <PaginationItem>
-              <PaginationNext
-                  href={currentPage < totalPages ? createPageURL(currentPage + 1) : "#"}
-              />
-            </PaginationItem>
+            {generatePaginationItems()}
           </PaginationContent>
         </Pagination>
       </div>
   );
 }
+
+export default BrowsePagePagination;

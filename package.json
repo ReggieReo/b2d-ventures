@@ -22,6 +22,7 @@
     "@mdx-js/react": "^3.1.0",
     "@mdxeditor/editor": "^3.15.0",
     "@next/mdx": "^15.0.2",
+    "@nextui-org/pagination": "^2.0.36",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-dropdown-menu": "^2.1.2",

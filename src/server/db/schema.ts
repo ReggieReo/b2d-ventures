@@ -43,7 +43,7 @@ export const business = createTable("business", {
   ),
   company: varchar("company", { length: 256 }),
   website: varchar("website", { length: 256 }),
-  target_fund: integer("target_fund"),
+  target_stock: integer("target_stock"),
   min_investment: integer("min_investment"),
   allocation: integer("allocation"),
   valuation: integer("valuation"),

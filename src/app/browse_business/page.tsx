@@ -17,7 +17,7 @@ export default async function HomePage(props: {
   const searchParams = await props.searchParams;
   const query = searchParams?.query ?? "";
   const currentPage = Number(searchParams?.page) || 1;
-  const businessPerPage = 9;
+  const businessPerPage = 3;
 
   const business = await getAcceptBusinessesByName(
     query,
@@ -25,7 +25,12 @@ export default async function HomePage(props: {
     businessPerPage,
   );
   const listBusiness = await getAcceptedBusinesses();
-  const totalBusiness = listBusiness.length;
+  let totalBusiness = listBusiness.length;
+  if (query !== "") {
+      totalBusiness = business.length;
+  }
+
+  const totalPages = Math.ceil(totalBusiness / businessPerPage);
 
   return (
     <main className={"mt-12 flex h-screen w-screen flex-col items-center"}>
@@ -52,9 +57,7 @@ export default async function HomePage(props: {
           </Link>
         ))}
       </div>
-      <BrowsePagePagination
-        totalPages={Math.ceil(totalBusiness / businessPerPage)}
-      />
+      <BrowsePagePagination totalPages={totalPages} />
     </main>
   );
 }

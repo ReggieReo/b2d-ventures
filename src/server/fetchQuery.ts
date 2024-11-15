@@ -113,11 +113,12 @@ export async function getAcceptedBusinesses() {
 export async function getAcceptBusinessesByName(searchKeyword: string, currentPage: number, businessesPerPage: number) {
   // Return a get business according to the search keyword
   return db.query.business.findMany({
-    where: (model, { ilike }) => ilike(model.company, `%${searchKeyword}%`),
+    where: (model, { and, ilike, eq }) => and(ilike(model.company, `%${searchKeyword}%`), eq(model.business_status, 1)),
     limit: businessesPerPage,
     offset: (currentPage-1) * businessesPerPage,
   });
 }
+
 
 export async function acceptUserStatus(businessID: number) {
   try {
