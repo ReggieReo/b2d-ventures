@@ -46,6 +46,12 @@ export async function getBusinessByID(businessID: number) {
   });
 }
 
+export async function getBusinessByIndustries(industry: string[]) {
+  return db.query.business.findMany({
+    where: (model, { inArray }) => inArray(model.industry, industry),
+  });
+}
+
 export async function getImageByBusinessID(businessID: number) {
   return db.query.media.findMany({
     where: (model, { eq, and }) =>

@@ -1,6 +1,8 @@
+"use server";
 import {
   getAcceptBusinessesByName,
   getAcceptedBusinesses,
+  getBusinessByIndustries,
 } from "~/server/fetchQuery";
 import Link from "next/link";
 import BusinessCard from "~/components/business_card";
@@ -12,25 +14,32 @@ export default async function HomePage(props: {
   searchParams?: Promise<{
     query?: string;
     page?: string;
+    industry?: string;
   }>;
 }) {
   const searchParams = await props.searchParams;
   const query = searchParams?.query ?? "";
   const currentPage = Number(searchParams?.page) || 1;
+  const industryParam = searchParams?.industry ?? "";
   const businessPerPage = 9;
 
-  const business = await getAcceptBusinessesByName(
-    query,
-    currentPage,
-    businessPerPage,
-  );
+  const industries = industryParam ? industryParam.split(",") : [];
+
+  let business = [];
+  if (industries.length > 0) {
+    business = await getBusinessByIndustries(industries);
+  } else {
+    business = await getAcceptBusinessesByName(query, currentPage, businessPerPage);
+  }
+
   const listBusiness = await getAcceptedBusinesses();
   let totalBusiness = listBusiness.length;
   if (query !== "") {
-      totalBusiness = business.length;
+    totalBusiness = business.length;
   }
 
   const totalPages = Math.ceil(totalBusiness / businessPerPage);
+
 
   return (
     <main className={"mt-12 flex h-screen w-screen flex-col items-center"}>
@@ -38,11 +47,7 @@ export default async function HomePage(props: {
         <p className={"text-3xl font-bold"}>Explore Businesses </p>
         <p>Explore emerging investment opportunities on our platform.</p>
       </div>
-      <div
-        className={
-          "mb-8 flex w-full max-w-5xl flex-col items-start gap-2 lg:flex-row"
-        }
-      >
+      <div className={"mb-8 flex w-full max-w-5xl flex-col items-start gap-2"}>
         <SearchBusinessInput />
         <SearchBusinessFilter />
       </div>
