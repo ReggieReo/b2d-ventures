@@ -1,11 +1,6 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
-import {
-  useForm,
-  useFormState,
-  useFieldArray,
-  useWatch,
-} from "react-hook-form";
+import { useForm, useFormState, useFieldArray, useWatch } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import {
   Dialog,
@@ -163,7 +158,6 @@ export function FundraisingForm() {
 
   const createFundraisingBind = createFundraising.bind(null);
 
-  const { isDirty } = useFormState({ control: form.control });
   const valuation = useWatch({ control: form.control, name: "valuation" });
   const allocation = useWatch({ control: form.control, name: "allocation" });
   const targetStock = useWatch({ control: form.control, name: "target_stock" });
@@ -172,17 +166,6 @@ export function FundraisingForm() {
     valuation && allocation && targetStock
       ? (valuation * allocation) / 100 / targetStock
       : 0;
-
-  useEffect(() => {
-    if (isDirty && allocation <= valuation) {
-      form.setError("allocation", {
-        type: "manual",
-        message: "Allocation must be greater than valuation.",
-      });
-    } else {
-      form.clearErrors("allocation");
-    }
-  }, [allocation, valuation, isDirty, form]);
 
   const { trigger } = form;
   return (
@@ -365,13 +348,17 @@ export function FundraisingForm() {
                 <FormControl>
                   <Input placeholder="$" {...field} />
                 </FormControl>
-                <FormDescription>The target amount of stock</FormDescription>
+                <FormDescription>
+                  The target amount of stock
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
           <div className="mt-2 text-lg">
-            {targetStock > 0 && <p>Stock price: ${stockPrice.toFixed(2)}</p>}
+            {targetStock > 0 && (
+              <p>Stock price: ${stockPrice.toFixed(2)}</p>
+            )}
           </div>
           <FormField
             control={form.control}
@@ -725,7 +712,7 @@ export function FundraisingForm() {
               </FormItem>
             )}
           />
-
+          
           {/* DIALOG เด้งๆ */}
           <DialogCountdown />
         </form>
