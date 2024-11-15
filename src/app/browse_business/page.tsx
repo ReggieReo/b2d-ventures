@@ -17,7 +17,7 @@ export default async function HomePage(props: {
   const searchParams = await props.searchParams;
   const query = searchParams?.query ?? "";
   const currentPage = Number(searchParams?.page) || 1;
-  const businessPerPage = 3;
+  const businessPerPage = 9;
 
   const business = await getAcceptBusinessesByName(
     query,
