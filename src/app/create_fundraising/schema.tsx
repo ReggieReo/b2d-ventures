@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+const minDeadlineDate = new Date();
+minDeadlineDate.setDate(minDeadlineDate.getDate() + 14);
+
 export const formSchema = z.object({
   company: z
     .string({
@@ -38,6 +41,8 @@ export const formSchema = z.object({
   }),
   deadline: z.coerce.date({
     required_error: "Please select a date and time",
+  }).refine((date) => date >= minDeadlineDate, {
+    message: "Deadline must be at least 2 weeks from today.",
   }),
   media: z
     .array(
