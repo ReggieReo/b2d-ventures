@@ -30,7 +30,7 @@ export const formSchema = z.object({
   min_investment: z.coerce.number({
     required_error: "Please enter the minimum investment.",
   })
-  .min(10, "Minimum investment must be at least 10."),
+  .min(25000, "Minimum investment must be at least 25000."),
   allocation: z.coerce.number({
     required_error: "Please enter the allocation.",
   })
