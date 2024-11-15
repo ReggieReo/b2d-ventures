@@ -2,34 +2,29 @@
 import {
   getAcceptBusinessesByKeyData,
   getAcceptedBusinesses,
-  getBusinessByIndustries,
 } from "~/server/fetchQuery";
 import Link from "next/link";
 import BusinessCard from "~/components/business_card";
 import SearchBusinessInput from "~/components/search_business_input";
 import SearchBusinessFilter from "~/components/search_filter";
 import { BrowsePagePagination } from "~/components/browsePagePagination";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
+import SortingSelect from "~/components/sorting_select";
 
 export default async function HomePage(props: {
   searchParams?: Promise<{
     query?: string;
     page?: string;
     industry?: string;
+    sortBy?: string;
+    orderBy?: string;
   }>;
 }) {
   const searchParams = await props.searchParams;
   const query = searchParams?.query ?? "";
   const currentPage = Number(searchParams?.page) || 1;
   const industryParam = searchParams?.industry ?? "";
+  const sortByParam = searchParams?.sortBy ?? "";
+  const orderByParam = searchParams?.orderBy ?? "";
   const businessPerPage = 9;
 
   const industries = industryParam ? industryParam.split(",") : [];
@@ -39,6 +34,8 @@ export default async function HomePage(props: {
     currentPage,
     businessPerPage,
     industries,
+    sortByParam,
+    orderByParam,
   );
 
   const listBusiness = await getAcceptedBusinesses();
@@ -59,30 +56,7 @@ export default async function HomePage(props: {
         <SearchBusinessInput />
         <div className={"flex flex-row gap-x-5"}>
           <SearchBusinessFilter />
-          <div className={"flex flex-row gap-x-2"}>
-          <Select>
-            <SelectTrigger className="w-[280px]">
-              <SelectValue placeholder="Sort By" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="most_recent">Created</SelectItem>
-              <SelectItem value="deadline">Deadline</SelectItem>
-              <SelectItem value="no_investor">Number of Investor</SelectItem>
-              <SelectItem value="anount_invest">Amount Invested</SelectItem>
-              <SelectItem value="remaining stocks">Remaining Stocks</SelectItem>
-              <SelectItem value="min_invest">Minimum Investment</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select>
-            <SelectTrigger className="w-[280px]">
-              <SelectValue placeholder="Order" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="asc">Ascending</SelectItem>
-              <SelectItem value="desc">Descending</SelectItem>
-            </SelectContent>
-          </Select>
-          </div>
+          <SortingSelect />
         </div>
       </div>
       <div className="grid max-w-5xl grid-cols-1 items-stretch gap-10 md:grid-cols-2 lg:grid-cols-3">

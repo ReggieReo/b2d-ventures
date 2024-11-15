@@ -2,8 +2,9 @@ import "server-only";
 import { db } from "~/server/db";
 import { auth } from "@clerk/nextjs/server";
 import { business } from "~/server/db/schema";
-import {eq, inArray} from "drizzle-orm";
-import {industries} from "~/utils/enum/industryList";
+import { eq, inArray } from "drizzle-orm";
+import { industries } from "~/utils/enum/industryList";
+import { desc, asc } from "drizzle-orm";
 // user client -> ship js to the client but code still on the server
 // user server -> expose endpoint to the client
 // running on the server
@@ -28,7 +29,7 @@ export async function getAllBusiness() {
 
 export async function getInvestmentByBusinessID(businessID: number) {
   return db.query.investment.findMany({
-    where: (model, { eq }) => eq(model.businessID, businessID)
+    where: (model, { eq }) => eq(model.businessID, businessID),
   });
 }
 
@@ -36,8 +37,8 @@ export async function getInvestmentByUserID(userID: string) {
   return db.query.investment.findMany({
     where: (model, { eq }) => eq(model.userID, userID),
     with: {
-      business: true
-    }
+      business: true,
+    },
   });
 }
 
@@ -77,7 +78,10 @@ export async function getRequest(businessID: number) {
   });
 }
 
-export async function getRequestByUserIDAndBusinessID(userID: string, businessID: number) {
+export async function getRequestByUserIDAndBusinessID(
+  userID: string,
+  businessID: number,
+) {
   if (!userID) throw new Error("Unauthorized");
 
   return db.query.dataroomRequest.findFirst({
@@ -85,6 +89,7 @@ export async function getRequestByUserIDAndBusinessID(userID: string, businessID
       and(eq(model.userID, userID), eq(model.businessID, businessID)),
   });
 }
+
 export async function getRequestByID(businessID: number) {
   return db.query.dataroomRequest.findMany({
     where: (model, { eq }) => eq(model.businessID, businessID),
@@ -117,18 +122,58 @@ export async function getAcceptedBusinesses() {
   });
 }
 
-export async function getAcceptBusinessesByName(searchKeyword: string, currentPage: number, businessesPerPage: number, industry: string[]) {
-  // Return a get business according to the search keyword
+export async function getAcceptBusinessesByKeyData(
+  searchKeyword: string,
+  currentPage: number,
+  businessesPerPage: number,
+  industry: string[],
+  sortMethod: string,
+  orderMethod: string,
+) {
+  // Return a get business according to the search keyword, industry and sorting
+
   if (industry.length === 0) {
-    industry = industries.map(ind=>ind.value)
+    industry = industries.map((ind) => ind.value);
   }
+
+  let sortBy;
+  if (sortMethod === "created") {
+    sortBy = business.createdAt;
+  } else if (sortMethod === "deadline") {
+    sortBy = business.deadline;
+  } else if (sortMethod === "no_investor") {
+    sortBy = business.investors;
+  } else {
+    sortBy = business.createdAt;
+  }
+
+  let orderBy;
+  if (orderMethod === "asc") {
+    orderBy = asc;
+  } else if (orderMethod === "desc") {
+    orderBy = desc;
+  } else {
+    orderBy = desc;
+  }
+  // TODO: Implement sorting by remaining stock
+  // TODO: Implement sorting by stocks invested
+  // TODO: Implement sorting by min stocks investment
+
+
   return db.query.business.findMany({
-    where: (model, { and, ilike, eq }) => and(and(ilike(model.company, `%${searchKeyword}%`), eq(model.business_status, 1)), inArray(model.industry, industry)),
+    where: (model, { and, ilike, eq }) =>
+      and(
+        and(
+          ilike(model.company, `%${searchKeyword}%`),
+          eq(model.business_status, 1),
+        ),
+        inArray(model.industry, industry),
+      ),
     limit: businessesPerPage,
-    offset: (currentPage-1) * businessesPerPage,
+    offset: (currentPage - 1) * businessesPerPage,
+    orderBy: orderBy(sortBy),
   });
 }
-
 
 export async function acceptUserStatus(businessID: number) {
   try {
@@ -155,6 +200,7 @@ export async function declineUserStatus(businessID: number) {
     return { success: false, error: "Failed to update user status" };
   }
 }
+
 export async function getBusinessByUserIDExplicit(userID: string) {
   return db.query.business.findFirst({
     where: (model, { eq }) => eq(model.userID, userID),

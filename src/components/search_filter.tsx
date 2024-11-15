@@ -6,6 +6,7 @@ import { industries } from "~/utils/enum/industryList";
 import { Checkbox } from "~/components/ui/checkbox";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import {ScrollArea} from "~/components/ui/scroll-area";
+import {useDebouncedCallback} from "use-debounce";
 
 export default function SearchBusinessFilter() {
     const searchParams = useSearchParams();
@@ -25,7 +26,7 @@ export default function SearchBusinessFilter() {
         return Object.keys(checkedIndustries).filter((key) => checkedIndustries[key]);
     };
 
-    const handleFilter = () => {
+    const handleFilter = useDebouncedCallback(() => {
         const selectedIndustries = getCheckedIndustries();
         const params = new URLSearchParams(searchParams.toString());
 
@@ -36,7 +37,7 @@ export default function SearchBusinessFilter() {
         }
 
         router.replace(`${pathname}?${params.toString()}`);
-    };
+    }, 300);
 
     return (
         <Popover>
