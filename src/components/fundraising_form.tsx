@@ -712,28 +712,7 @@ export function FundraisingForm() {
               </FormItem>
             )}
           />
-
-          {/* <FormField
-            control={form.control}
-            name="pitch"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Pitch</FormLabel>
-                <FormControl>
-                  <Suspense fallback={null}>
-                    <EditorComp
-                      markdown={field.value}
-                      onChangeFn={field.onChange}
-                      trigger={() => trigger("pitch")}
-                    />
-                  </Suspense>
-                </FormControl>
-                <FormMessage />
-                <input type="hidden" name="pitch" value={field.value} />
-              </FormItem>
-            )}
-          /> */}
-
+          
           {/* DIALOG เด้งๆ */}
           <DialogCountdown />
         </form>
