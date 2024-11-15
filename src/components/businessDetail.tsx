@@ -33,10 +33,10 @@ export async function BusinessDetail({
     .flatMap((ob) => ob.fund)
     .reduce((a, b) => a + b, 0);
   const totalNumberOfInvester = allInvestment.length;
-  const percentInvestment =
-    (totalInvestemntAmount / businessData.target_fund!) * 100;
+  // const percentInvestment =
+  //   (totalInvestemntAmount / businessData.target_fund!) * 100;
   const daysToGo = getDayUntilDeadline(businessData.deadline!);
-
+  
   return (
     <div className="font-geist-sans my-10 flex flex-col">
       <div className="flex flex-col place-content-center gap-10 md:flex-row">
@@ -69,10 +69,10 @@ export async function BusinessDetail({
         </div>
         <div className="flex flex-col gap-5 p-3 md:mt-20 md:w-1/4">
           <div className="text-[24px] font-bold md:text-[28px]">
-            Target Fund
+            Target Stock
           </div>
           <div className="text-3xl font-bold md:text-4xl">
-            ${businessData.target_fund!.toLocaleString()}
+            {businessData.target_stock!.toLocaleString()} shares
           </div>
           {allInvestment.length > 0 ? (
             <>
@@ -83,18 +83,18 @@ export async function BusinessDetail({
                 ${totalInvestemntAmount.toLocaleString()}
               </div>
               <div className="text-sm text-gray-500 md:text-base">
-                {`${percentInvestment}% raised of 100% of target fund.`}
+                {/* {`${percentInvestment}% raised of 100% of target fund.`} */}
               </div>
               <div
                 className="my-3 h-2 w-full overflow-hidden rounded-full bg-gray-200"
                 role="progressbar"
-                aria-valuenow={percentInvestment}
+                // aria-valuenow={percentInvestment}
                 aria-valuemin={0}
                 aria-valuemax={100}
               >
                 <div
                   className="h-full bg-green-600" // You can change the color by modifying bg-blue-600
-                  style={{ width: `${percentInvestment}%` }}
+                  // style={{ width: `${percentInvestment}%` }}
                 ></div>
               </div>
               <div className="flex flex-row justify-evenly gap-5 md:flex-col">
@@ -180,13 +180,6 @@ export async function BusinessDetail({
 
       <div className="mx-auto mt-8 w-[80%]">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Pitch Section - Takes up 60% of the screen (3/4 of the 80%) */}
-          <div className="md:col-span-3 prose max-w-none">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {businessData.pitch ?? "No pitch available."}
-            </ReactMarkdown>
-          </div>
-
           {/* Company Details Section - Takes up 20% of the screen (1/4 of the 80%) */}
           <div className="space-y-4">
             <h3 className="text-2xl font-bold">Company Details</h3>
