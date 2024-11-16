@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { type business } from "~/server/db/schema";
 import { cn } from "~/lib/utils";
-import { getInvestmentByBusinessID, getLogoByBusinessID, getImageByBusinessID } from "~/server/fetchQuery";
+import { getInvestmentByBusinessID, getLogoByBusinessID, getImageByBusinessID, getBannerByBusinessID } from "~/server/fetchQuery";
 import {getDayUntilDeadline} from "~/utils/util";
 
 
