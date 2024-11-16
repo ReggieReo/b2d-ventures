@@ -9,6 +9,7 @@ import { getInvestmentByBusinessID, getLogoByBusinessID, getImageByBusinessID } 
 import {getDayUntilDeadline} from "~/utils/util";
 
 
+
 export default async function BusinessCard({
   cBusiness,
   className,
@@ -19,6 +20,7 @@ export default async function BusinessCard({
   const allInvestment = await getInvestmentByBusinessID(cBusiness.businessID);
   const logo = await getLogoByBusinessID(cBusiness.businessID);
   const image = await getImageByBusinessID(cBusiness.businessID);
+  const banner = await getBannerByBusinessID(cBusiness.businessID);
   const totalInvestment = allInvestment.reduce((acc, cur) => acc + cur.fund, 0);
   const dayTillDeadline = getDayUntilDeadline(cBusiness.deadline!)
   const countInvestment = allInvestment
@@ -31,7 +33,7 @@ export default async function BusinessCard({
       <CardHeader className="border-b">
         <div className="relative h-32 w-full">
           <Image
-            src={image?.[0]?.url ?? ""}
+            src={banner?.url ?? ""}
             alt="IP3 Banner"
             layout="fill"
             objectFit="cover"
