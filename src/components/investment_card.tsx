@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
-import { fetchTotalInvestmentAction } from "~/server/action/total_invesment";
+import { fetchTotalInvestmentAction } from "~/server/action/invesment_in_month";
 import { fetchTotalInvestmentCurrentWeekAction } from "~/server/action/investment_in_week";
 
 export function TotalInvestmentCard() {
