@@ -5,6 +5,7 @@ import { business, investment } from "~/server/db/schema";
 import { eq, inArray } from "drizzle-orm";
 import { industries } from "~/utils/enum/industryList";
 import { desc, asc } from "drizzle-orm";
+import { format, parseISO } from "date-fns";
 // user client -> ship js to the client but code still on the server
 // user server -> expose endpoint to the client
 // running on the server
@@ -283,3 +284,42 @@ export async function getTotalInvestmentCurrentWeek() {
   return totalInvestment;
 }
 
+export async function getTotalInvestmentByMonth() {
+  try {
+    const investments = await db
+      .select({
+        createdAt: investment.createdAt,
+        fund: investment.fund,
+      })
+      .from(investment)
+      .orderBy(asc(investment.createdAt));
+
+    // Group and sum investments by month
+    const investmentByMonth = investments.reduce((acc, current) => {
+      const monthKey = format(parseISO(current.createdAt.toISOString()), 'yyyy-MM'); // Format the date as YYYY-MM
+
+      if (!acc[monthKey]) {
+        acc[monthKey] = 0;
+      }
+      acc[monthKey] += current.fund;
+
+      return acc;
+    }, {} as Record<string, number>);
+
+    // Convert the result to an array format with full month names
+    const result = Object.entries(investmentByMonth).map(([month, totalInvestment]) => {
+      const date = new Date(month + "-01");
+      const fullMonthName = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(date);
+
+      return {
+        month: fullMonthName, // Display full month name
+        totalInvestment,
+      };
+    });
+
+    return result;
+  } catch (error) {
+    console.error("Error fetching total investment by month:", error);
+    throw new Error("Failed to fetch total investment by month");
+  }
+}
