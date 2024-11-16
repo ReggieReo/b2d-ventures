@@ -5,7 +5,10 @@ import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { type business } from "~/server/db/schema";
 import { cn } from "~/lib/utils";
-import { getInvestmentByBusinessID, getLogoByBusinessID, getImageByBusinessID } from "~/server/fetchQuery";
+import { getInvestmentByBusinessID, getLogoByBusinessID, getImageByBusinessID, getBannerByBusinessID } from "~/server/fetchQuery";
+import {getDayUntilDeadline} from "~/utils/util";
+
+
 
 export default async function BusinessCard({
   cBusiness,
@@ -17,14 +20,20 @@ export default async function BusinessCard({
   const allInvestment = await getInvestmentByBusinessID(cBusiness.businessID);
   const logo = await getLogoByBusinessID(cBusiness.businessID);
   const image = await getImageByBusinessID(cBusiness.businessID);
+  const banner = await getBannerByBusinessID(cBusiness.businessID);
   const totalInvestment = allInvestment.reduce((acc, cur) => acc + cur.fund, 0);
+  const dayTillDeadline = getDayUntilDeadline(cBusiness.deadline!)
+  const countInvestment = allInvestment
+      .flatMap((investment) => investment || [])
+      .reduce((acc) => acc + 1, 0);
+
 
   return (
     <Card className={cn("relative w-full min-w-40 max-w-md", className)}>
       <CardHeader className="border-b">
         <div className="relative h-32 w-full">
           <Image
-            src={image?.[0]?.url ?? ""}
+            src={banner?.url ?? ""}
             alt="IP3 Banner"
             layout="fill"
             objectFit="cover"
@@ -46,12 +55,9 @@ export default async function BusinessCard({
       <CardContent className="content-start p-4 pt-6">
         <h2 className="mb-2 text-2xl font-bold">{cBusiness.company}</h2>
         <p className="mb-4 text-gray-600">
-          Rento is revolutionizing the peer-to-peer rental market by providing a
-          seamless platform for people to rent out items they own but seldom
-          use.
+          {cBusiness.slogan}
         </p>
 
-        {/*TODO get information from investment*/}
         <div className={"flex flex-row gap-1"}>
           <p className={"font-bold"}>${totalInvestment.toLocaleString()}</p>
           <p>raise</p>
@@ -62,13 +68,24 @@ export default async function BusinessCard({
           </p>
           <p>minimum investment</p>
         </div>
+        <div className={"flex flex-row gap-1"}>
+          <p className={"font-bold"}>
+            {countInvestment}
+          </p>
+          <p>investment</p>
+        </div>
+        <div className={"flex flex-row gap-1"}>
+          <p className={"font-bold"}>
+            {dayTillDeadline}
+          </p>
+          <p>days till deadline</p>
+        </div>
 
         {/*  catagory */}
         <div className="flex flex-wrap gap-2">
           <Badge variant="secondary">{cBusiness.industry!.toUpperCase()}</Badge>
         </div>
       </CardContent>
-
     </Card>
   );
 }

@@ -104,14 +104,11 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
       cell: ({ row }) => <div className="text-center">{row.getValue("industry")}</div>,
     },
     {
-      accessorKey: "target_fund",
-      header: () => <div className="text-center">Amount to Raise</div>,
+      accessorKey: "target_stock",
+      header: () => <div className="text-center">Shares</div>,
       cell: ({ row }) => {
-        const amount = parseFloat(row.getValue("target_fund"));
-        const formatted = new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-        }).format(amount);
+        const amount = parseFloat(row.getValue("target_stock"));
+        const formatted = new Intl.NumberFormat("en-US").format(amount);
         return <div className="text-center font-medium">{formatted}</div>;
       },
     },

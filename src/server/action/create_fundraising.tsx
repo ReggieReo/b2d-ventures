@@ -6,6 +6,7 @@ import {
   updateDataroomTypeByMediaURLe,
   updateMediaImageTypeByMediaURLe,
   updateMediaLogoTypeByMediaURLe,
+  updateMediaBannerTypeByMediaURLe,
 } from "~/server/updateQuery";
 
 export async function createFundraising(formData: FormData) {
@@ -15,6 +16,7 @@ export async function createFundraising(formData: FormData) {
   // Parse JSON strings for media and logo
   let mediaData: unknown[] = [];
   let logoData: unknown = null;
+  let bannerData: unknown = null;
   let dataroomData: unknown[] = [];
 
   try {
@@ -26,6 +28,11 @@ export async function createFundraising(formData: FormData) {
     const logoString = formData.get("logo");
     if (logoString && typeof logoString === "string") {
       logoData = JSON.parse(logoString);
+    }
+
+    const bannerString = formData.get("banner");
+    if (bannerString && typeof bannerString === "string") {
+      bannerData = JSON.parse(bannerString);
     }
 
     const dataroomString = formData.get("dataroom");
@@ -41,7 +48,7 @@ export async function createFundraising(formData: FormData) {
     company: formData.get("company"),
     slogan: formData.get("slogan"),
     website: formData.get("website"),
-    target_fund: formData.get("target_fund"), // Fixed typo: removed colon
+    target_stock: formData.get("target_stock"), // Fixed typo: removed colon
     min_investment: formData.get("min_investment"),
     allocation: formData.get("allocation"),
     valuation: formData.get("valuation"),
@@ -50,6 +57,7 @@ export async function createFundraising(formData: FormData) {
     industry: formData.get("industry"),
     media: mediaData, // Use parsed media array
     logo: logoData, // Use parsed logo object
+    banner: bannerData,
     dataroom: dataroomData, // Use parsed dataroom array
     problem: formData.get("problem"),
     solution: formData.get("solution"),
@@ -75,6 +83,10 @@ export async function createFundraising(formData: FormData) {
     );
     await updateMediaLogoTypeByMediaURLe(
       validatedFields.data.logo!.url,
+      id[0]!.id,
+    );
+    await updateMediaBannerTypeByMediaURLe(
+      validatedFields.data.banner!.url,
       id[0]!.id,
     );
     await updateDataroomTypeByMediaURLe(
