@@ -234,3 +234,24 @@ export async function getDataroomFiles(businessID: number) {
       and(eq(model.businessID, businessID), eq(model.type, "dataroom")),
   });
 }
+
+export async function getTotalInvestmentCurrentMonth() {
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+  const result = await db.query.investment.findMany({
+    where: (model, { and, gte, lte }) =>
+      and(
+        gte(model.createdAt, startOfMonth),
+        lte(model.createdAt, endOfMonth)
+      ),
+    columns: {
+      fund: true,
+    },
+  });
+
+  const totalInvestment = result.reduce((sum, record) => sum + record.fund, 0);
+
+  return totalInvestment;
+}
