@@ -6,6 +6,8 @@ import { Badge } from "~/components/ui/badge";
 import { type business } from "~/server/db/schema";
 import { cn } from "~/lib/utils";
 import { getInvestmentByBusinessID, getLogoByBusinessID, getImageByBusinessID } from "~/server/fetchQuery";
+import {getDayUntilDeadline} from "~/utils/util";
+
 
 export default async function BusinessCard({
   cBusiness,
@@ -18,6 +20,11 @@ export default async function BusinessCard({
   const logo = await getLogoByBusinessID(cBusiness.businessID);
   const image = await getImageByBusinessID(cBusiness.businessID);
   const totalInvestment = allInvestment.reduce((acc, cur) => acc + cur.fund, 0);
+  const dayTillDeadline = getDayUntilDeadline(cBusiness.deadline!)
+  const countInvestment = allInvestment
+      .flatMap((investment) => investment || [])
+      .reduce((acc) => acc + 1, 0);
+
 
   return (
     <Card className={cn("relative w-full min-w-40 max-w-md", className)}>
@@ -59,13 +66,24 @@ export default async function BusinessCard({
           </p>
           <p>minimum investment</p>
         </div>
+        <div className={"flex flex-row gap-1"}>
+          <p className={"font-bold"}>
+            {countInvestment}
+          </p>
+          <p>investment</p>
+        </div>
+        <div className={"flex flex-row gap-1"}>
+          <p className={"font-bold"}>
+            {dayTillDeadline}
+          </p>
+          <p>days till deadline</p>
+        </div>
 
         {/*  catagory */}
         <div className="flex flex-wrap gap-2">
           <Badge variant="secondary">{cBusiness.industry!.toUpperCase()}</Badge>
         </div>
       </CardContent>
-
     </Card>
   );
 }

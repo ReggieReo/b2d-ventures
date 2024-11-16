@@ -38,7 +38,7 @@ export default function SortingSelect() {
                 <SelectContent>
                     <SelectItem value="created">Created</SelectItem>
                     <SelectItem value="deadline">Deadline</SelectItem>
-                    <SelectItem value="no_investor">Number of Investor</SelectItem>
+                    <SelectItem value="no_investor">Number of Investment</SelectItem>
                     {/*TODO: Enable after investment rework*/}
                     <SelectItem value="amount_invest" disabled={true}>Amount Invested</SelectItem>
                     <SelectItem value="remaining_stocks" disabled={true}>Remaining Stocks</SelectItem>

@@ -1,7 +1,7 @@
 import "server-only";
 import { db } from "~/server/db";
 import { auth } from "@clerk/nextjs/server";
-import { business } from "~/server/db/schema";
+import { business, investment } from "~/server/db/schema";
 import { eq, inArray } from "drizzle-orm";
 import { industries } from "~/utils/enum/industryList";
 import { desc, asc } from "drizzle-orm";
@@ -141,8 +141,6 @@ export async function getAcceptBusinessesByKeyData(
     sortBy = business.createdAt;
   } else if (sortMethod === "deadline") {
     sortBy = business.deadline;
-  } else if (sortMethod === "no_investor") {
-    sortBy = business.investors;
   } else {
     sortBy = business.createdAt;
   }
@@ -159,20 +157,36 @@ export async function getAcceptBusinessesByKeyData(
   // TODO: Implement sorting by stocks invested
   // TODO: Implement sorting by min stocks investment
 
+  const today = new Date();
 
-  return db.query.business.findMany({
-    where: (model, { and, ilike, eq }) =>
+  const result = await db.query.business.findMany({
+    where: (model, { and, ilike, eq, gte }) =>
       and(
         and(
-          ilike(model.company, `%${searchKeyword}%`),
-          eq(model.business_status, 1),
+          and(
+            ilike(model.company, `%${searchKeyword}%`),
+            eq(model.business_status, 1),
+          ),
+          inArray(model.industry, industry),
         ),
-        inArray(model.industry, industry),
+        gte(model.deadline, today),
       ),
     limit: businessesPerPage,
     offset: (currentPage - 1) * businessesPerPage,
     orderBy: orderBy(sortBy),
+    with: {
+      investment: true,
+    },
   });
+
+  if (sortMethod === "no_investor") {
+    return result.sort((a, b) => {
+      return orderMethod === "asc"
+        ? a.investment.length - b.investment.length
+        : b.investment.length - a.investment.length;
+    });
+  }
+  return result;
 }
 
 export async function acceptUserStatus(businessID: number) {
