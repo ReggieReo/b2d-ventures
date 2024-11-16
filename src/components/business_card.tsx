@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { type business } from "~/server/db/schema";
 import { cn } from "~/lib/utils";
-import { getInvestmentByBusinessID, getLogoByBusinessID, getImageByBusinessID } from "~/server/fetchQuery";
+import { getInvestmentByBusinessID, getLogoByBusinessID, getImageByBusinessID, getBannerByBusinessID } from "~/server/fetchQuery";
 
 export default async function BusinessCard({
   cBusiness,
@@ -17,6 +17,7 @@ export default async function BusinessCard({
   const allInvestment = await getInvestmentByBusinessID(cBusiness.businessID);
   const logo = await getLogoByBusinessID(cBusiness.businessID);
   const image = await getImageByBusinessID(cBusiness.businessID);
+  const banner = await getBannerByBusinessID(cBusiness.businessID);
   const totalInvestment = allInvestment.reduce((acc, cur) => acc + cur.fund, 0);
 
   return (
@@ -24,7 +25,7 @@ export default async function BusinessCard({
       <CardHeader className="border-b">
         <div className="relative h-32 w-full">
           <Image
-            src={image?.[0]?.url ?? ""}
+            src={banner?.url ?? ""}
             alt="IP3 Banner"
             layout="fill"
             objectFit="cover"
