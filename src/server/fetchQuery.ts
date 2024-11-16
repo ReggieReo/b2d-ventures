@@ -255,3 +255,31 @@ export async function getTotalInvestmentCurrentMonth() {
 
   return totalInvestment;
 }
+
+export async function getTotalInvestmentCurrentWeek() {
+  const now = new Date();
+  const startOfWeek = new Date(
+    now.setDate(now.getDate() - now.getDay() + 1)
+  );
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  endOfWeek.setHours(23, 59, 59, 999);
+
+  const result = await db.query.investment.findMany({
+    where: (model, { and, gte, lte }) =>
+      and(
+        gte(model.createdAt, startOfWeek),
+        lte(model.createdAt, endOfWeek)
+      ),
+    columns: {
+      fund: true,
+    },
+  });
+
+  const totalInvestment = result.reduce((sum, record) => sum + record.fund, 0);
+
+  return totalInvestment;
+}
+
