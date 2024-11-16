@@ -1,7 +1,7 @@
 import { Sidebar } from "~/components/sidebar";
 import { InvestmentBarChart } from "~/components/bar_chart";
 import { RecentInvestments } from "~/components/investor_card";
-import { TotalInvestmentCard, InvestmentGrowthCard } from "~/components/investment_card";
+import { TotalInvestmentCard, InvestmentWeekCard } from "~/components/investment_card";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +15,7 @@ export default async function AdminPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TotalInvestmentCard />
-          <InvestmentGrowthCard />
+          <InvestmentWeekCard />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
