@@ -142,6 +142,11 @@ export function FundraisingForm() {
       deadline: new Date(Date.now()),
       media: [],
       dataroom: [],
+      problem: "",
+      solution: "",
+      stage: "",
+      team: "",
+      investors: "",
     },
     mode: "onChange",
   });
@@ -723,7 +728,146 @@ export function FundraisingForm() {
               </FormItem>
             )}
           />
-          
+
+          <FormField
+          control={form.control}
+          name="problem"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Problem</FormLabel>
+              <FormControl>
+                <Suspense fallback={null}>
+                  <EditorComp
+                    markdown={field.value}
+                    onChangeFn={field.onChange}
+                    trigger={() => trigger("problem")}
+                  />
+                </Suspense>
+              </FormControl>
+              <FormDescription>
+                Describe the problem or pain point your business is solving. What challenges do your customers face?
+              </FormDescription>
+              <FormMessage />
+              <input
+                type="hidden"
+                name="problem"
+                value={field.value}
+              />
+            </FormItem>
+          )}
+          />
+
+          <FormField
+          control={form.control}
+          name="solution"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Solution</FormLabel>
+              <FormControl>
+                <Suspense fallback={null}>
+                  <EditorComp
+                    markdown={field.value}
+                    onChangeFn={field.onChange}
+                    trigger={() => trigger("solution")}
+                  />
+                </Suspense>
+              </FormControl>
+              <FormDescription>
+                Explain your solution and how it addresses the problem. You can include images to showcase your product or service.
+              </FormDescription>
+              <FormMessage />
+              <input
+                type="hidden"
+                name="solution"
+                value={field.value}
+              />
+            </FormItem>
+          )}
+          />
+
+          <FormField
+          control={form.control}
+          name="stage"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Stage</FormLabel>
+              <FormControl>
+                <Suspense fallback={null}>
+                  <EditorComp
+                    markdown={field.value}
+                    onChangeFn={field.onChange}
+                    trigger={() => trigger("stage")}
+                  />  
+                </Suspense>
+              </FormControl>
+              <FormDescription>
+                What is your current business stage? (e.g., Idea, MVP, Growth) Include key metrics and milestones achieved.
+              </FormDescription>
+              <FormMessage />
+              <input
+                type="hidden"
+                name="stage"
+                value={field.value}
+              />
+            </FormItem>
+          )}
+          />
+
+          <FormField
+          control={form.control}
+          name="team"
+          render={({ field }) => (  
+            <FormItem>
+              <FormLabel>Team</FormLabel>
+              <FormControl>
+                <Suspense fallback={null}>
+                  <EditorComp
+                    markdown={field.value}
+                    onChangeFn={field.onChange}
+                    trigger={() => trigger("team")}
+                  />
+                </Suspense>
+              </FormControl>
+              <FormDescription>
+                Introduce your team members, their roles, and relevant experience. You can include team photos.
+              </FormDescription>
+              <FormMessage />
+              <input
+                type="hidden"
+                name="team"
+                value={field.value}
+              />
+            </FormItem>
+          )}
+          />
+
+          <FormField
+          control={form.control}
+          name="investors"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Investors (Optional)</FormLabel>
+              <FormControl>
+                <Suspense fallback={null}>
+                  <EditorComp
+                    markdown={field.value ?? ""}
+                    onChangeFn={field.onChange}
+                    trigger={() => trigger("investors")}
+                  />
+                </Suspense>
+              </FormControl>
+              <FormDescription>
+                List any current investors, advisors, or notable partnerships. You can include their logos if available.
+              </FormDescription>
+              <FormMessage />
+              <input
+                type="hidden"
+                name="investors"
+                value={field.value ?? ""}
+              />
+            </FormItem>
+          )}
+          />
           {/* DIALOG เด้งๆ */}
           <DialogCountdown />
         </form>

@@ -172,16 +172,89 @@ export async function BusinessDetail({
           role="tablist"
           aria-orientation="horizontal"
         >
-          <p className="self-centerhs-tab-active:font-semibold inline-flex items-center justify-start gap-x-2 border-b-2 border-transparent px-1 py-4 text-lg font-bold text-gray-500">
-            Pitch
-          </p>
+          <a
+            href="#problem"
+            className="inline-flex items-center border-b-2 border-transparent px-1 py-4 text-lg font-semibold text-gray-500 hover:border-gray-300 hover:text-gray-700"
+          >
+            Problem
+          </a>
+          <a
+            href="#solution"
+            className="inline-flex items-center border-b-2 border-transparent px-1 py-4 text-lg font-semibold text-gray-500 hover:border-gray-300 hover:text-gray-700"
+          >
+            Solution
+          </a>
+          <a
+            href="#stage"
+            className="inline-flex items-center border-b-2 border-transparent px-1 py-4 text-lg font-semibold text-gray-500 hover:border-gray-300 hover:text-gray-700"
+          >
+            Stage
+          </a>
+          <a
+            href="#team"
+            className="inline-flex items-center border-b-2 border-transparent px-1 py-4 text-lg font-semibold text-gray-500 hover:border-gray-300 hover:text-gray-700"
+          >
+            Team
+          </a>
+          {businessData.investors && (
+            <a
+              href="#investors"
+              className="inline-flex items-center border-b-2 border-transparent px-1 py-4 text-lg font-semibold text-gray-500 hover:border-gray-300 hover:text-gray-700"
+            >
+              Investors
+            </a>
+          )}
         </nav>
       </div>
 
       <div className="mx-auto mt-8 w-[80%]">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Main Content Section - Takes up 75% of the screen (3/4 of the 80%) */}
+          <div className="md:col-span-3 prose max-w-none space-y-8">
+            {/* Problem Section */}
+            <section id="problem">
+              <h2 className="text-2xl font-bold">Problem</h2>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {businessData.problem ?? "No problem statement available."}
+              </ReactMarkdown>
+            </section>
+
+            {/* Solution Section */}
+            <section id="solution">
+              <h2 className="text-2xl font-bold">Solution</h2>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {businessData.solution ?? "No solution description available."}
+              </ReactMarkdown>
+            </section>
+
+            {/* Stage Section */}
+            <section id="stage">
+              <h2 className="text-2xl font-bold">Stage</h2>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {businessData.stage ?? "No stage information available."}
+              </ReactMarkdown>
+            </section>
+
+            {/* Team Section */}
+            <section id="team">
+              <h2 className="text-2xl font-bold">Team</h2>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {businessData.team ?? "No team information available."}
+              </ReactMarkdown>
+            </section>
+
+            {/* Investors Section */}
+            {businessData.investors && (
+              <section id="investors">
+                <h2 className="text-2xl font-bold">Investors</h2>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {businessData.investors}
+                </ReactMarkdown>
+              </section>
+            )}
+          </div>
           {/* Company Details Section - Takes up 20% of the screen (1/4 of the 80%) */}
-          <div className="space-y-4">
+          <div className="space-y-4 sticky top-4 h-fit">
             <h3 className="text-2xl font-bold">Company Details</h3>
             
             <div className="space-y-2 bg-gray-50 rounded-lg p-4">

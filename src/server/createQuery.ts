@@ -52,6 +52,11 @@ export async function createBusiness(businessFromData: businessFromSchema) {
       valuation: businessFromData.valuation,
       deadline: businessFromData.deadline.toISOString(),
       industry: businessFromData.industry,
+      problem: businessFromData.problem,
+      solution: businessFromData.solution,
+      stage: businessFromData.stage,
+      team: businessFromData.team,
+      investors: businessFromData.investors || "",
     })
     .returning({ id: business.businessID });
 }

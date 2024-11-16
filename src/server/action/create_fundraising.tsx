@@ -59,6 +59,11 @@ export async function createFundraising(formData: FormData) {
     logo: logoData, // Use parsed logo object
     banner: bannerData,
     dataroom: dataroomData, // Use parsed dataroom array
+    problem: formData.get("problem"),
+    solution: formData.get("solution"),
+    stage: formData.get("stage"),
+    team: formData.get("team"),
+    investors: formData.get("investors"),
   });
 
   if (!validatedFields.success) {
