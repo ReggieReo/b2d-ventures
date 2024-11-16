@@ -46,13 +46,12 @@ export async function createBusiness(businessFromData: businessFromSchema) {
       company: businessFromData.company,
       slogan: businessFromData.slogan,
       website: businessFromData.website,
-      target_fund: businessFromData.target_fund,
+      target_stock: businessFromData.target_stock,
       min_investment: businessFromData.min_investment,
       allocation: businessFromData.allocation,
       valuation: businessFromData.valuation,
       deadline: businessFromData.deadline.toISOString(),
       industry: businessFromData.industry,
-      pitch: businessFromData.pitch,
     })
     .returning({ id: business.businessID });
 }
