@@ -16,7 +16,6 @@ import {
   getInvestmentByBusinessID,
   getRequestByID,
 } from "~/server/fetchQuery";
-import { redirect } from "next/navigation";
 
 import {
   DataroomRequestWithUser,
@@ -113,7 +112,7 @@ export default async function StartupDashboard() {
     (today.getTime() - dayStartFundRaise.getTime()) / (1000 * 60 * 60 * 24),
   );
 
-  const percentageFund = (totalInvestment / business.target_fund!) * 100;
+  const percentageFund = (totalInvestment / business.target_stock!) * 100;
 
   return (
     <main className="justify-left m-4 flex min-h-screen flex-col">
@@ -258,7 +257,7 @@ export default async function StartupDashboard() {
                 <div className={"flex flex-col"}>
                   <p className={"text-2xl"}>Target Fund</p>
                   <p className={"ml-3 text-3xl font-bold"}>
-                    {business.target_fund}
+                    {business.target_stock}
                   </p>
                 </div>
                 <div className={"flex flex-col"}>
