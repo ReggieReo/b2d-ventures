@@ -251,3 +251,11 @@ export async function getPendingFinancialStatements() {
     orderBy: (model, { desc }) => [desc(model.createdAt)],
   });
 }
+
+export async function getFinancialStatement(businessID: number) {
+  const user = auth();
+  if (!user) throw new Error("Unauthorized");
+  return db.query.media.findFirst({
+    where: (model, { eq, and }) => and(eq(model.type, "financial_statement"), eq(model.userID, user.userId!)),
+  });
+}

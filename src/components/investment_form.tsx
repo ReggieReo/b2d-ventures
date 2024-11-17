@@ -83,7 +83,7 @@ export function InvestingForm({
   logo,
 }: {
   businessData: typeof business.$inferSelect;
-  financialStatement: typeof media.$inferSelect;
+  financialStatement?: typeof media.$inferSelect;
   logo: typeof media.$inferSelect;
 }) {
 
