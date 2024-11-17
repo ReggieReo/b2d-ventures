@@ -14,7 +14,7 @@ import {
 import { RequestDataroomButton } from "~/components/businessDetailDataroomRequestButton";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { getDayUntilDeadline } from "~/utils/util";
+import { calculateStockPrice, getDayUntilDeadline } from "~/utils/util";
 
 export async function BusinessDetail({
   businessData,
@@ -33,9 +33,11 @@ export async function BusinessDetail({
     .flatMap((ob) => ob.fund)
     .reduce((a, b) => a + b, 0);
   const totalNumberOfInvester = allInvestment.length;
-  // const percentInvestment =
-  //   (totalInvestemntAmount / businessData.target_fund!) * 100;
+  const totalRaise = totalInvestemntAmount * calculateStockPrice(businessData.valuation!, businessData.target_stock!, businessData.allocation!);
+  const percentInvestment =
+    totalInvestemntAmount / businessData.target_stock! * 100;
   const daysToGo = getDayUntilDeadline(businessData.deadline!);
+  const isFullyFunded = totalInvestemntAmount >= businessData.target_stock!;
   
   return (
     <div className="font-geist-sans my-10 flex flex-col">
@@ -72,29 +74,32 @@ export async function BusinessDetail({
             Target Stock
           </div>
           <div className="text-3xl font-bold md:text-4xl">
-            {businessData.target_stock!.toLocaleString()} shares
+            {businessData.target_stock!.toLocaleString()} shares <span className="text-lg text-gray-500">(${calculateStockPrice(businessData.valuation!, businessData.target_stock!, businessData.allocation!).toLocaleString()} per share)</span>
           </div>
           {allInvestment.length > 0 ? (
             <>
               <div className="text-[24px] font-bold md:text-[28px]">
-                Fund Raised
+                Stock Raised
               </div>
               <div className="text-3xl font-bold md:text-4xl">
-                ${totalInvestemntAmount.toLocaleString()}
+                {totalInvestemntAmount.toLocaleString()} shares
+                <div className="text-lg text-gray-500">
+                  (${totalRaise.toLocaleString()})
+                </div>
               </div>
               <div className="text-sm text-gray-500 md:text-base">
-                {/* {`${percentInvestment}% raised of 100% of target fund.`} */}
+                {`${percentInvestment.toLocaleString()}% raised of 100% of target fund.`}
               </div>
               <div
                 className="my-3 h-2 w-full overflow-hidden rounded-full bg-gray-200"
                 role="progressbar"
-                // aria-valuenow={percentInvestment}
+                aria-valuenow={percentInvestment}
                 aria-valuemin={0}
                 aria-valuemax={100}
               >
                 <div
                   className="h-full bg-green-600" // You can change the color by modifying bg-blue-600
-                  // style={{ width: `${percentInvestment}%` }}
+                  style={{ width: `${percentInvestment}%` }}
                 ></div>
               </div>
               <div className="flex flex-row justify-evenly gap-5 md:flex-col">
@@ -131,9 +136,22 @@ export async function BusinessDetail({
           )}
           {daysToGo >= 0 ? (
             <div className={"grid gap-y-2"}>
-              <Link href={`/create_investment/${businessData.businessID}`}>
-                <button className="w-full rounded bg-blue-700 px-4 py-2 font-bold text-white hover:bg-blue-500">
-                  Invest in {businessData.company}
+              <Link 
+                href={`/create_investment/${businessData.businessID}`}
+                className={isFullyFunded ? 'pointer-events-none' : ''}
+              >
+                <button 
+                  className={`w-full rounded px-4 py-2 font-bold text-white ${
+                    isFullyFunded 
+                      ? 'bg-gray-700 cursor-not-allowed' 
+                      : 'bg-blue-700 hover:bg-blue-500'
+                  }`}
+                  disabled={isFullyFunded}
+                >
+                  {isFullyFunded 
+                    ? 'Fully Funded' 
+                    : `Invest in ${businessData.company}`
+                  }
                 </button>
               </Link>
               <Dialog>
@@ -159,9 +177,6 @@ export async function BusinessDetail({
               Invest in {businessData.company}
             </button>
           )}
-          <div className="mt-2 text-center text-sm text-gray-500">
-            {businessData.min_investment!.toLocaleString()}$ minimum investment
-          </div>
         </div>
       </div>
 

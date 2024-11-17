@@ -25,8 +25,9 @@ import { createInvestment } from "~/server/action/create_investment";
 import { type z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { media, type business } from "~/server/db/schema";
+import { investment, media, type business } from "~/server/db/schema";
 import { getInvestmentSchema } from "~/app/create_investment/schema";
+import { calculateStockPrice } from "~/utils/util";
 
 function DialogCountdown({ isFormValid }: { isFormValid: boolean }) {
   const [countdown, setCountdown] = useState(3);
@@ -81,10 +82,12 @@ export function InvestingForm({
   businessData,
   financialStatement,
   logo,
+  currentTotalPurchased,
 }: {
   businessData: typeof business.$inferSelect;
   financialStatement?: typeof media.$inferSelect;
   logo: typeof media.$inferSelect;
+  currentTotalPurchased: number;
 }) {
 
 
@@ -109,7 +112,11 @@ export function InvestingForm({
     businessData.businessID,
   );
 
-  const FormSchema = getInvestmentSchema(businessData.min_investment!);
+  const stockPrice = calculateStockPrice(businessData.valuation!, businessData.target_stock!, businessData.allocation!);
+  const remainingStocks = businessData.target_stock! - currentTotalPurchased;
+  const minStocks = 1;
+
+  const FormSchema = getInvestmentSchema(1, remainingStocks);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -118,25 +125,47 @@ export function InvestingForm({
       cardNumber: "",
       expirationDate: "",
       cvv: "",
-      amount: businessData.min_investment!,
+      amount: minStocks,
     },
     mode: "onBlur",
   });
 
   const isFormValid = form.formState.isValid && form.watch("terms");
+  const currentAmount = form.watch("amount") || 0;
+  const totalInvestmentAmount = currentAmount * stockPrice;
 
   return (
     <div className="font-geist-sans mx-auto max-w-lg pb-20">
       <div className="my-6 flex flex-row items-center justify-center gap-2">
         <img
           src={logo?.url ?? ""}
-          alt="B2D Ventures Logo"
+          alt="Company Logo"
           className="h-[60px] w-[60px]"
         />
         <h1 className="text-4xl font-bold">Invest in {businessData.company}</h1>
       </div>
       <div className="mt-6">
-        <h2 className="text-lg font-bold">Investment amount</h2>
+        <h2 className="text-lg font-bold">Investment details</h2>
+        <div className="mt-2 rounded-md bg-gray-50 p-4">
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <p className="text-gray-600">Stock price</p>
+              <p className="font-medium">${stockPrice.toLocaleString()}</p>
+            </div>
+            <div>
+              <p className="text-gray-600">Remaining stocks</p>
+              <p className="font-medium">{remainingStocks.toLocaleString()}</p>
+            </div>
+            <div>
+              <p className="text-gray-600">Minimum stocks</p>
+              <p className="font-medium">{minStocks.toLocaleString()}</p>
+            </div>
+            <div>
+              <p className="text-gray-600">Total investment</p>
+              <p className="font-medium">${totalInvestmentAmount.toLocaleString()}</p>
+            </div>
+          </div>
+        </div>
         <p className="mb-4 text-sm text-gray-600">
           Payments are processed immediately.
         </p>
@@ -147,9 +176,10 @@ export function InvestingForm({
               name="amount"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Number of stocks</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder={`Minimum investment ${businessData.min_investment!.toLocaleString()} $`}
+                      placeholder={`Minimum ${minStocks.toLocaleString()} stocks`}
                       className="p-4 text-lg"
                       type="number"
                       {...field}
