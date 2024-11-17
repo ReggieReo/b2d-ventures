@@ -1,10 +1,9 @@
 import "server-only";
 import { db } from "~/server/db";
 import { auth } from "@clerk/nextjs/server";
-import { business, investment } from "~/server/db/schema";
-import { eq, inArray } from "drizzle-orm";
+import { business, investment, user } from "~/server/db/schema";
+import { eq, inArray, desc, asc } from "drizzle-orm";
 import { industries } from "~/utils/enum/industryList";
-import { desc, asc } from "drizzle-orm";
 import { format, parseISO } from "date-fns";
 // user client -> ship js to the client but code still on the server
 // user server -> expose endpoint to the client
@@ -321,5 +320,43 @@ export async function getTotalInvestmentByMonth() {
   } catch (error) {
     console.error("Error fetching total investment by month:", error);
     throw new Error("Failed to fetch total investment by month");
+  }
+}
+
+export async function getMostRecentInvestment() {
+  try {
+    const result = await db.query.investment.findMany({
+      columns: {
+        fund: true,
+        createdAt: true,
+      },
+      with: {
+        user: {
+          columns: {
+            name: true,
+          },
+        },
+      },
+      orderBy: desc(investment.createdAt),
+      limit: 10,
+    });
+
+    if (!result || result.length === 0 || !result[0] || !result[0].user) {
+      return {
+        message: "No recent investments found or user data is missing.",
+      };
+    }
+
+    const recentInvestment = result[0];
+    const userName = recentInvestment.user ? recentInvestment.user.name : "Unknown User";
+
+    return {
+      userName,
+      amount: recentInvestment.fund,
+      date: recentInvestment.createdAt,
+    };
+  } catch (error) {
+    console.error("Error fetching most recent investment:", error);
+    throw new Error("Failed to fetch most recent investment");
   }
 }
