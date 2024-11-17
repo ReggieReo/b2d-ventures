@@ -103,6 +103,7 @@ export const ourFileRouter = {
         userID: metadata.userId ?? "",
         url: file.url,
         name: file.name,
+        status: 4,
         businessID: 1,
       });
       return { uploadedBy: metadata.userId };
