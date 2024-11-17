@@ -2,9 +2,9 @@ import "server-only";
 import { db } from "~/server/db";
 import { auth } from "@clerk/nextjs/server";
 import { business, investment, user } from "~/server/db/schema";
-import { eq, inArray, desc, asc } from "drizzle-orm";
+import { eq, inArray, desc, asc, gte, lte, and } from "drizzle-orm";
 import { industries } from "~/utils/enum/industryList";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, startOfWeek, endOfWeek } from "date-fns";
 // user client -> ship js to the client but code still on the server
 // user server -> expose endpoint to the client
 // running on the server
@@ -329,42 +329,29 @@ export async function getTotalInvestmentByMonth() {
   }
 }
 
-export async function getMostRecentInvestment() {
-  try {
-    const result = await db.query.investment.findMany({
-      columns: {
-        fund: true,
-        createdAt: true,
-      },
-      with: {
-        user: {
-          columns: {
-            name: true,
-          },
-        },
-      },
-      orderBy: desc(investment.createdAt),
-      limit: 10,
-    });
+export async function getRecentInvestmentsInCurrentWeek() {
+  const startDate = startOfWeek(new Date(), { weekStartsOn: 1 });
+  const endDate = endOfWeek(new Date(), { weekStartsOn: 1 });
 
-    if (!result || result.length === 0 || !result[0] || !result[0].user) {
-      return {
-        message: "No recent investments found or user data is missing.",
-      };
-    }
+  const recentInvestments = await db
+    .select({
+      name: user.name,
+      fund: investment.fund,
+      createdAt: investment.createdAt,
+      businessName: business.company,
+    })
+    .from(investment)
+    .innerJoin(user, eq(investment.userID, user.userID))
+    .innerJoin(business, eq(investment.businessID, business.businessID))
+    .where(
+      and(
+        gte(investment.createdAt, startDate),
+        lte(investment.createdAt, endDate)
+      )
+    )
+    .orderBy(desc(investment.createdAt));
 
-    const recentInvestment = result[0];
-    const userName = recentInvestment.user ? recentInvestment.user.name : "Unknown User";
-
-    return {
-      userName,
-      amount: recentInvestment.fund,
-      date: recentInvestment.createdAt,
-    };
-  } catch (error) {
-    console.error("Error fetching most recent investment:", error);
-    throw new Error("Failed to fetch most recent investment");
-  }
+  return recentInvestments;
 }
 
 export async function getPendingFinancialStatements() {
