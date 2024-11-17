@@ -366,6 +366,7 @@ export async function getMostRecentInvestment() {
     throw new Error("Failed to fetch most recent investment");
   }
 }
+
 export async function getPendingFinancialStatements() {
   return db.query.media.findMany({
     where: (model, { eq, and }) =>
