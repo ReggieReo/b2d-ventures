@@ -152,7 +152,6 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar />
 
       <main className="mt-10 flex-1 space-y-4 p-6">
         <div className="w-full">

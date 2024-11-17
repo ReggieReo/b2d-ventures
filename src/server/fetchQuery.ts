@@ -68,6 +68,12 @@ export async function getLogoByBusinessID(businessID: number) {
   });
 }
 
+export async function getFirstMediaByTypeAndUserID(type: string, userID: string) {
+  return db.query.media.findFirst({
+    where: (model, { eq, and }) => and(eq(model.type, type), eq(model.userID, userID))
+  });
+}
+
 export async function getBannerByBusinessID(businessID: number) {
   return db.query.media.findFirst({
     where: (model, { eq, and }) =>
@@ -176,7 +182,7 @@ export async function getAcceptBusinessesByKeyData(
           ),
           inArray(model.industry, industry),
         ),
-        gte(model.deadline, today),
+        gte(model.deadline, today.toISOString()),
       ),
     limit: businessesPerPage,
     offset: (currentPage - 1) * businessesPerPage,
@@ -360,3 +366,22 @@ export async function getMostRecentInvestment() {
     throw new Error("Failed to fetch most recent investment");
   }
 }
+export async function getPendingFinancialStatements() {
+  return db.query.media.findMany({
+    where: (model, { eq, and }) =>
+      and(
+        eq(model.type, "financial_statement"),
+        eq(model.status, 0)
+      ),
+    orderBy: (model, { desc }) => [desc(model.createdAt)],
+  });
+}
+
+export async function getFinancialStatement(businessID: number) {
+  const user = auth();
+  if (!user) throw new Error("Unauthorized");
+  return db.query.media.findFirst({
+    where: (model, { eq, and }) => and(eq(model.type, "financial_statement"), eq(model.userID, user.userId!)),
+  });
+}
+
