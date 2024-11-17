@@ -104,19 +104,24 @@ export const ourFileRouter = {
       });
       return { uploadedBy: metadata.userId };
     }),
-    financialStatementUploader: f({ pdf: { maxFileSize: "16MB", maxFileCount: 1 } })
+
+    financialStatementUploader: f({ pdf: { maxFileSize: "4MB", maxFileCount: 1 } })
     .middleware(async ({ req }) => {
       const user = auth();
       if (!user) throw new UploadThingError("Unauthorized");
       return { userId: user.userId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Upload complete for userId:", metadata.userId);
+      console.log("file", file);
       await db.insert(media).values({
         userID: metadata.userId ?? "",
         url: file.url,
         name: file.name,
         type: "financial_statement",
+        status: 0,
       });
+      console.log("insert complete");
       return { uploadedBy: metadata.userId };
     }),
 } satisfies FileRouter;

@@ -79,13 +79,14 @@ export const media = createTable("media", {
   mediaID: serial("mediaID").primaryKey(),
   businessID: serial("businessID").references(() => business.businessID, {
     onDelete: "cascade",
-  }),
+  }).default(1),
   userID: varchar("userID", { length: 256 }).references(() => user.userID, {
     onDelete: "cascade",
   }),
   url: varchar("url", { length: 1024 }).notNull(),
   name: varchar("name", { length: 256 }).notNull(),
   type: text("type"),
+  status: integer("status").default(0).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

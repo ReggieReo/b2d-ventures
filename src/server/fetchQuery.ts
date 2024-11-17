@@ -240,3 +240,14 @@ export async function getDataroomFiles(businessID: number) {
       and(eq(model.businessID, businessID), eq(model.type, "dataroom")),
   });
 }
+
+export async function getPendingFinancialStatements() {
+  return db.query.media.findMany({
+    where: (model, { eq, and }) =>
+      and(
+        eq(model.type, "financial_statement"),
+        eq(model.status, 0)
+      ),
+    orderBy: (model, { desc }) => [desc(model.createdAt)],
+  });
+}

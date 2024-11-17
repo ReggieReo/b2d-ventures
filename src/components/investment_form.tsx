@@ -88,12 +88,14 @@ export function InvestingForm({
 }) {
 
 
-  if (!financialStatement) {
+  if (!financialStatement || financialStatement.status !== 1) {
     return (
       <div className="max-w-lg mx-auto p-6">
         <h2 className="text-2xl font-bold mb-4">Financial Statement Required</h2>
         <p className="text-gray-600 mb-4">
-          Before you can invest, please upload your financial statement in your investment portfolio.
+          {!financialStatement 
+            ? "Before you can invest, please upload your financial statement in your investment portfolio."
+            : "Your financial statement is pending approval from our administrators. Please check back later."}
         </p>
         <Link href="/investment_portfolio">
           <Button className="w-full">Go to Investment Portfolio</Button>

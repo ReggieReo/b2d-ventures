@@ -1,11 +1,10 @@
 "use server";
 
 import { Resend } from 'resend';
-import { EmailTemplate } from '~/components/email_template';
+import { EmailTemplate, FinancialStatementApprovalEmail, FinancialStatementRejectionEmail } from '~/components/email_template';
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { getBusinessByID, getUserByID } from "~/server/fetchQuery";
 import { currentUser } from '@clerk/nextjs/server'
-
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -55,3 +54,53 @@ export async function sendDataroomApprovalEmail(
     };
   }
 } 
+
+export async function sendFinancialStatementEmail(
+  userID: string,
+  isApproved: boolean
+) {
+  try {
+    // Verify current user has permission to send this email
+    const cUser = await currentUser();
+    if (!cUser) {
+      throw new Error("Unauthorized");
+    }
+
+    console.log(`Sending financial statement ${isApproved ? 'approval' : 'rejection'} email to userID: `, userID);
+    
+    // Get user details
+    const user = await clerkClient().users.getUser(userID);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    console.log("Sending email to: ", user.emailAddresses[0]?.emailAddress ?? "");
+    
+    // Send email based on approval status
+    const data = await resend.emails.send({
+      from: 'B2D Venture <b2dventure-noreply@resend.dev>',
+      to: [user.emailAddresses[0]?.emailAddress ?? ""],
+      subject: isApproved 
+        ? "Your Financial Statement has been Approved" 
+        : "Financial Statement Review Update",
+      react: isApproved
+        ? FinancialStatementApprovalEmail({
+            firstName: user.firstName ?? "Investor",
+          }) as React.ReactElement
+        : FinancialStatementRejectionEmail({
+            firstName: user.firstName ?? "Investor",
+          }) as React.ReactElement,
+    });
+
+    console.log(data);
+    console.log("Email sent successfully");
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error sending financial statement email:', error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Failed to send email' 
+    };
+  }
+}
+

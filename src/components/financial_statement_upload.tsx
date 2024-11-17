@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { UploadButton } from "~/utils/uploadthings";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { useRouter } from "next/navigation";
 
 export function FinancialStatementUpload() {
   const [hasUploaded, setHasUploaded] = useState(false);
-
+  const router = useRouter();
   return (
     <Card className="w-full max-w-md">
       <CardHeader>
@@ -22,6 +23,7 @@ export function FinancialStatementUpload() {
             onClientUploadComplete={(res) => {
               setHasUploaded(true);
               alert("Financial statement uploaded successfully!");
+              router.refresh();
             }}
             onUploadError={(error: Error) => {
               alert(`Error uploading financial statement: ${error.message}`);
@@ -29,7 +31,7 @@ export function FinancialStatementUpload() {
           />
           {hasUploaded && (
             <p className="text-sm text-green-600">
-              Financial statement uploaded successfully! You can now proceed with investments.
+              Financial statement uploaded successfully! Please wait for admin approval before proceeding with investments. You will be notified by email once approved.
             </p>
           )}
         </div>

@@ -8,7 +8,6 @@ export const dynamic = "force-dynamic";
 export default async function AdminPage() {
   return (
     <div className="flex min-h-screen">
-      <Sidebar />
 
       <main className="flex-1 p-6 space-y-6 mt-10"> 
         <h1 className="text-3xl font-bold">Dashboard</h1>
