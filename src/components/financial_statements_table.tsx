@@ -11,17 +11,23 @@ import {
 } from "~/components/ui/table";
 import { Button } from "~/components/ui/button";
 import { media } from "~/server/db/schema";
+import { useRouter } from "next/navigation";
 import { approveFinancialStatement, rejectFinancialStatement } from "~/server/action/financial_statement_actions";
+import { toast } from "~/hooks/use-toast";
 
 export function FinancialStatementsTable({ statements }: { statements: typeof media.$inferSelect[] }) {
+  const router = useRouter();
   const handleApprove = async (mediaID: number) => {
     await approveFinancialStatement(mediaID);
-    window.location.reload();
+    router.refresh();
+    alert("Financial statement approved");
   };
+
 
   const handleReject = async (mediaID: number) => {
     await rejectFinancialStatement(mediaID);
-    window.location.reload();
+    router.refresh();
+    alert("Financial statement rejected");
   };
 
   return (
