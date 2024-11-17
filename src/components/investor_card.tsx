@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -6,75 +8,49 @@ import {
   CardDescription,
   CardContent,
 } from "~/components/ui/card";
+import { fetchMostRecentInvestmentAction } from "~/server/action/recent_investment";
+
+interface InvestmentData {
+  userName: string;
+  amount: number;
+  date: string;
+}
 
 export function RecentInvestments() {
-  const investments = [
-    {
-      name: "Olivia Martin",
-      email: "olivia.martin@email.com",
-      amount: "+$1,999.00",
-      seed: "Olivia Martin",
-    },
-    {
-      name: "Jackson Lee",
-      email: "jackson.lee@email.com",
-      amount: "+$1,999.00",
-      seed: "Jackson Lee",
-    },
-    {
-      name: "Isabella Nguyen",
-      email: "isabella.nguyen@email.com",
-      amount: "+$39.00",
-      seed: "Isabella Nguyen",
-    },
-    {
-      name: "William Kim",
-      email: "will@email.com",
-      amount: "+$299.00",
-      seed: "William Kim",
-    },
-    {
-      name: "Sofia Davis",
-      email: "sofia.davis@email.com",
-      amount: "+$39.00",
-      seed: "Sofia Davis",
-    },
-  ];
+  const [investment, setInvestment] = useState<InvestmentData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchInvestment = async () => {
+      try {
+        const response = await fetchMostRecentInvestmentAction();
+        if (response.status === 200) {
+          setInvestment(response.mostRecentInvestment);
+        } else {
+          setError("Failed to fetch recent investments");
+        }
+      } catch (e) {
+        setError("An error occurred while fetching data");
+      }
+    };
+
+    fetchInvestment();
+  }, []);
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Recent Investments</CardTitle>
-        <CardDescription>You made 265 investments this month.</CardDescription>
       </CardHeader>
       <CardContent>
-        <ul className="space-y-4">
-          {investments.map((investment, index) => (
-            <li
-              key={index}
-              className="flex items-center justify-between space-x-4"
-            >
-              <div className="flex items-center space-x-4">
-                <img
-                  src={`https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(investment.seed)}`}
-                  alt={investment.name}
-                  className="h-10 w-10 rounded-full"
-                />
-                <div>
-                  <p className="text-sm font-medium leading-none">
-                    {investment.name}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {investment.email}
-                  </p>
-                </div>
-              </div>
-              <div className="text-sm font-medium text-green-500">
-                {investment.amount}
-              </div>
-            </li>
-          ))}
-        </ul>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {investment && (
+          <div>
+            <p>Investment Name: {investment.userName}</p>
+            <p>Amount: ${investment.amount}</p>
+            <p>Date: {new Date(investment.date).toLocaleDateString()}</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
