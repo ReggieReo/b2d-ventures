@@ -1,16 +1,15 @@
 "use server";
 
-import { getMostRecentInvestment } from "~/server/fetchQuery";
+import { getRecentInvestmentsInCurrentWeek } from "~/server/fetchQuery";
 
-export async function fetchMostRecentInvestmentAction() {
-    try {
-      const mostRecentInvestment = await getMostRecentInvestment();
-      console.log("Most recent investment data:", mostRecentInvestment);
-  
-      return { status: 200, mostRecentInvestment };
-    } catch (error) {
-      console.error("Server action error:", error);
-      return { status: 500, message: "Internal server error" };
-    }
+export async function fetchRecentInvestmentsInCurrentWeekAction() {
+  try {
+    const recentInvestments = await getRecentInvestmentsInCurrentWeek();
+    console.log("Recent investments data:", recentInvestments);
+
+    return { status: 200, recentInvestments };
+  } catch (error) {
+    console.error("Server action error:", error);
+    return { status: 500, message: "Internal server error" };
   }
-  
+}
