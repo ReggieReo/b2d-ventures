@@ -13,12 +13,57 @@ import {
 } from "~/components/pie_chart";
 import { InvestmentHistoryTable } from "~/components/investment_history";
 import { auth } from "@clerk/nextjs/server";
-import { getInvestmentByUserID } from "~/server/fetchQuery";
+import { getFirstMediaByTypeAndUserID, getInvestmentByUserID } from "~/server/fetchQuery";
+import { FinancialStatementUpload } from "~/components/financial_statement_upload";
 
 export const dynamic = "force-dynamic";
 
 export default async function InvestorPortfolioPage() {
   const userID = auth().userId;
+  const financialStatement = await getFirstMediaByTypeAndUserID("financial_statement", userID!);
+
+  if (!financialStatement) {
+    return (
+      <div className="mb-8 flex flex-col items-center">
+        <div className="bg-yellow-50 p-4 rounded-md mb-4">
+          <p className="text-yellow-800">
+            Please upload your financial statement before making any investments.
+          </p>
+        </div>
+        <FinancialStatementUpload />
+      </div>
+    );
+  }
+
+  if (financialStatement.status === 0) {
+    return (
+      <div className="mb-8 flex flex-col items-center">
+        <div className="bg-blue-50 p-4 rounded-md mb-4">
+          <p className="text-blue-800">
+            Your financial statement is pending review by our administrators. 
+            We'll notify you once it's approved.
+          </p>
+        </div>
+        <div className="text-gray-600">
+          Uploaded on: {new Date(financialStatement.createdAt).toLocaleDateString()}
+        </div>
+      </div>
+    );
+  }
+
+  if (financialStatement.status === 2) {
+    return (
+      <div className="mb-8 flex flex-col items-center">
+        <div className="bg-red-50 p-4 rounded-md mb-4">
+          <p className="text-red-800">
+            Your financial statement was not approved. Please upload a new statement.
+          </p>
+        </div>
+        <FinancialStatementUpload />
+      </div>
+    );
+  }
+
   const allInvestment = await getInvestmentByUserID(userID!);
   const validatedInvestment: InvestmentWithBusiness[] = allInvestment.map(
     (inv) => ({

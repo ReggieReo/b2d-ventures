@@ -32,6 +32,7 @@ export const ourFileRouter = {
         url: file.url,
         name: file.name,
         businessID: 1,
+        status: 4,
       });
       console.log("insert complete");
       return { uploadedBy: metadata.userId };
@@ -57,6 +58,7 @@ export const ourFileRouter = {
         userID: metadata.userId ?? "",
         url: file.url,
         name: file.name,
+        status: 4,
         businessID: 1,
       });
       console.log("insert complete");
@@ -83,6 +85,7 @@ export const ourFileRouter = {
         userID: metadata.userId ?? "",
         url: file.url,
         name: file.name,
+        status: 4,
         businessID: 1,
       });
       console.log("insert complete");
@@ -100,9 +103,58 @@ export const ourFileRouter = {
         userID: metadata.userId ?? "",
         url: file.url,
         name: file.name,
+        status: 4,
         businessID: 1,
       });
       return { uploadedBy: metadata.userId };
+    }),
+
+    financialStatementUploader: f({ pdf: { maxFileSize: "4MB", maxFileCount: 1 } })
+    .middleware(async ({ req }) => {
+      console.log("Starting middleware processing...");
+      const user = auth();
+      console.log("Auth user:", user?.userId);
+      if (!user) throw new UploadThingError("Unauthorized");
+      console.log("Middleware completed successfully");
+      return { userId: user.userId };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      try {
+        console.log("Starting upload completion process...");
+        console.log("Upload complete for userId:", metadata.userId);
+        console.log("file", file);
+        
+        // Add validation
+        if (!metadata.userId) {
+          throw new Error("No userId in metadata");
+        }
+        
+        // Try inserting with explicit businessID handling
+        const result = await db.insert(media).values({
+          userID: metadata.userId,
+          url: file.url,
+          name: file.name,
+          type: "financial_statement",
+          status: 0,
+          businessID: 1, // Consider making this dynamic if needed
+        });
+        
+        console.log("Database insert result:", result);
+        console.log("Insert complete");
+        
+        // Return detailed response
+        return { 
+          success: true,
+          uploadedBy: metadata.userId,
+          fileDetails: {
+            url: file.url,
+            name: file.name
+          }
+        };
+      } catch (error) {
+        console.error("Error in onUploadComplete:", error);
+        throw error; // Re-throw to ensure uploadthing knows about the failure
+      }
     }),
 } satisfies FileRouter;
 

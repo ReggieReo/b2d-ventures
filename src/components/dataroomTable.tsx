@@ -18,7 +18,7 @@ import {
 import { RequestDataroomStatusEnum } from "~/utils/enum/requestDataroomStatusEnum";
 import * as React from "react";
 import {updateDataroomRequestAction} from "~/server/action/dataroom_request_action";
-
+import {sendDataroomApprovalEmail} from "~/server/action/send_dataroom_email_action";
 export type DataroomRequestWithUser = {
   requestID: number;
   userID: string;
@@ -58,8 +58,12 @@ export function DataroomTable({
               <Select
                 defaultValue={request.requestStatus.toString()}
                 onValueChange={
-                async(value) => {await updateDataroomRequestAction(request.businessID, request.userID, Number(value))}
-              }
+                async(value) => {
+                  await updateDataroomRequestAction(request.businessID, request.userID, Number(value))
+                  if (Number(value) === RequestDataroomStatusEnum.Accepted) {
+                    await sendDataroomApprovalEmail(request.userID, request.businessID) 
+                  }
+                }}
               >
                 <SelectTrigger className="w-[120px]">
                   <SelectValue placeholder={request.requestStatus.toString()} />
