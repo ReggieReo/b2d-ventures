@@ -66,7 +66,7 @@ function DialogCountdown({ isFormValid }: { isFormValid: boolean }) {
           <DialogTitle>Investing request has been sent.</DialogTitle>
           <DialogDescription>
             Redirecting you to your portfolio in {countdown} seconds.
-            <Link href="/startup_dashboard">
+            <Link href="/investment_portfolio">
               <Button className="mt-6 w-full bg-blue-500 py-3 text-lg font-semibold text-white hover:bg-blue-600">
                 Go to your portfolio
               </Button>
