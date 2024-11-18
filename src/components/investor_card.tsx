@@ -20,6 +20,8 @@ interface Investment {
 
 export function RecentInvestments() {
   const [investments, setInvestments] = useState<Investment[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 3;
 
   useEffect(() => {
     async function fetchData() {
@@ -41,10 +43,28 @@ export function RecentInvestments() {
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
+  };
+
+  const totalPages = Math.ceil(investments.length / itemsPerPage);
+  const paginatedInvestments = investments.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
   };
 
   return (
@@ -56,22 +76,26 @@ export function RecentInvestments() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {investments.length > 0 ? (
+        {paginatedInvestments.length > 0 ? (
           <ul className="space-y-4">
-            {investments.map((investment, index) => (
+            {paginatedInvestments.map((investment, index) => (
               <li
                 key={index}
                 className="flex flex-col border-b border-gray-200 py-4"
               >
-                <div className="flex justify-between items-center">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <p className="font-bold text-gray-900">{investment.name}</p>
-                    <p className="text-gray-500">{formatDate(investment.createdAt)}</p>
+                    <p className="text-gray-500">
+                      {formatDate(investment.createdAt)}
+                    </p>
                   </div>
                 </div>
-                <div className="flex justify-between items-center mt-2">
-                  <p className="text-gray-900 font-bold">{investment.businessName}</p>
-                  <p className="text-green-600 font-bold">
+                <div className="mt-2 flex items-center justify-between">
+                  <p className="font-bold text-gray-900">
+                    {investment.businessName}
+                  </p>
+                  <p className="font-bold text-green-600">
                     +${investment.fund.toLocaleString()}
                   </p>
                 </div>
@@ -82,6 +106,25 @@ export function RecentInvestments() {
           <p className="text-gray-500">No recent investments available</p>
         )}
       </CardContent>
+      <div className="mt-4 flex items-center justify-center">
+        <button
+          onClick={handlePreviousPage}
+          disabled={currentPage === 1}
+          className={`mr-4 rounded-md bg-white-300 border border-gray-300 px-3 py-1 ${currentPage === 1 ? "cursor-not-allowed opacity-50" : "hover:bg-gray-400"}`}
+        >
+          Previous
+        </button>
+        <span className="text-sm font-bold">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className={`ml-4 rounded-md bg-white-300 border border-gray-300 px-3 py-1 ${currentPage === totalPages ? "cursor-not-allowed opacity-50" : "hover:bg-gray-400"}`}
+        >
+          Next
+        </button>
+      </div>
     </Card>
   );
 }
