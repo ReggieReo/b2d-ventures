@@ -13,7 +13,7 @@ export async function TotalInvestmentCard() {
         </CardHeader>
         <CardContent>
           <p className="text-2xl font-bold">
-            ${totalInvestment !== null ? totalInvestment.toFixed(2) : "0.00"}
+            ${totalInvestment !== null ? totalInvestment.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00"}
           </p>
         </CardContent>
       </Card>
@@ -43,7 +43,7 @@ export async function InvestmentWeekCard() {
         </CardHeader>
         <CardContent>
           <p className="text-2xl font-bold">
-            ${totalInvestment !== null ? totalInvestment.toFixed(2) : "0.00"}
+            ${totalInvestment !== null ? totalInvestment.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00"}
           </p>
         </CardContent>
       </Card>
