@@ -15,6 +15,7 @@ import {
   getBusinessByUserIDExplicit,
 } from "~/server/fetchQuery";
 import { auth } from "@clerk/nextjs/server";
+import { Protect } from "@clerk/nextjs";
 
 function Logo() {
   return (
@@ -48,6 +49,12 @@ export async function TopNav() {
       <div className={"flex flex-row space-x-4"}>
         <Link href={"/api"}>{/*<div>asdf</div>*/}</Link>
         <div className={"flex flex-row gap-4"}>
+          {/* Admin */}
+          <Protect condition={(has) => has({ role: "org:admin" })}>
+            <Link className={"font-light"} href={"/admin"}>
+              Admin
+            </Link>
+          </Protect>
           <Link className={"font-light"} href={"/browse_business"}>
             Browse Business
           </Link>
@@ -55,9 +62,6 @@ export async function TopNav() {
             <SignInButton />
           </SignedOut>
           <SignedIn>
-            {/*<Link className={"font-light"} href={"/create_fundraising"}>*/}
-            {/*  Start Raising*/}
-            {/*</Link>*/}
             {!business && (
               <Link className={"font-light"} href={"/create_fundraising"}>
                 Start Raising

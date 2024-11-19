@@ -6,9 +6,7 @@ import { Badge } from "~/components/ui/badge";
 import { type business } from "~/server/db/schema";
 import { cn } from "~/lib/utils";
 import { getInvestmentByBusinessID, getLogoByBusinessID, getImageByBusinessID, getBannerByBusinessID } from "~/server/fetchQuery";
-import {getDayUntilDeadline} from "~/utils/util";
-
-
+import { getDayUntilDeadline, calculateStockPrice } from "~/utils/util";
 
 export default async function BusinessCard({
   cBusiness,
@@ -19,14 +17,19 @@ export default async function BusinessCard({
 }) {
   const allInvestment = await getInvestmentByBusinessID(cBusiness.businessID);
   const logo = await getLogoByBusinessID(cBusiness.businessID);
-  const image = await getImageByBusinessID(cBusiness.businessID);
   const banner = await getBannerByBusinessID(cBusiness.businessID);
-  const totalInvestment = allInvestment.reduce((acc, cur) => acc + cur.fund, 0);
-  const dayTillDeadline = getDayUntilDeadline(cBusiness.deadline!)
-  const countInvestment = allInvestment
-      .flatMap((investment) => investment || [])
-      .reduce((acc) => acc + 1, 0);
-
+  
+  const totalStocks = allInvestment.reduce((acc, cur) => acc + cur.fund, 0);
+  const remainingStocks = Math.max(0, cBusiness.target_stock! - totalStocks);
+  const stockPrice = calculateStockPrice(
+    cBusiness.valuation!,
+    cBusiness.target_stock!,
+    cBusiness.allocation!
+  );
+  const totalRaise = totalStocks * stockPrice;
+  const percentInvestment = (totalStocks / cBusiness.target_stock!) * 100;
+  const dayTillDeadline = getDayUntilDeadline(cBusiness.deadline!);
+  const countInvestment = allInvestment.length;
 
   return (
     <Card className={cn("relative w-full min-w-40 max-w-md", className)}>
@@ -51,38 +54,57 @@ export default async function BusinessCard({
         />
       </div>
 
-      {/*  des */}
       <CardContent className="content-start p-4 pt-6">
         <h2 className="mb-2 text-2xl font-bold">{cBusiness.company}</h2>
         <p className="mb-4 text-gray-600">
           {cBusiness.slogan}
         </p>
 
-        <div className={"flex flex-row gap-1"}>
-          <p className={"font-bold"}>${totalInvestment.toLocaleString()}</p>
-          <p>raise</p>
-        </div>
-        <div className={"flex flex-row gap-1"}>
-          <p className={"font-bold"}>
-            ${cBusiness.min_investment!.toLocaleString()}
-          </p>
-          <p>minimum investment</p>
-        </div>
-        <div className={"flex flex-row gap-1"}>
-          <p className={"font-bold"}>
-            {countInvestment}
-          </p>
-          <p>investment</p>
-        </div>
-        <div className={"flex flex-row gap-1"}>
-          <p className={"font-bold"}>
-            {dayTillDeadline}
-          </p>
-          <p>days till deadline</p>
+        <div className="space-y-2">
+          <div className="flex flex-row items-center gap-1">
+            <p className="font-bold">
+              ${totalRaise.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </p>
+            <p>raised</p>
+            <p className="ml-1 text-sm text-gray-500">
+              ({percentInvestment.toFixed(1)}% of target)
+            </p>
+          </div>
+
+          <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+            <div
+              className="h-full bg-green-600"
+              style={{ width: `${Math.min(percentInvestment, 100)}%` }}
+            />
+          </div>
+
+          <div className="flex flex-row gap-1">
+            <p className="font-bold">${stockPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+            <p>per share</p>
+          </div>
+
+          <div className="flex flex-row gap-1">
+            <p className="font-bold">{totalStocks.toLocaleString()}</p>
+            <p>shares purchased</p>
+          </div>
+
+          <div className="flex flex-row gap-1">
+            <p className="font-bold">{countInvestment}</p>
+            <p>investors</p>
+          </div>
+
+          <div className="flex flex-row gap-1">
+            <p className="font-bold">{remainingStocks.toLocaleString()}</p>
+            <p>shares remaining</p>
+          </div>
+
+          <div className="flex flex-row gap-1">
+            <p className="font-bold">{dayTillDeadline}</p>
+            <p>days till deadline</p>
+          </div>
         </div>
 
-        {/*  catagory */}
-        <div className="flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap gap-2">
           <Badge variant="secondary">{cBusiness.industry!.toUpperCase()}</Badge>
         </div>
       </CardContent>

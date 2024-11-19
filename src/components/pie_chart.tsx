@@ -18,6 +18,7 @@ import {
   ChartTooltipContent,
   ChartLegendContent,
 } from "~/components/ui/chart";
+import { calculateStockPrice } from "~/utils/util";
 
 const industryColors = {
   tech: "#3B82F6", // Soft blue
@@ -114,6 +115,9 @@ export type InvestmentWithBusiness = {
   business: {
     businessID: number;
     company: string;
+    valuation?: number;
+    target_stock?: number;
+    allocation?: number;
   } | null;
 };
 
@@ -137,33 +141,34 @@ export function InvestorPortPieChart({
 
   const aggregatedData = allInvestment.reduce(
     (acc, investment) => {
+      const investmentValue = investment.business?.valuation && 
+        investment.business?.target_stock && 
+        investment.business?.allocation
+        ? calculateStockPrice(
+            investment.business.valuation,
+            investment.business.target_stock,
+            investment.business.allocation
+          ) * investment.fund
+        : 0;
+
       if (acc[investment.industry]) {
-        acc[investment.industry]!.fund += investment.fund;
+        acc[investment.industry]!.value += investmentValue;
       } else {
         acc[investment.industry] = {
           industry: investment.industry,
-          fund: investment.fund,
-          fill:
-            industryColors[
-              investment.industry as keyof typeof industryColors
-            ] || "#ffffff",
+          value: investmentValue,
+          fill: industryColors[investment.industry as keyof typeof industryColors] || "#ffffff",
         };
       }
       return acc;
     },
-    {} as Record<string, { industry: string; fund: number; fill: string }>,
+    {} as Record<
+      string,
+      { industry: string; value: number; fill: string }
+    >,
   );
 
-  const industryCount = Object.keys(
-    allInvestment.reduce(
-      (acc, investment) => {
-        acc[investment.industry] = true;
-        return acc;
-      },
-      {} as Record<string, boolean>,
-    ),
-  ).length;
-
+  const industryCount = Object.keys(aggregatedData).length;
   const chartData = Object.values(aggregatedData);
 
   return (
@@ -171,7 +176,7 @@ export function InvestorPortPieChart({
       <CardHeader className="items-left pb-0">
         <CardTitle>Investment Visualization</CardTitle>
         <CardDescription>
-          A breakdown visualization of investment
+          A breakdown visualization of portfolio value by industry
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
@@ -182,11 +187,41 @@ export function InvestorPortPieChart({
           <PieChart>
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent hideLabel />}
+              content={({ payload }) => {
+                if (payload && payload[0]) {
+                  const data = payload[0].payload;
+                  return (
+                    <div className="rounded-lg border bg-background p-2 shadow-sm">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="flex flex-col">
+                          <span className="text-[0.70rem] uppercase text-muted-foreground">
+                            Industry
+                          </span>
+                          <span className="font-bold">
+                            {chartConfig[data.industry as keyof typeof chartConfig]?.label || data.industry}
+                          </span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[0.70rem] uppercase text-muted-foreground">
+                            Value
+                          </span>
+                          <span className="font-bold">
+                            ${data.value.toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              }}
             />
             <Pie
               data={chartData}
-              dataKey="fund"
+              dataKey="value"
               nameKey="industry"
               innerRadius={60}
             >
@@ -205,14 +240,14 @@ export function InvestorPortPieChart({
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {industryCount.toLocaleString()}
+                          {industryCount}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy ?? 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Industry
+                          Industries
                         </tspan>
                       </text>
                     );
