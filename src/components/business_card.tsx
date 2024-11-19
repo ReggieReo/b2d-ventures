@@ -20,6 +20,7 @@ export default async function BusinessCard({
   const banner = await getBannerByBusinessID(cBusiness.businessID);
   
   const totalStocks = allInvestment.reduce((acc, cur) => acc + cur.fund, 0);
+  const remainingStocks = Math.max(0, cBusiness.target_stock! - totalStocks);
   const stockPrice = calculateStockPrice(
     cBusiness.valuation!,
     cBusiness.target_stock!,
@@ -90,6 +91,11 @@ export default async function BusinessCard({
           <div className="flex flex-row gap-1">
             <p className="font-bold">{countInvestment}</p>
             <p>investors</p>
+          </div>
+
+          <div className="flex flex-row gap-1">
+            <p className="font-bold">{remainingStocks.toLocaleString()}</p>
+            <p>shares remaining</p>
           </div>
 
           <div className="flex flex-row gap-1">
