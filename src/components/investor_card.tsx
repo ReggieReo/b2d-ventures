@@ -9,13 +9,17 @@ import {
   CardContent,
 } from "~/components/ui/card";
 import { fetchRecentInvestmentsInCurrentWeekAction } from "~/server/action/recent_investment";
+import { investment } from '~/server/db/schema';
+import { calculateStockPrice } from '~/utils/util';
 
 // Define the type for the investment data
 interface Investment {
-  name: string;
+  name: string | null;
   fund: number;
-  createdAt: string;
-  businessName: string;
+  createdAt: Date;
+  allocation: number; 
+  valuation: number;
+  businessName: string | null;
 }
 
 export function RecentInvestments() {
@@ -29,7 +33,7 @@ export function RecentInvestments() {
         const response = await fetchRecentInvestmentsInCurrentWeekAction();
         if (response.status === 200) {
           console.log("Recent investments data:", response.recentInvestments);
-          setInvestments(response.recentInvestments);
+          setInvestments(response.recentInvestments as Investment[]);
         } else {
           console.error("Failed to fetch investments");
         }
@@ -87,7 +91,7 @@ export function RecentInvestments() {
                   <div className="flex items-center space-x-2">
                     <p className="font-bold text-gray-900">{investment.name}</p>
                     <p className="text-gray-500">
-                      {formatDate(investment.createdAt)}
+                      {formatDate(investment.createdAt.toLocaleString())}
                     </p>
                   </div>
                 </div>
@@ -96,7 +100,7 @@ export function RecentInvestments() {
                     {investment.businessName}
                   </p>
                   <p className="font-bold text-green-600">
-                    +${investment.fund.toLocaleString()}
+                    +${calculateStockPrice(investment.valuation, investment.allocation, investment.fund).toLocaleString()}
                   </p>
                 </div>
               </li>
