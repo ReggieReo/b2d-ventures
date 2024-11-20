@@ -8,9 +8,9 @@ import {
   CardDescription,
   CardContent,
 } from "~/components/ui/card";
-import { fetchRecentInvestmentsInCurrentWeekAction } from "~/server/action/recent_investment";
 import { investment } from "~/server/db/schema";
 import { calculateStockPrice } from "~/utils/util";
+import { fetchRecentInvestmentsInCurrentWeekAction } from "~/server/action/investment_action";
 
 // Define the type for the investment data
 interface Investment {
@@ -127,7 +127,7 @@ export function RecentInvestments() {
         )}
       </CardContent>
 
-      <div className="mt-4 mb-4 flex items-center justify-center">
+      <div className="mb-4 mt-4 flex items-center justify-center">
         <button
           onClick={handlePreviousPage}
           disabled={currentPage === 1}

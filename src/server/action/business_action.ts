@@ -1,18 +1,37 @@
 "use server";
 
+import {
+  acceptUserStatus,
+  createBusiness,
+  declineUserStatus,
+} from "~/server/repository/business_repository";
 import { formSchema } from "~/app/create_fundraising/schema";
-
 import {
   updateDataroomTypeByMediaURLe,
   updateMediaBannerTypeByMediaURLe,
   updateMediaImageTypeByMediaURLe,
   updateMediaLogoTypeByMediaURLe,
 } from "~/server/repository/media_repository";
-import { createBusiness } from "~/server/repository/business_repository";
+
+export async function approveBusinessAction(businessID: number) {
+  try {
+    const statusResult = await acceptUserStatus(businessID);
+
+    if (statusResult.success) {
+      return { status: 200, message: "User status updated successfully" };
+    } else {
+      return {
+        status: 500,
+        message: statusResult.error ?? "Failed to update user status",
+      };
+    }
+  } catch (error) {
+    console.error("Server action error:", error);
+    return { status: 500, message: "Internal server error" };
+  }
+}
 
 export async function createFundraising(formData: FormData) {
-  "use server";
-
   console.log("Creating fundraising with form data:", formData);
   // Parse JSON strings for media and logo
   let mediaData: unknown[] = [];
@@ -83,11 +102,11 @@ export async function createFundraising(formData: FormData) {
       id[0]!.id,
     );
     await updateMediaLogoTypeByMediaURLe(
-      validatedFields.data.logo!.url,
+      validatedFields.data.logo.url,
       id[0]!.id,
     );
     await updateMediaBannerTypeByMediaURLe(
-      validatedFields.data.banner!.url,
+      validatedFields.data.banner.url,
       id[0]!.id,
     );
     await updateDataroomTypeByMediaURLe(
@@ -103,5 +122,26 @@ export async function createFundraising(formData: FormData) {
         form: ["Failed to create business. Please try again."],
       },
     };
+  }
+}
+
+export async function declineBusinessAction(businessID: number) {
+  try {
+    const statusResult = await declineUserStatus(businessID);
+
+    if (statusResult.success) {
+      return {
+        status: 200,
+        message: "User status updated to 'declined' successfully",
+      };
+    } else {
+      return {
+        status: 500,
+        message: statusResult.error || "Failed to update user status",
+      };
+    }
+  } catch (error) {
+    console.error("Server action error:", error);
+    return { status: 500, message: "Internal server error" };
   }
 }

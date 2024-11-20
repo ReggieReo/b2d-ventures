@@ -21,7 +21,6 @@ import * as React from "react";
 import { z } from "zod";
 import { formSchema } from "~/app/create_fundraising/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createFundraising } from "~/server/action/create_fundraising";
 import { UploadButton } from "~/utils/uploadthings";
 import {
   Form,
@@ -74,6 +73,7 @@ import { industries } from "~/utils/enum/industryList";
 
 import dynamic from "next/dynamic";
 import { FileIcon } from "lucide-react";
+import { createFundraising } from "~/server/action/business_action";
 
 const EditorComp = dynamic(() => import("~/components/util/markdown_editor"), {
   ssr: false,

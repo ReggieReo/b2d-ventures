@@ -13,6 +13,7 @@ import { getBusinessByID } from "~/server/repository/business_repository";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// TODO: check if admin again
 export async function sendDataroomApprovalEmail(
   userID: string,
   businessID: number,

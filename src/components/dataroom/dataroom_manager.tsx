@@ -18,7 +18,7 @@ import {
   deleteDataroomFile,
   getDataroomFilesAction,
   updateDataroomFileType,
-} from "~/server/action/dataroom_action";
+} from "~/server/action/media_action";
 
 type DataroomFile = {
   mediaID: number;

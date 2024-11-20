@@ -24,9 +24,11 @@ import {
 } from "~/components/ui/table";
 import { business } from "~/server/db/schema";
 import InvestmentTable from "~/components/investment/investment_table";
-import { approveBusinessAction } from "~/server/action/approve_business";
-import { declineBusinessAction } from "~/server/action/decline_business";
 import { businessStatusEnum } from "~/utils/enum/businessStatusEnum";
+import {
+  approveBusinessAction,
+  declineBusinessAction,
+} from "~/server/action/business_action";
 
 export type Business = typeof business.$inferSelect;
 
