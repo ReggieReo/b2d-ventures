@@ -338,6 +338,8 @@ export async function getRecentInvestmentsInCurrentWeek() {
       name: user.name,
       fund: investment.fund,
       createdAt: investment.createdAt,
+      allocation: business.allocation,
+      valuation: business.valuation,
       businessName: business.company,
     })
     .from(investment)
