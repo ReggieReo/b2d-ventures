@@ -51,7 +51,7 @@ const userInvestmentData: UserInvestmentData[] = [
   },
 ];
 
-export const userInvestmentColumns: ColumnDef<UserInvestmentData>[] = [
+const userInvestmentColumns: ColumnDef<UserInvestmentData>[] = [
   {
     accessorKey: "userName",
     header: ({ column }) => {
