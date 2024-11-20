@@ -3,7 +3,7 @@ import { isCreditCard } from "validator";
 
 // const FormSchema =
 
-export function getInvestmentSchema(min_investment: number) {
+export function getInvestmentSchema(min_investment: number, max_investment: number) {
   return z.object({
     terms: z.boolean().default(false),
 
@@ -55,7 +55,10 @@ export function getInvestmentSchema(min_investment: number) {
         invalid_type_error: "Amount must be a number.",
       })
       .min(min_investment, {
-        message: `Minimum investment amount is ${min_investment} $`,
+        message: `Minimum stock amount is ${min_investment}`,
+      })
+      .max(max_investment, {
+        message: `Maximum stock amount is ${max_investment}`,
       })
       .positive({
         message: "Amount must be positive.",

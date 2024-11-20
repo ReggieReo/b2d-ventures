@@ -4,10 +4,13 @@ const isProtectedRoute = createRouteMatcher([
   "/create_fundraising",
   "/create_investment",
   "/investment_portfolio",
+  "/startup_dashboard",
 ]);
+const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 
 export default clerkMiddleware((auth, req) => {
   if (isProtectedRoute(req)) auth().protect();
+  if (isAdminRoute(req)) auth().protect({ role: "org:admin" });
 });
 
 export const config = {
