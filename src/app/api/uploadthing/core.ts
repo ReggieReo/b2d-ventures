@@ -10,7 +10,10 @@ const f = createUploadthing();
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
   // Define as many FileRoutes as you like, each with a unique routeSlug
-  imageUploader: f({"image/webp": { maxFileSize: "4MB", maxFileCount: 40}, "image/jpeg": { maxFileSize: "4MB", maxFileCount: 40}})
+  imageUploader: f({
+    "image/webp": { maxFileSize: "4MB", maxFileCount: 40 },
+    "image/jpeg": { maxFileSize: "4MB", maxFileCount: 40 },
+  })
     // Set permissions and file types for this FileRoute
     .middleware(async ({ req, input }) => {
       // This code runs on your server before upload
@@ -23,10 +26,6 @@ export const ourFileRouter = {
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.userId);
-      console.log(metadata.input, "test test");
-      console.log("file url", file.url);
-      console.log("writing to db");
       await db.insert(media).values({
         userID: metadata.userId ?? "",
         url: file.url,
@@ -34,11 +33,13 @@ export const ourFileRouter = {
         businessID: 1,
         status: 4,
       });
-      console.log("insert complete");
       return { uploadedBy: metadata.userId };
     }),
 
-  logoUploader: f({"image/webp": { maxFileSize: "512KB" }, "image/jpeg": { maxFileSize: "512KB" }})
+  logoUploader: f({
+    "image/webp": { maxFileSize: "512KB" },
+    "image/jpeg": { maxFileSize: "512KB" },
+  })
     .middleware(async ({ req, input }) => {
       // This code runs on your server before upload
       const user = auth();
@@ -50,10 +51,6 @@ export const ourFileRouter = {
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.userId);
-      console.log(metadata.input, "test test");
-      console.log("file url", file.url);
-      console.log("writing to db");
       await db.insert(media).values({
         userID: metadata.userId ?? "",
         url: file.url,
@@ -61,11 +58,13 @@ export const ourFileRouter = {
         status: 4,
         businessID: 1,
       });
-      console.log("insert complete");
       return { uploadedBy: metadata.userId };
     }),
 
-    bannerUploader: f({"image/webp": { maxFileSize: "2MB" }, "image/jpeg": { maxFileSize: "2MB" }})
+  bannerUploader: f({
+    "image/webp": { maxFileSize: "2MB" },
+    "image/jpeg": { maxFileSize: "2MB" },
+  })
     .middleware(async ({ req, input }) => {
       // This code runs on your server before upload
       const user = auth();
@@ -77,10 +76,6 @@ export const ourFileRouter = {
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.userId);
-      console.log(metadata.input, "test test");
-      console.log("file url", file.url);
-      console.log("writing to db");
       await db.insert(media).values({
         userID: metadata.userId ?? "",
         url: file.url,
@@ -88,13 +83,13 @@ export const ourFileRouter = {
         status: 4,
         businessID: 1,
       });
-      console.log("insert complete");
       return { uploadedBy: metadata.userId };
     }),
-    
+
   dataroomUploader: f({ pdf: { maxFileSize: "4MB", maxFileCount: 40 } })
     .middleware(async ({ req, input }) => {
       const user = auth();
+      // eslint-disable-next-line @typescript-eslint/only-throw-error
       if (!user) throw new UploadThingError("Unauthorized");
       return { userId: user.userId, input };
     })
@@ -109,26 +104,22 @@ export const ourFileRouter = {
       return { uploadedBy: metadata.userId };
     }),
 
-    financialStatementUploader: f({ pdf: { maxFileSize: "4MB", maxFileCount: 1 } })
+  financialStatementUploader: f({
+    pdf: { maxFileSize: "4MB", maxFileCount: 1 },
+  })
     .middleware(async ({ req }) => {
-      console.log("Starting middleware processing...");
       const user = auth();
-      console.log("Auth user:", user?.userId);
+      // eslint-disable-next-line @typescript-eslint/only-throw-error
       if (!user) throw new UploadThingError("Unauthorized");
-      console.log("Middleware completed successfully");
       return { userId: user.userId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       try {
-        console.log("Starting upload completion process...");
-        console.log("Upload complete for userId:", metadata.userId);
-        console.log("file", file);
-        
         // Add validation
         if (!metadata.userId) {
           throw new Error("No userId in metadata");
         }
-        
+
         // Try inserting with explicit businessID handling
         const result = await db.insert(media).values({
           userID: metadata.userId,
@@ -138,21 +129,17 @@ export const ourFileRouter = {
           status: 0,
           businessID: 1, // Consider making this dynamic if needed
         });
-        
-        console.log("Database insert result:", result);
-        console.log("Insert complete");
-        
+
         // Return detailed response
-        return { 
+        return {
           success: true,
           uploadedBy: metadata.userId,
           fileDetails: {
             url: file.url,
-            name: file.name
-          }
+            name: file.name,
+          },
         };
       } catch (error) {
-        console.error("Error in onUploadComplete:", error);
         throw error; // Re-throw to ensure uploadthing knows about the failure
       }
     }),
