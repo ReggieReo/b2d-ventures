@@ -1,6 +1,6 @@
 "use server";
 
-import { OrganizationSwitcher, SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -89,11 +89,6 @@ export async function TopNav() {
             </DropdownMenu>
             <UserButton />
           </SignedIn>
-          {
-            hasActiveOrg && (
-              <OrganizationSwitcher />
-            )
-          }
         </div>
       </div>
     </nav>
