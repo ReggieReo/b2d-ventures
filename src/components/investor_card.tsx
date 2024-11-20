@@ -127,7 +127,7 @@ export function RecentInvestments() {
         )}
       </CardContent>
 
-      <div className="mt-4 flex items-center justify-center">
+      <div className="mt-4 mb-4 flex items-center justify-center">
         <button
           onClick={handlePreviousPage}
           disabled={currentPage === 1}
