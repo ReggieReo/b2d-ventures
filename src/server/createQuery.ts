@@ -11,7 +11,10 @@ import {
 import { z } from "zod";
 import type { formSchema } from "~/app/create_fundraising/schema";
 import { and, eq, relations } from "drizzle-orm";
-import { getRequest, getRequestByUserIDAndBusinessID } from "~/server/fetchQuery";
+import {
+  getRequest,
+  getRequestByUserIDAndBusinessID,
+} from "~/server/fetchQuery";
 
 type businessFromSchema = z.infer<typeof formSchema>;
 
@@ -56,7 +59,7 @@ export async function createBusiness(businessFromData: businessFromSchema) {
       solution: businessFromData.solution,
       stage: businessFromData.stage,
       team: businessFromData.team,
-      investors: businessFromData.investors || "",
+      investors: businessFromData.investors ?? "",
     })
     .returning({ id: business.businessID });
 }
@@ -87,7 +90,10 @@ export async function updateDataroomRequest(
 
   if (!curUserID) throw new Error("Unauthorized");
 
-  const dataroomQueryResult = await getRequestByUserIDAndBusinessID(userID, businessID);
+  const dataroomQueryResult = await getRequestByUserIDAndBusinessID(
+    userID,
+    businessID,
+  );
 
   if (!dataroomQueryResult) throw new Error("No request was found");
 

@@ -132,8 +132,9 @@ export function InvestorPortPieChart({
         <CardHeader className="items-left pb-0">
           <CardTitle>Investment Visualization</CardTitle>
         </CardHeader>
-        <CardContent className="flex-1 pb-0 mt-8 text-center text-muted-foreground">
-          Your investment visualization will appear here once you make your first investment
+        <CardContent className="mt-8 flex-1 pb-0 text-center text-muted-foreground">
+          Your investment visualization will appear here once you make your
+          first investment
         </CardContent>
       </Card>
     );
@@ -141,15 +142,16 @@ export function InvestorPortPieChart({
 
   const aggregatedData = allInvestment.reduce(
     (acc, investment) => {
-      const investmentValue = investment.business?.valuation && 
-        investment.business?.target_stock && 
+      const investmentValue =
+        investment.business?.valuation &&
+        investment.business?.target_stock &&
         investment.business?.allocation
-        ? calculateStockPrice(
-            investment.business.valuation,
-            investment.business.target_stock,
-            investment.business.allocation
-          ) * investment.fund
-        : 0;
+          ? calculateStockPrice(
+              investment.business.valuation,
+              investment.business.target_stock,
+              investment.business.allocation,
+            ) * investment.fund
+          : 0;
 
       if (acc[investment.industry]) {
         acc[investment.industry]!.value += investmentValue;
@@ -157,15 +159,15 @@ export function InvestorPortPieChart({
         acc[investment.industry] = {
           industry: investment.industry,
           value: investmentValue,
-          fill: industryColors[investment.industry as keyof typeof industryColors] || "#ffffff",
+          fill:
+            industryColors[
+              investment.industry as keyof typeof industryColors
+            ] || "#ffffff",
         };
       }
       return acc;
     },
-    {} as Record<
-      string,
-      { industry: string; value: number; fill: string }
-    >,
+    {} as Record<string, { industry: string; value: number; fill: string }>,
   );
 
   const industryCount = Object.keys(aggregatedData).length;
@@ -188,7 +190,7 @@ export function InvestorPortPieChart({
             <ChartTooltip
               cursor={false}
               content={({ payload }) => {
-                if (payload && payload[0]) {
+                if (payload?.[0]) {
                   const data = payload[0].payload;
                   return (
                     <div className="rounded-lg border bg-background p-2 shadow-sm">
@@ -198,7 +200,9 @@ export function InvestorPortPieChart({
                             Industry
                           </span>
                           <span className="font-bold">
-                            {chartConfig[data.industry as keyof typeof chartConfig]?.label || data.industry}
+                            {chartConfig[
+                              data.industry as keyof typeof chartConfig
+                            ]?.label || data.industry}
                           </span>
                         </div>
                         <div className="flex flex-col">
@@ -206,7 +210,8 @@ export function InvestorPortPieChart({
                             Value
                           </span>
                           <span className="font-bold">
-                            ${data.value.toLocaleString(undefined, {
+                            $
+                            {data.value.toLocaleString(undefined, {
                               minimumFractionDigits: 2,
                               maximumFractionDigits: 2,
                             })}

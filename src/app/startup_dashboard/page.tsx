@@ -20,9 +20,9 @@ import {
 import {
   DataroomRequestWithUser,
   DataroomTable,
-} from "~/components/dataroomTable";
+} from "~/components/dataroom/dataroomTable";
 import Link from "next/link";
-import { DataroomManager } from "~/components/dataroom_manager";
+import { DataroomManager } from "~/components/dataroom/dataroom_manager";
 import { getDayUntilDeadline } from "~/utils/util";
 
 export const dynamic = "force-dynamic";
@@ -154,9 +154,9 @@ export default async function StartupDashboard() {
                 <div className={"flex flex-col"}>
                   <p className={"text-2xl"}>Day to go</p>
                   <div className={"ml-3 flex flex-col gap-2 lg:flex-row"}>
-                    <p className={"text-3xl font-bold"}>{
-                    daysToGo === 0 ? "Last day" : daysToGo
-                    }</p>
+                    <p className={"text-3xl font-bold"}>
+                      {daysToGo === 0 ? "Last day" : daysToGo}
+                    </p>
                     <p>({daysSinceStart} days from start)</p>
                   </div>
                 </div>

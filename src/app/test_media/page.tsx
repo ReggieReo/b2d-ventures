@@ -4,7 +4,7 @@ import {
   LogoUploadButton,
   TestBut,
   UploadButtonCom,
-} from "~/components/uploadbuttton";
+} from "~/components/util/uploadbuttton";
 import { getAllImages } from "~/server/fetchQuery";
 import Image from "next/image";
 import { UploadButton } from "~/utils/uploadthings";

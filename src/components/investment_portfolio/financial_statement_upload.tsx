@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { UploadButton } from "~/utils/uploadthings";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { useRouter } from "next/navigation";
 
 export function FinancialStatementUpload() {
@@ -16,7 +16,8 @@ export function FinancialStatementUpload() {
       <CardContent>
         <div className="space-y-4">
           <p className="text-sm text-gray-500">
-            Please upload your financial statement (PDF format) before making any investments.
+            Please upload your financial statement (PDF format) before making
+            any investments.
           </p>
           <UploadButton
             endpoint="financialStatementUploader"
@@ -33,7 +34,9 @@ export function FinancialStatementUpload() {
           />
           {hasUploaded && (
             <p className="text-sm text-green-600">
-              Financial statement uploaded successfully! Please wait for admin approval before proceeding with investments. You will be notified by email once approved.
+              Financial statement uploaded successfully! Please wait for admin
+              approval before proceeding with investments. You will be notified
+              by email once approved.
             </p>
           )}
         </div>

@@ -1,7 +1,7 @@
 "use server";
 import { type business, type investment, type media } from "~/server/db/schema";
 import Image from "next/image";
-import Gallery from "~/components/carousel_with_thumbnail";
+import Gallery from "~/components/ui/carousel_with_thumbnail";
 import Link from "next/link";
 import {
   Dialog,
@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { RequestDataroomButton } from "~/components/businessDetailDataroomRequestButton";
+import { RequestDataroomButton } from "~/components/business/business_detail_dataroom_request_button";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { calculateStockPrice, getDayUntilDeadline } from "~/utils/util";
@@ -33,12 +33,18 @@ export async function BusinessDetail({
     .flatMap((ob) => ob.fund)
     .reduce((a, b) => a + b, 0);
   const totalNumberOfInvester = allInvestment.length;
-  const totalRaise = totalInvestemntAmount * calculateStockPrice(businessData.valuation!, businessData.target_stock!, businessData.allocation!);
+  const totalRaise =
+    totalInvestemntAmount *
+    calculateStockPrice(
+      businessData.valuation!,
+      businessData.target_stock!,
+      businessData.allocation!,
+    );
   const percentInvestment =
-    totalInvestemntAmount / businessData.target_stock! * 100;
+    (totalInvestemntAmount / businessData.target_stock!) * 100;
   const daysToGo = getDayUntilDeadline(businessData.deadline!);
   const isFullyFunded = totalInvestemntAmount >= businessData.target_stock!;
-  
+
   return (
     <div className="font-geist-sans my-10 flex flex-col">
       <div className="flex flex-col place-content-center gap-10 md:flex-row">
@@ -74,7 +80,16 @@ export async function BusinessDetail({
             Target Stock
           </div>
           <div className="text-3xl font-bold md:text-4xl">
-            {businessData.target_stock!.toLocaleString()} shares <span className="text-lg text-gray-500">(${calculateStockPrice(businessData.valuation!, businessData.target_stock!, businessData.allocation!).toLocaleString()} per share)</span>
+            {businessData.target_stock!.toLocaleString()} shares{" "}
+            <span className="text-lg text-gray-500">
+              ($
+              {calculateStockPrice(
+                businessData.valuation!,
+                businessData.target_stock!,
+                businessData.allocation!,
+              ).toLocaleString()}{" "}
+              per share)
+            </span>
           </div>
           {allInvestment.length > 0 ? (
             <>
@@ -136,22 +151,21 @@ export async function BusinessDetail({
           )}
           {daysToGo >= 0 ? (
             <div className={"grid gap-y-2"}>
-              <Link 
+              <Link
                 href={`/create_investment/${businessData.businessID}`}
-                className={isFullyFunded ? 'pointer-events-none' : ''}
+                className={isFullyFunded ? "pointer-events-none" : ""}
               >
-                <button 
+                <button
                   className={`w-full rounded px-4 py-2 font-bold text-white ${
-                    isFullyFunded 
-                      ? 'bg-gray-700 cursor-not-allowed' 
-                      : 'bg-blue-700 hover:bg-blue-500'
+                    isFullyFunded
+                      ? "cursor-not-allowed bg-gray-700"
+                      : "bg-blue-700 hover:bg-blue-500"
                   }`}
                   disabled={isFullyFunded}
                 >
-                  {isFullyFunded 
-                    ? 'Fully Funded' 
-                    : `Invest in ${businessData.company}`
-                  }
+                  {isFullyFunded
+                    ? "Fully Funded"
+                    : `Invest in ${businessData.company}`}
                 </button>
               </Link>
               <Dialog>
@@ -223,9 +237,9 @@ export async function BusinessDetail({
       </div>
 
       <div className="mx-auto mt-8 w-[80%]">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           {/* Main Content Section - Takes up 75% of the screen (3/4 of the 80%) */}
-          <div className="md:col-span-3 prose max-w-none space-y-8">
+          <div className="prose max-w-none space-y-8 md:col-span-3">
             {/* Problem Section */}
             <section id="problem">
               <h2 className="text-2xl font-bold">Problem</h2>
@@ -269,38 +283,38 @@ export async function BusinessDetail({
             )}
           </div>
           {/* Company Details Section - Takes up 20% of the screen (1/4 of the 80%) */}
-          <div className="space-y-4 sticky top-4 h-fit">
+          <div className="sticky top-4 h-fit space-y-4">
             <h3 className="text-2xl font-bold">Company Details</h3>
-            
-            <div className="space-y-2 bg-gray-50 rounded-lg p-4">
-              <div className="flex justify-between items-center border-b py-2">
+
+            <div className="space-y-2 rounded-lg bg-gray-50 p-4">
+              <div className="flex items-center justify-between border-b py-2">
                 <span className="text-gray-600">Valuation</span>
                 <span className="font-semibold">
-                  ${businessData.valuation?.toLocaleString() ?? 'N/A'}
+                  ${businessData.valuation?.toLocaleString() ?? "N/A"}
                 </span>
               </div>
-              
-              <div className="flex justify-between items-center border-b py-2">
+
+              <div className="flex items-center justify-between border-b py-2">
                 <span className="text-gray-600">Allocation</span>
                 <span className="font-semibold">
-                  {businessData.allocation ?? 'N/A'}%
+                  {businessData.allocation ?? "N/A"}%
                 </span>
               </div>
-              
-              <div className="flex justify-between items-center border-b py-2">
+
+              <div className="flex items-center justify-between border-b py-2">
                 <span className="text-gray-600">Industry</span>
                 <span className="font-semibold">
-                  {businessData.industry ?? 'N/A'}
+                  {businessData.industry ?? "N/A"}
                 </span>
               </div>
-              
-              <div className="flex justify-between items-center py-2">
+
+              <div className="flex items-center justify-between py-2">
                 <span className="text-gray-600">Website</span>
-                <a 
-                  href={businessData.website ?? '#'} 
-                  target="_blank" 
+                <a
+                  href={businessData.website ?? "#"}
+                  target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline font-semibold"
+                  className="font-semibold text-blue-600 hover:underline"
                 >
                   Visit
                 </a>

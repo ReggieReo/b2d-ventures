@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Sidebar } from "~/components/sidebar";
+import { Sidebar } from "~/components/browsing/sidebar";
 import {
   ColumnDef,
   SortingState,
@@ -23,25 +23,37 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import { business } from "~/server/db/schema";
-import InvestmentTable from "~/components/investment_table";
+import InvestmentTable from "~/components/investment/investment_table";
 import { approveBusinessAction } from "~/server/action/approve_business";
 import { declineBusinessAction } from "~/server/action/decline_business";
 import { businessStatusEnum } from "~/utils/enum/businessStatusEnum";
 
 export type Business = typeof business.$inferSelect;
 
-export default function CampaignApprovalTable({ data: initialData }: { data: Business[] }) {
-  const filteredData = initialData.filter(campaign => campaign.business_status === businessStatusEnum.pending);
+export default function CampaignApprovalTable({
+  data: initialData,
+}: {
+  data: Business[];
+}) {
+  const filteredData = initialData.filter(
+    (campaign) => campaign.business_status === businessStatusEnum.pending,
+  );
   const [data, setData] = React.useState<Business[]>(filteredData);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const router = useRouter();
 
   const handleApprove = async (rowData: Business) => {
-    if (confirm(`Are you sure you want to approve the campaign for ${rowData.company}?`)) {
+    if (
+      confirm(
+        `Are you sure you want to approve the campaign for ${rowData.company}?`,
+      )
+    ) {
       try {
         const result = await approveBusinessAction(Number(rowData.businessID));
         if (result.status === 200) {
-          setData((prevData) => prevData.filter(item => item.businessID !== rowData.businessID));
+          setData((prevData) =>
+            prevData.filter((item) => item.businessID !== rowData.businessID),
+          );
           router.refresh();
         } else {
           alert(`Error: ${result.message}`);
@@ -54,11 +66,17 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
   };
 
   const handleDecline = async (rowData: Business) => {
-    if (confirm(`Are you sure you want to decline the campaign for ${rowData.company}?`)) {
+    if (
+      confirm(
+        `Are you sure you want to decline the campaign for ${rowData.company}?`,
+      )
+    ) {
       try {
         const result = await declineBusinessAction(Number(rowData.businessID));
         if (result.status === 200) {
-          setData((prevData) => prevData.filter(item => item.businessID !== rowData.businessID));
+          setData((prevData) =>
+            prevData.filter((item) => item.businessID !== rowData.businessID),
+          );
           router.refresh();
         } else {
           alert(`Error: ${result.message}`);
@@ -82,7 +100,9 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => <div className="text-center">{row.getValue("company")}</div>,
+      cell: ({ row }) => (
+        <div className="text-center">{row.getValue("company")}</div>
+      ),
     },
     {
       accessorKey: "website",
@@ -101,7 +121,9 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
     {
       accessorKey: "industry",
       header: "Industry",
-      cell: ({ row }) => <div className="text-center">{row.getValue("industry")}</div>,
+      cell: ({ row }) => (
+        <div className="text-center">{row.getValue("industry")}</div>
+      ),
     },
     {
       accessorKey: "target_stock",
@@ -115,22 +137,27 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
     {
       accessorKey: "allocation",
       header: "Allocation",
-      cell: ({ row }) => <div className="text-center">{row.getValue("allocation")}</div>,
+      cell: ({ row }) => (
+        <div className="text-center">{row.getValue("allocation")}</div>
+      ),
     },
     {
       accessorKey: "deadline",
       header: "Deadline",
-      cell: ({ row }) => <div className="text-center">{row.getValue("deadline")}</div>,
+      cell: ({ row }) => (
+        <div className="text-center">{row.getValue("deadline")}</div>
+      ),
     },
     {
       id: "actions",
       header: "Actions",
       cell: ({ row }) => (
         <div className="flex justify-center space-x-2">
-          <Button onClick={() => handleApprove(row.original)}>
-            Approve
-          </Button>
-          <Button variant="destructive" onClick={() => handleDecline(row.original)}>
+          <Button onClick={() => handleApprove(row.original)}>Approve</Button>
+          <Button
+            variant="destructive"
+            onClick={() => handleDecline(row.original)}
+          >
             Decline
           </Button>
         </div>
@@ -152,10 +179,11 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
 
   return (
     <div className="flex min-h-screen">
-
       <main className="mt-10 flex-1 space-y-4 p-6">
         <div className="w-full">
-          <h2 className="mb-2 text-2xl font-bold">Fundraising Campaign Approval</h2>
+          <h2 className="mb-2 text-2xl font-bold">
+            Fundraising Campaign Approval
+          </h2>
           <div className="rounded-md border">
             <Table>
               <TableHeader>
@@ -165,7 +193,10 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
                       <TableHead key={header.id} className="text-center">
                         {header.isPlaceholder
                           ? null
-                          : flexRender(header.column.columnDef.header, header.getContext())}
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
                       </TableHead>
                     ))}
                   </TableRow>
@@ -177,14 +208,20 @@ export default function CampaignApprovalTable({ data: initialData }: { data: Bus
                     <TableRow key={row.id}>
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id} className="text-center">
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
                         </TableCell>
                       ))}
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={campaignColumns.length} className="h-24 text-center">
+                    <TableCell
+                      colSpan={campaignColumns.length}
+                      className="h-24 text-center"
+                    >
                       No results.
                     </TableCell>
                   </TableRow>

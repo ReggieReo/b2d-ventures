@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import React from "react";
 import { redirect } from "next/navigation";
-import Gallery from "~/components/carousel_with_thumbnail";
+import Gallery from "~/components/ui/carousel_with_thumbnail";
 import {
   getRequest,
   getBusinessByID,
@@ -14,7 +14,7 @@ import {
 } from "~/server/fetchQuery";
 import { auth } from "@clerk/nextjs/server";
 import { RequestDataroomStatusEnum } from "~/utils/enum/requestDataroomStatusEnum";
-import { BusinessDetail } from "~/components/businessDetail";
+import { BusinessDetail } from "~/components/business/businessDetail";
 
 async function getRequestStatus(business: number, curUserID?: string) {
   if (!curUserID) {

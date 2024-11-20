@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Sidebar } from "~/components/sidebar";
+import { Sidebar } from "~/components/browsing/sidebar";
 import {
   ColumnDef,
   SortingState,
@@ -104,7 +104,9 @@ export const userInvestmentColumns: ColumnDef<UserInvestmentData>[] = [
 
 const handleApproveInvestment = (rowData: UserInvestmentData) => {
   console.log(`Confirming investment for:`, rowData);
-  alert(`Investment for ${rowData.userName} in ${rowData.companyName} has been confirmed.`);
+  alert(
+    `Investment for ${rowData.userName} in ${rowData.companyName} has been confirmed.`,
+  );
 };
 
 export default function DataTableWithUserInvestments() {
@@ -128,10 +130,9 @@ export default function DataTableWithUserInvestments() {
 
   return (
     <div className="flex min-h-screen">
-
-      <main className="flex-1 p-6 space-y-6 mt-10">
+      <main className="mt-10 flex-1 space-y-6 p-6">
         <div className="w-full">
-          <h2 className="text-2xl font-bold mb-4">Confirm User Investments</h2>
+          <h2 className="mb-4 text-2xl font-bold">Confirm User Investments</h2>
           <div className="rounded-md border">
             <Table>
               <TableHeader>
@@ -144,7 +145,7 @@ export default function DataTableWithUserInvestments() {
                             ? null
                             : flexRender(
                                 header.column.columnDef.header,
-                                header.getContext()
+                                header.getContext(),
                               )}
                         </TableHead>
                       );
@@ -160,7 +161,7 @@ export default function DataTableWithUserInvestments() {
                         <TableCell key={cell.id}>
                           {flexRender(
                             cell.column.columnDef.cell,
-                            cell.getContext()
+                            cell.getContext(),
                           )}
                         </TableCell>
                       ))}

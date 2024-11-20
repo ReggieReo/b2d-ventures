@@ -1,23 +1,25 @@
-import { Sidebar } from "~/components/sidebar";
-import { InvestmentBarChart } from "~/components/bar_chart";
-import { RecentInvestments } from "~/components/investor_card";
-import { TotalInvestmentCard, InvestmentWeekCard } from "~/components/investment_card";
+import { Sidebar } from "~/components/browsing/sidebar";
+import { InvestmentBarChart } from "~/components/investment_portfolio/bar_chart";
+import { RecentInvestments } from "~/components/admin/investor_card";
+import {
+  TotalInvestmentCard,
+  InvestmentWeekCard,
+} from "~/components/investment/investment_card";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
   return (
     <div className="flex min-h-screen">
-
-      <main className="flex-1 p-6 space-y-6 mt-10"> 
+      <main className="mt-10 flex-1 space-y-6 p-6">
         <h1 className="text-3xl font-bold">Dashboard</h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <TotalInvestmentCard />
           <InvestmentWeekCard />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <InvestmentBarChart />
           <RecentInvestments />
         </div>

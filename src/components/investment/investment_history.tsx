@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { InvestmentWithBusiness } from "~/components/pie_chart";
+import { InvestmentWithBusiness } from "~/components/util/pie_chart";
 import { calculateStockPrice } from "~/utils/util";
 
 export function InvestmentHistoryTable({
@@ -19,17 +19,21 @@ export function InvestmentHistoryTable({
   const totalStocks = allInvestment
     .flatMap((investment) => investment.fund || [])
     .reduce((acc, val) => acc + val, 0);
-  
+
   const totalInvestmentValue = allInvestment.reduce((acc, investment) => {
-    if (!investment.business?.valuation || !investment.business?.target_stock || !investment.business?.allocation) {
+    if (
+      !investment.business?.valuation ||
+      !investment.business?.target_stock ||
+      !investment.business?.allocation
+    ) {
       return acc;
     }
     const stockPrice = calculateStockPrice(
       investment.business.valuation,
       investment.business.target_stock,
-      investment.business.allocation
+      investment.business.allocation,
     );
-    return acc + (stockPrice * investment.fund);
+    return acc + stockPrice * investment.fund;
   }, 0);
 
   return (
@@ -47,14 +51,17 @@ export function InvestmentHistoryTable({
       </TableHeader>
       <TableBody>
         {allInvestment.map((inv) => {
-          const stockPrice = inv.business?.valuation && inv.business?.target_stock && inv.business?.allocation
-            ? calculateStockPrice(
-                inv.business.valuation,
-                inv.business.target_stock,
-                inv.business.allocation
-              )
-            : 0;
-          
+          const stockPrice =
+            inv.business?.valuation &&
+            inv.business?.target_stock &&
+            inv.business?.allocation
+              ? calculateStockPrice(
+                  inv.business.valuation,
+                  inv.business.target_stock,
+                  inv.business.allocation,
+                )
+              : 0;
+
           const investmentValue = stockPrice * inv.fund;
           const ownershipPercentage = inv.business?.valuation
             ? (investmentValue / inv.business.valuation) * 100
@@ -68,10 +75,18 @@ export function InvestmentHistoryTable({
                 {inv.fund.toLocaleString()}
               </TableCell>
               <TableCell className="text-right">
-                ${stockPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                $
+                {stockPrice.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </TableCell>
               <TableCell className="text-right">
-                ${investmentValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                $
+                {investmentValue.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </TableCell>
               <TableCell className="text-right">
                 {ownershipPercentage.toFixed(2)}%
@@ -83,10 +98,16 @@ export function InvestmentHistoryTable({
       <TableFooter>
         <TableRow>
           <TableCell colSpan={3}>Total</TableCell>
-          <TableCell className="text-right">{totalStocks.toLocaleString()}</TableCell>
+          <TableCell className="text-right">
+            {totalStocks.toLocaleString()}
+          </TableCell>
           <TableCell />
           <TableCell className="text-right">
-            ${totalInvestmentValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            $
+            {totalInvestmentValue.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </TableCell>
           <TableCell />
         </TableRow>

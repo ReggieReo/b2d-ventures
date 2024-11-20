@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { UploadButton } from "~/utils/uploadthings";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   Table,
   TableBody,
@@ -11,10 +11,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
+} from "../ui/table";
 import { FileIcon, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {  deleteDataroomFile, getDataroomFilesAction, updateDataroomFileType } from "~/server/action/dataroom_action";
+import {
+  deleteDataroomFile,
+  getDataroomFilesAction,
+  updateDataroomFileType,
+} from "~/server/action/dataroom_action";
 
 type DataroomFile = {
   mediaID: number;
@@ -39,7 +43,7 @@ export function DataroomManager({ businessId }: { businessId: number }) {
     if (confirm("Are you sure you want to remove this file?")) {
       try {
         await deleteDataroomFile(mediaId);
-        setFiles(files.filter(file => file.mediaID !== mediaId));
+        setFiles(files.filter((file) => file.mediaID !== mediaId));
         router.refresh();
       } catch (error) {
         console.error("Error removing file:", error);
@@ -54,14 +58,17 @@ export function DataroomManager({ businessId }: { businessId: number }) {
           endpoint="dataroomUploader"
           onClientUploadComplete={async (res) => {
             if (res) {
-              const newFiles = res.map(file => ({
+              const newFiles = res.map((file) => ({
                 mediaID: 0, // This will be updated when fetching
                 url: file.url,
                 name: file.name,
-                type: "dataroom"
+                type: "dataroom",
               }));
               setFiles([...files, ...newFiles]);
-              await updateDataroomFileType(newFiles.map(file => file.url), businessId);
+              await updateDataroomFileType(
+                newFiles.map((file) => file.url),
+                businessId,
+              );
               router.refresh();
             }
           }}
@@ -85,7 +92,12 @@ export function DataroomManager({ businessId }: { businessId: number }) {
               <TableCell>
                 <div className="flex items-center space-x-2">
                   <FileIcon className="h-4 w-4" />
-                  <a href={file.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                  <a
+                    href={file.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline"
+                  >
                     {file.name}
                   </a>
                 </div>
