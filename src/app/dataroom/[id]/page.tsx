@@ -46,12 +46,6 @@ export default async function Dataroom({ params }: { params: { id: number } }) {
 
   return (
     <main className="justify-left m-4 flex min-h-screen flex-col">
-      <div className="mb-4 rounded-lg bg-red-400 p-4 text-white">
-        <p className="text-xl">
-          Warning: These data are classified. If you publish or distribute these
-          files, you may be subject to legal action.
-        </p>
-      </div>
       <Card className={"w-full"}>
         <CardHeader className={"flex flex-row items-center gap-x-5"}>
           <div className="h-16 w-16 overflow-hidden rounded-lg">

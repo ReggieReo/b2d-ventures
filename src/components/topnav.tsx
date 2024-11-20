@@ -33,6 +33,9 @@ function Logo() {
 
 export async function TopNav() {
   const curUser = auth();
+  const hasActiveOrg = curUser?.orgId;
+  console.log("hasActiveOrg", hasActiveOrg);
+
   let business;
   if (curUser) {
     business = await getBusinessByUserIDExplicit(curUser.userId!);

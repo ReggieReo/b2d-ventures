@@ -1,10 +1,10 @@
 import "server-only";
 import { db } from "~/server/db";
 import { auth } from "@clerk/nextjs/server";
-import { business, investment } from "~/server/db/schema";
-import { eq, inArray } from "drizzle-orm";
+import { business, investment, user } from "~/server/db/schema";
+import { eq, inArray, desc, asc, gte, lte, and } from "drizzle-orm";
 import { industries } from "~/utils/enum/industryList";
-import { desc, asc } from "drizzle-orm";
+import { format, parseISO, startOfWeek, endOfWeek } from "date-fns";
 // user client -> ship js to the client but code still on the server
 // user server -> expose endpoint to the client
 // running on the server
@@ -241,6 +241,121 @@ export async function getDataroomFiles(businessID: number) {
   });
 }
 
+export async function getTotalInvestmentCurrentMonth() {
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+  const result = await db.query.investment.findMany({
+    where: (model, { and, gte, lte }) =>
+      and(
+        gte(model.createdAt, startOfMonth),
+        lte(model.createdAt, endOfMonth)
+      ),
+    columns: {
+      fund: true,
+    },
+  });
+
+  const totalInvestment = result.reduce((sum, record) => sum + record.fund, 0);
+
+  return totalInvestment;
+}
+
+export async function getTotalInvestmentCurrentWeek() {
+  const now = new Date();
+  const startOfWeek = new Date(
+    now.setDate(now.getDate() - now.getDay() + 1)
+  );
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  endOfWeek.setHours(23, 59, 59, 999);
+
+  const result = await db.query.investment.findMany({
+    where: (model, { and, gte, lte }) =>
+      and(
+        gte(model.createdAt, startOfWeek),
+        lte(model.createdAt, endOfWeek)
+      ),
+    columns: {
+      fund: true,
+    },
+  });
+
+  const totalInvestment = result.reduce((sum, record) => sum + record.fund, 0);
+
+  return totalInvestment;
+}
+
+export async function getTotalInvestmentByMonth() {
+  try {
+    const investments = await db
+      .select({
+        createdAt: investment.createdAt,
+        fund: investment.fund,
+      })
+      .from(investment)
+      .orderBy(asc(investment.createdAt));
+
+    // Group and sum investments by month
+    const investmentByMonth = investments.reduce((acc, current) => {
+      const monthKey = format(parseISO(current.createdAt.toISOString()), 'yyyy-MM'); // Format the date as YYYY-MM
+
+      if (!acc[monthKey]) {
+        acc[monthKey] = 0;
+      }
+      acc[monthKey] += current.fund;
+
+      return acc;
+    }, {} as Record<string, number>);
+
+    // Convert the result to an array format with full month names
+    const result = Object.entries(investmentByMonth).map(([month, totalInvestment]) => {
+      const date = new Date(month + "-01");
+      const fullMonthName = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(date);
+
+      return {
+        month: fullMonthName, // Display full month name
+        totalInvestment,
+      };
+    });
+
+    return result;
+  } catch (error) {
+    console.error("Error fetching total investment by month:", error);
+    throw new Error("Failed to fetch total investment by month");
+  }
+}
+
+export async function getRecentInvestmentsInCurrentWeek() {
+  const startDate = startOfWeek(new Date(), { weekStartsOn: 1 });
+  const endDate = endOfWeek(new Date(), { weekStartsOn: 1 });
+
+  const recentInvestments = await db
+    .select({
+      name: user.name,
+      fund: investment.fund,
+      createdAt: investment.createdAt,
+      allocation: business.allocation,
+      valuation: business.valuation,
+      businessName: business.company,
+    })
+    .from(investment)
+    .innerJoin(user, eq(investment.userID, user.userID))
+    .innerJoin(business, eq(investment.businessID, business.businessID))
+    .where(
+      and(
+        gte(investment.createdAt, startDate),
+        lte(investment.createdAt, endDate)
+      )
+    )
+    .orderBy(desc(investment.createdAt));
+
+  return recentInvestments;
+}
+
 export async function getPendingFinancialStatements() {
   return db.query.media.findMany({
     where: (model, { eq, and }) =>
@@ -259,3 +374,4 @@ export async function getFinancialStatement(businessID: number) {
     where: (model, { eq, and }) => and(eq(model.type, "financial_statement"), eq(model.userID, user.userId!)),
   });
 }
+
