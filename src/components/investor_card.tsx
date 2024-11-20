@@ -9,15 +9,15 @@ import {
   CardContent,
 } from "~/components/ui/card";
 import { fetchRecentInvestmentsInCurrentWeekAction } from "~/server/action/recent_investment";
-import { investment } from '~/server/db/schema';
-import { calculateStockPrice } from '~/utils/util';
+import { investment } from "~/server/db/schema";
+import { calculateStockPrice } from "~/utils/util";
 
 // Define the type for the investment data
 interface Investment {
   name: string | null;
   fund: number;
   createdAt: Date;
-  allocation: number; 
+  allocation: number;
   valuation: number;
   businessName: string | null;
 }
@@ -99,9 +99,25 @@ export function RecentInvestments() {
                   <p className="font-bold text-gray-900">
                     {investment.businessName}
                   </p>
-                  <p className="font-bold text-green-600">
-                    +${calculateStockPrice(investment.valuation, investment.allocation, investment.fund).toLocaleString()}
-                  </p>
+                  <div className="flex items-center gap-x-6">
+                    <div className="text-center">
+                      <p className="font-bold text-gray-500">stock</p>
+                      <p className="text-gray-500">
+                        {investment.fund.toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <p className="font-bold text-gray-500">stock price</p>
+                      <p className="font-bold text-green-600">
+                        +$
+                        {calculateStockPrice(
+                          investment.valuation,
+                          investment.allocation,
+                          investment.fund,
+                        ).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </li>
             ))}
@@ -110,11 +126,12 @@ export function RecentInvestments() {
           <p className="text-gray-500">No recent investments available</p>
         )}
       </CardContent>
+
       <div className="mt-4 flex items-center justify-center">
         <button
           onClick={handlePreviousPage}
           disabled={currentPage === 1}
-          className={`mr-4 rounded-md bg-white-300 border border-gray-300 px-3 py-1 ${currentPage === 1 ? "cursor-not-allowed opacity-50" : "hover:bg-gray-400"}`}
+          className={`bg-white-300 mr-4 rounded-md border border-gray-300 px-3 py-1 ${currentPage === 1 ? "cursor-not-allowed opacity-50" : "hover:bg-gray-400"}`}
         >
           Previous
         </button>
@@ -124,7 +141,7 @@ export function RecentInvestments() {
         <button
           onClick={handleNextPage}
           disabled={currentPage === totalPages}
-          className={`ml-4 rounded-md bg-white-300 border border-gray-300 px-3 py-1 ${currentPage === totalPages ? "cursor-not-allowed opacity-50" : "hover:bg-gray-400"}`}
+          className={`bg-white-300 ml-4 rounded-md border border-gray-300 px-3 py-1 ${currentPage === totalPages ? "cursor-not-allowed opacity-50" : "hover:bg-gray-400"}`}
         >
           Next
         </button>
