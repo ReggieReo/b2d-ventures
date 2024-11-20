@@ -1,6 +1,6 @@
 "use server";
 
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { OrganizationSwitcher, SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -33,6 +33,9 @@ function Logo() {
 
 export async function TopNav() {
   const curUser = auth();
+  const hasActiveOrg = curUser?.orgId;
+  console.log("hasActiveOrg", hasActiveOrg);
+
   let business;
   if (curUser) {
     business = await getBusinessByUserIDExplicit(curUser.userId!);
@@ -86,6 +89,11 @@ export async function TopNav() {
             </DropdownMenu>
             <UserButton />
           </SignedIn>
+          {
+            hasActiveOrg && (
+              <OrganizationSwitcher />
+            )
+          }
         </div>
       </div>
     </nav>
