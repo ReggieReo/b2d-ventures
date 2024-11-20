@@ -81,7 +81,7 @@ export function RecentInvestments() {
       </CardHeader>
       <CardContent>
         {paginatedInvestments.length > 0 ? (
-          <ul className="space-y-4">
+          <ul className="space-y-2">
             {paginatedInvestments.map((investment, index) => (
               <li
                 key={index}
