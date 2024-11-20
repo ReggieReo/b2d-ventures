@@ -1,7 +1,8 @@
 "use server";
 
 import { schemaForDB } from "~/app/create_investment/schema";
-import { saveInvestment } from "~/server/createQuery";
+
+import { createInvestment } from "~/server/repository/investment_repository";
 
 export async function createInvestment(businessID: number, formData: FormData) {
   "use server";
@@ -17,5 +18,5 @@ export async function createInvestment(businessID: number, formData: FormData) {
     };
   }
 
-  await saveInvestment(businessID, validatedFields.data.amount);
+  await createInvestment(businessID, validatedFields.data.amount);
 }

@@ -1,6 +1,6 @@
 import { Sidebar } from "~/components/browsing/sidebar";
-import { getPendingFinancialStatements } from "~/server/fetchQuery";
 import { FinancialStatementsTable } from "~/components/admin/financial_statements_table";
+import { getPendingFinancialStatements } from "~/server/repository/media_repository";
 
 export const dynamic = "force-dynamic";
 

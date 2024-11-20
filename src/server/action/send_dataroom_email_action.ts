@@ -7,8 +7,9 @@ import {
   FinancialStatementRejectionEmail,
 } from "~/components/util/email_template";
 import { auth, clerkClient } from "@clerk/nextjs/server";
-import { getBusinessByID, getUserByID } from "~/server/fetchQuery";
 import { currentUser } from "@clerk/nextjs/server";
+import { getUserByID } from "~/server/repository/user_repository";
+import { getBusinessByID } from "~/server/repository/business_repository";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 

@@ -5,10 +5,10 @@ import {
   TestBut,
   UploadButtonCom,
 } from "~/components/util/uploadbuttton";
-import { getAllImages } from "~/server/fetchQuery";
 import Image from "next/image";
 import { UploadButton } from "~/utils/uploadthings";
 import * as React from "react";
+import { getAllImages } from "~/server/repository/media_repository";
 export default async function HomePage() {
   const images = await getAllImages();
   return (

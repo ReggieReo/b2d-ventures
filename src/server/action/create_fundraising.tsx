@@ -1,13 +1,14 @@
 "use server";
 
 import { formSchema } from "~/app/create_fundraising/schema";
-import { createBusiness } from "~/server/createQuery";
+
 import {
   updateDataroomTypeByMediaURLe,
+  updateMediaBannerTypeByMediaURLe,
   updateMediaImageTypeByMediaURLe,
   updateMediaLogoTypeByMediaURLe,
-  updateMediaBannerTypeByMediaURLe,
-} from "~/server/updateQuery";
+} from "~/server/repository/media_repository";
+import { createBusiness } from "~/server/repository/business_repository";
 
 export async function createFundraising(formData: FormData) {
   "use server";

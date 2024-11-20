@@ -1,14 +1,14 @@
 "use server";
-import {
-  getAcceptBusinessesByKeyData,
-  getAcceptedBusinesses,
-} from "~/server/fetchQuery";
 import Link from "next/link";
 import BusinessCard from "~/components/business/business_card";
 import SearchBusinessInput from "~/components/browsing/search_business_input";
 import SearchBusinessFilter from "~/components/browsing/search_filter";
 import { BrowsePagePagination } from "~/components/browsing/browse_page_pagination";
 import SortingSelect from "~/components/browsing/sorting_select";
+import {
+  getAcceptBusinessesByKeyData,
+  getAcceptedBusinesses,
+} from "~/server/repository/business_repository";
 
 export default async function HomePage(props: {
   searchParams?: Promise<{

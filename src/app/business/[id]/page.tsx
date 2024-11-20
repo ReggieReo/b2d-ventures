@@ -5,22 +5,22 @@ import Link from "next/link";
 import React from "react";
 import { redirect } from "next/navigation";
 import Gallery from "~/components/ui/carousel_with_thumbnail";
-import {
-  getRequest,
-  getBusinessByID,
-  getInvestmentByBusinessID,
-  getImageByBusinessID,
-  getLogoByBusinessID,
-} from "~/server/fetchQuery";
 import { auth } from "@clerk/nextjs/server";
 import { RequestDataroomStatusEnum } from "~/utils/enum/requestDataroomStatusEnum";
 import { BusinessDetail } from "~/components/business/businessDetail";
+import {
+  getImageByBusinessID,
+  getLogoByBusinessID,
+} from "~/server/repository/media_repository";
+import { getBusinessByID } from "~/server/repository/business_repository";
+import { getInvestmentByBusinessID } from "~/server/repository/investment_repository";
+import { getRequestByBusinessID } from "~/server/repository/dataroom_request_repository";
 
 async function getRequestStatus(business: number, curUserID?: string) {
   if (!curUserID) {
     return RequestDataroomStatusEnum.NoUsers;
   }
-  const requestStatus = await getRequest(business);
+  const requestStatus = await getRequestByBusinessID(business);
   if (!requestStatus) {
     return RequestDataroomStatusEnum.NoRequest;
   }

@@ -4,8 +4,11 @@ import { db } from "~/server/db";
 import { media } from "~/server/db/schema";
 import { eq, and } from "drizzle-orm";
 import { auth } from "@clerk/nextjs/server";
-import { getDataroomFiles } from "../fetchQuery";
-import { updateDataroomTypeByMediaURLe } from "../updateQuery";
+
+import {
+  getDataroomFiles,
+  updateDataroomTypeByMediaURLe,
+} from "~/server/repository/media_repository";
 
 export async function getDataroomFilesAction(businessId: number) {
   return await getDataroomFiles(businessId);
@@ -17,12 +20,14 @@ export async function deleteDataroomFile(mediaId: number) {
     throw new Error("Unauthorized");
   }
 
-  await db.delete(media)
-    .where(eq(media.mediaID, mediaId));
-  
+  await db.delete(media).where(eq(media.mediaID, mediaId));
+
   return { success: true };
 }
 
-export async function updateDataroomFileType(mediaURL: string[], businessID: number) {
+export async function updateDataroomFileType(
+  mediaURL: string[],
+  businessID: number,
+) {
   await updateDataroomTypeByMediaURLe(mediaURL, businessID);
 }

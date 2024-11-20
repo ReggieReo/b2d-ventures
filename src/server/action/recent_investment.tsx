@@ -1,6 +1,6 @@
 "use server";
 
-import { getRecentInvestmentsInCurrentWeek } from "~/server/fetchQuery";
+import { getRecentInvestmentsInCurrentWeek } from "~/server/repository/investment_repository";
 
 export async function fetchRecentInvestmentsInCurrentWeekAction() {
   try {

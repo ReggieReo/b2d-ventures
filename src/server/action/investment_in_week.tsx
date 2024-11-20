@@ -1,6 +1,6 @@
 "use server";
 
-import { getTotalInvestmentCurrentWeek } from "~/server/fetchQuery";
+import { getTotalInvestmentCurrentWeek } from "~/server/repository/investment_repository";
 
 export async function fetchTotalInvestmentCurrentWeekAction() {
   try {

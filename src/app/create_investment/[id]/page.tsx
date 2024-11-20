@@ -1,14 +1,14 @@
 "use server";
 
 import React from "react";
-import {
-  getBusinessByID,
-  getLogoByBusinessID,
-  getFinancialStatement,
-  getInvestmentByBusinessID,
-} from "~/server/fetchQuery";
 import { InvestingForm } from "~/components/investment/investment_form";
 import { redirect } from "next/navigation";
+import {
+  getFinancialStatement,
+  getLogoByBusinessID,
+} from "~/server/repository/media_repository";
+import { getBusinessByID } from "~/server/repository/business_repository";
+import { getInvestmentByBusinessID } from "~/server/repository/investment_repository";
 
 export default async function InputForm({
   params,

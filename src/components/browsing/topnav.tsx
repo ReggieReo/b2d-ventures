@@ -10,12 +10,12 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
+import { auth } from "@clerk/nextjs/server";
+import { Protect } from "@clerk/nextjs";
 import {
   getBusinessByUserID,
   getBusinessByUserIDExplicit,
-} from "~/server/fetchQuery";
-import { auth } from "@clerk/nextjs/server";
-import { Protect } from "@clerk/nextjs";
+} from "~/server/repository/business_repository";
 
 function Logo() {
   return (

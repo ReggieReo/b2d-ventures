@@ -13,12 +13,10 @@ import {
 } from "~/components/util/pie_chart";
 import { InvestmentHistoryTable } from "~/components/investment/investment_history";
 import { auth } from "@clerk/nextjs/server";
-import {
-  getFirstMediaByTypeAndUserID,
-  getInvestmentByUserID,
-} from "~/server/fetchQuery";
 import { FinancialStatementUpload } from "~/components/investment_portfolio/financial_statement_upload";
 import { calculateStockPrice } from "~/utils/util";
+import { getInvestmentByUserID } from "~/server/repository/investment_repository";
+import { getFirstMediaByTypeAndUserID } from "~/server/repository/media_repository";
 
 export const dynamic = "force-dynamic";
 

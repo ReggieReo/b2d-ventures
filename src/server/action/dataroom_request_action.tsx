@@ -1,16 +1,24 @@
-'use server'
+"use server";
 
-import {createDataroomRequest, updateDataroomRequest} from "~/server/createQuery";
-import {getRequest, getRequestByID} from "~/server/fetchQuery";
+import {
+  createDataroomRequest,
+  getRequestByBusinessID,
+  getRequestByIDWithUser,
+  updateDataroomRequest,
+} from "~/server/repository/dataroom_request_repository";
 
 export async function createDataroomRequestAction(pageID: number) {
-    return await createDataroomRequest(pageID);
+  return await createDataroomRequest(pageID);
 }
 
 export async function getRequestAction(pageID: number) {
-    return await getRequest(pageID);
+  return await getRequestByBusinessID(pageID);
 }
 
-export async function updateDataroomRequestAction(pageID: number, userID: string, newStatus: number) {
-    return await updateDataroomRequest(pageID, userID, newStatus)
+export async function updateDataroomRequestAction(
+  pageID: number,
+  userID: string,
+  newStatus: number,
+) {
+  return await updateDataroomRequest(pageID, userID, newStatus);
 }

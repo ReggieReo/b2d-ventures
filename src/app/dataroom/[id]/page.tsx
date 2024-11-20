@@ -1,11 +1,6 @@
 import "server-only";
 
 import * as React from "react";
-import {
-  getBusinessByID,
-  getDataroomFiles,
-  getLogoByBusinessID,
-} from "~/server/fetchQuery";
 
 import {
   Card,
@@ -26,6 +21,11 @@ import {
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import {
+  getDataroomFiles,
+  getLogoByBusinessID,
+} from "~/server/repository/media_repository";
+import { getBusinessByID } from "~/server/repository/business_repository";
 export const dynamic = "force-dynamic";
 
 export default async function Dataroom({ params }: { params: { id: number } }) {
