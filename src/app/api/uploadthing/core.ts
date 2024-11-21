@@ -15,14 +15,14 @@ export const ourFileRouter = {
     "image/jpeg": { maxFileSize: "4MB", maxFileCount: 40 },
   })
     // Set permissions and file types for this FileRoute
-    .middleware(async ({ req, input }) => {
+    .middleware(async ({ req }) => {
       // This code runs on your server before upload
       const user = auth();
       // If you throw, the user will not be able to upload
       // eslint-disable-next-line @typescript-eslint/only-throw-error
       if (!user) throw new UploadThingError("Unauthorized");
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId: user.userId, input };
+      return { userId: user.userId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
@@ -40,14 +40,14 @@ export const ourFileRouter = {
     "image/webp": { maxFileSize: "512KB" },
     "image/jpeg": { maxFileSize: "512KB" },
   })
-    .middleware(async ({ req, input }) => {
+    .middleware(async ({ req }) => {
       // This code runs on your server before upload
       const user = auth();
       // If you throw, the user will not be able to upload
       // eslint-disable-next-line @typescript-eslint/only-throw-error
       if (!user) throw new UploadThingError("Unauthorized");
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId: user.userId, input };
+      return { userId: user.userId};
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
@@ -65,14 +65,14 @@ export const ourFileRouter = {
     "image/webp": { maxFileSize: "2MB" },
     "image/jpeg": { maxFileSize: "2MB" },
   })
-    .middleware(async ({ req, input }) => {
+    .middleware(async ({ req }) => {
       // This code runs on your server before upload
       const user = auth();
       // If you throw, the user will not be able to upload
       // eslint-disable-next-line @typescript-eslint/only-throw-error
       if (!user) throw new UploadThingError("Unauthorized");
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId: user.userId, input };
+      return { userId: user.userId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
@@ -87,11 +87,11 @@ export const ourFileRouter = {
     }),
 
   dataroomUploader: f({ pdf: { maxFileSize: "4MB", maxFileCount: 40 } })
-    .middleware(async ({ req, input }) => {
+    .middleware(async ({ req }) => {
       const user = auth();
       // eslint-disable-next-line @typescript-eslint/only-throw-error
       if (!user) throw new UploadThingError("Unauthorized");
-      return { userId: user.userId, input };
+      return { userId: user.userId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       await db.insert(media).values({
