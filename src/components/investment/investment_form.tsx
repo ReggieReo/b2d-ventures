@@ -21,13 +21,13 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Checkbox } from "~/components/ui/checkbox";
-import { createInvestment } from "~/server/action/create_investment";
 import { type z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { investment, media, type business } from "~/server/db/schema";
 import { getInvestmentSchema } from "~/app/create_investment/schema";
 import { calculateStockPrice } from "~/utils/util";
+import { createInvestmentAction } from "~/server/action/investment_action";
 
 function DialogCountdown({ isFormValid }: { isFormValid: boolean }) {
   const [countdown, setCountdown] = useState(3);
@@ -89,14 +89,14 @@ export function InvestingForm({
   logo: typeof media.$inferSelect;
   currentTotalPurchased: number;
 }) {
-
-
   if (!financialStatement || financialStatement.status !== 1) {
     return (
-      <div className="max-w-lg mx-auto p-6">
-        <h2 className="text-2xl font-bold mb-4">Financial Statement Required</h2>
-        <p className="text-gray-600 mb-4">
-          {!financialStatement 
+      <div className="mx-auto max-w-lg p-6">
+        <h2 className="mb-4 text-2xl font-bold">
+          Financial Statement Required
+        </h2>
+        <p className="mb-4 text-gray-600">
+          {!financialStatement
             ? "Before you can invest, please upload your financial statement in your investment portfolio."
             : "Your financial statement is pending approval from our administrators. Please check back later."}
         </p>
@@ -107,12 +107,16 @@ export function InvestingForm({
     );
   }
 
-  const createInvestmentBind = createInvestment.bind(
+  const createInvestmentBind = createInvestmentAction.bind(
     null,
     businessData.businessID,
   );
 
-  const stockPrice = calculateStockPrice(businessData.valuation!, businessData.target_stock!, businessData.allocation!);
+  const stockPrice = calculateStockPrice(
+    businessData.valuation!,
+    businessData.target_stock!,
+    businessData.allocation!,
+  );
   const remainingStocks = businessData.target_stock! - currentTotalPurchased;
   const minStocks = 1;
 
@@ -162,7 +166,9 @@ export function InvestingForm({
             </div>
             <div>
               <p className="text-gray-600">Total investment</p>
-              <p className="font-medium">${totalInvestmentAmount.toLocaleString()}</p>
+              <p className="font-medium">
+                ${totalInvestmentAmount.toLocaleString()}
+              </p>
             </div>
           </div>
         </div>
@@ -273,8 +279,8 @@ export function InvestingForm({
                   agreements as related to my investment.
                 </p>
                 <p>
-                  I understand my investment won't be transferable for 12
-                  months and may not have a market for resale.
+                  I understand my investment won't be transferable for 12 months
+                  and may not have a market for resale.
                 </p>
                 <p>
                   I understand this investment is risky and that I shouldn&apost

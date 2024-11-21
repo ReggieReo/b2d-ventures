@@ -1,12 +1,18 @@
-"use server-only";
+import {
+  getBannerByBusinessID,
+  getImageByBusinessID,
+  getLogoByBusinessID,
+} from "~/server/repository/media_repository";
+
+("use server-only");
 
 import Image from "next/image";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { type business } from "~/server/db/schema";
 import { cn } from "~/lib/utils";
-import { getInvestmentByBusinessID, getLogoByBusinessID, getImageByBusinessID, getBannerByBusinessID } from "~/server/fetchQuery";
 import { getDayUntilDeadline, calculateStockPrice } from "~/utils/util";
+import { getInvestmentByBusinessID } from "~/server/repository/investment_repository";
 
 export default async function BusinessCard({
   cBusiness,
@@ -18,13 +24,13 @@ export default async function BusinessCard({
   const allInvestment = await getInvestmentByBusinessID(cBusiness.businessID);
   const logo = await getLogoByBusinessID(cBusiness.businessID);
   const banner = await getBannerByBusinessID(cBusiness.businessID);
-  
+
   const totalStocks = allInvestment.reduce((acc, cur) => acc + cur.fund, 0);
   const remainingStocks = Math.max(0, cBusiness.target_stock! - totalStocks);
   const stockPrice = calculateStockPrice(
     cBusiness.valuation!,
     cBusiness.target_stock!,
-    cBusiness.allocation!
+    cBusiness.allocation!,
   );
   const totalRaise = totalStocks * stockPrice;
   const percentInvestment = (totalStocks / cBusiness.target_stock!) * 100;
@@ -56,14 +62,16 @@ export default async function BusinessCard({
 
       <CardContent className="content-start p-4 pt-6">
         <h2 className="mb-2 text-2xl font-bold">{cBusiness.company}</h2>
-        <p className="mb-4 text-gray-600">
-          {cBusiness.slogan}
-        </p>
+        <p className="mb-4 text-gray-600">{cBusiness.slogan}</p>
 
         <div className="space-y-2">
           <div className="flex flex-row items-center gap-1">
             <p className="font-bold">
-              ${totalRaise.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              $
+              {totalRaise.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
             </p>
             <p>raised</p>
             <p className="ml-1 text-sm text-gray-500">
@@ -79,7 +87,13 @@ export default async function BusinessCard({
           </div>
 
           <div className="flex flex-row gap-1">
-            <p className="font-bold">${stockPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+            <p className="font-bold">
+              $
+              {stockPrice.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </p>
             <p>per share</p>
           </div>
 

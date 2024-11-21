@@ -1,6 +1,11 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
-import { useForm, useFormState, useFieldArray, useWatch } from "react-hook-form";
+import {
+  useForm,
+  useFormState,
+  useFieldArray,
+  useWatch,
+} from "react-hook-form";
 import { useRouter } from "next/navigation";
 import {
   Dialog,
@@ -16,7 +21,6 @@ import * as React from "react";
 import { z } from "zod";
 import { formSchema } from "~/app/create_fundraising/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createFundraising } from "~/server/action/create_fundraising";
 import { UploadButton } from "~/utils/uploadthings";
 import {
   Form,
@@ -47,7 +51,6 @@ import { format } from "date-fns";
 import { Calendar } from "~/components/ui/calendar";
 import { X } from "lucide-react";
 
-
 // const industries = [
 //   { label: "Technology", value: "tech" },
 //   { label: "Healthcare", value: "health" },
@@ -66,12 +69,13 @@ import { X } from "lucide-react";
 //   { label: "Consulting", value: "consulting" },
 // ] as const;
 
-import {industries} from "~/utils/enum/industryList";
+import { industries } from "~/utils/enum/industryList";
 
 import dynamic from "next/dynamic";
 import { FileIcon } from "lucide-react";
+import { createFundraising } from "~/server/action/business_action";
 
-const EditorComp = dynamic(() => import("~/components/markdown_editor"), {
+const EditorComp = dynamic(() => import("~/components/util/markdown_editor"), {
   ssr: false,
 });
 
@@ -115,7 +119,7 @@ function DialogCountdown() {
           </DialogTitle>
           <DialogDescription>
             Redirecting you to homepage in {countdown} seconds.
-            <Link href="/">
+            <Link href="/public">
               <Button className="mt-6 w-full bg-blue-500 py-3 text-lg font-semibold text-white hover:bg-blue-600">
                 Go to homepage
               </Button>
@@ -362,9 +366,7 @@ export function FundraisingForm() {
                 <FormControl>
                   <Input placeholder="$" {...field} />
                 </FormControl>
-                <FormDescription>
-                  The target amount of stock
-                </FormDescription>
+                <FormDescription>The target amount of stock</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -730,143 +732,132 @@ export function FundraisingForm() {
           />
 
           <FormField
-          control={form.control}
-          name="problem"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Problem</FormLabel>
-              <FormControl>
-                <Suspense fallback={null}>
-                  <EditorComp
-                    markdown={field.value}
-                    onChangeFn={field.onChange}
-                    trigger={() => trigger("problem")}
-                  />
-                </Suspense>
-              </FormControl>
-              <FormDescription>
-                Describe the problem or pain point your business is solving. What challenges do your customers face?
-              </FormDescription>
-              <FormMessage />
-              <input
-                type="hidden"
-                name="problem"
-                value={field.value}
-              />
-            </FormItem>
-          )}
+            control={form.control}
+            name="problem"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Problem</FormLabel>
+                <FormControl>
+                  <Suspense fallback={null}>
+                    <EditorComp
+                      markdown={field.value}
+                      onChangeFn={field.onChange}
+                      trigger={() => trigger("problem")}
+                    />
+                  </Suspense>
+                </FormControl>
+                <FormDescription>
+                  Describe the problem or pain point your business is solving.
+                  What challenges do your customers face?
+                </FormDescription>
+                <FormMessage />
+                <input type="hidden" name="problem" value={field.value} />
+              </FormItem>
+            )}
           />
 
           <FormField
-          control={form.control}
-          name="solution"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Solution</FormLabel>
-              <FormControl>
-                <Suspense fallback={null}>
-                  <EditorComp
-                    markdown={field.value}
-                    onChangeFn={field.onChange}
-                    trigger={() => trigger("solution")}
-                  />
-                </Suspense>
-              </FormControl>
-              <FormDescription>
-                Explain your solution and how it addresses the problem. You can include images to showcase your product or service.
-              </FormDescription>
-              <FormMessage />
-              <input
-                type="hidden"
-                name="solution"
-                value={field.value}
-              />
-            </FormItem>
-          )}
+            control={form.control}
+            name="solution"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Solution</FormLabel>
+                <FormControl>
+                  <Suspense fallback={null}>
+                    <EditorComp
+                      markdown={field.value}
+                      onChangeFn={field.onChange}
+                      trigger={() => trigger("solution")}
+                    />
+                  </Suspense>
+                </FormControl>
+                <FormDescription>
+                  Explain your solution and how it addresses the problem. You
+                  can include images to showcase your product or service.
+                </FormDescription>
+                <FormMessage />
+                <input type="hidden" name="solution" value={field.value} />
+              </FormItem>
+            )}
           />
 
           <FormField
-          control={form.control}
-          name="stage"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Stage</FormLabel>
-              <FormControl>
-                <Suspense fallback={null}>
-                  <EditorComp
-                    markdown={field.value}
-                    onChangeFn={field.onChange}
-                    trigger={() => trigger("stage")}
-                  />  
-                </Suspense>
-              </FormControl>
-              <FormDescription>
-                What is your current business stage? (e.g., Idea, MVP, Growth) Include key metrics and milestones achieved.
-              </FormDescription>
-              <FormMessage />
-              <input
-                type="hidden"
-                name="stage"
-                value={field.value}
-              />
-            </FormItem>
-          )}
+            control={form.control}
+            name="stage"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Stage</FormLabel>
+                <FormControl>
+                  <Suspense fallback={null}>
+                    <EditorComp
+                      markdown={field.value}
+                      onChangeFn={field.onChange}
+                      trigger={() => trigger("stage")}
+                    />
+                  </Suspense>
+                </FormControl>
+                <FormDescription>
+                  What is your current business stage? (e.g., Idea, MVP, Growth)
+                  Include key metrics and milestones achieved.
+                </FormDescription>
+                <FormMessage />
+                <input type="hidden" name="stage" value={field.value} />
+              </FormItem>
+            )}
           />
 
           <FormField
-          control={form.control}
-          name="team"
-          render={({ field }) => (  
-            <FormItem>
-              <FormLabel>Team</FormLabel>
-              <FormControl>
-                <Suspense fallback={null}>
-                  <EditorComp
-                    markdown={field.value}
-                    onChangeFn={field.onChange}
-                    trigger={() => trigger("team")}
-                  />
-                </Suspense>
-              </FormControl>
-              <FormDescription>
-                Introduce your team members, their roles, and relevant experience. You can include team photos.
-              </FormDescription>
-              <FormMessage />
-              <input
-                type="hidden"
-                name="team"
-                value={field.value}
-              />
-            </FormItem>
-          )}
+            control={form.control}
+            name="team"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Team</FormLabel>
+                <FormControl>
+                  <Suspense fallback={null}>
+                    <EditorComp
+                      markdown={field.value}
+                      onChangeFn={field.onChange}
+                      trigger={() => trigger("team")}
+                    />
+                  </Suspense>
+                </FormControl>
+                <FormDescription>
+                  Introduce your team members, their roles, and relevant
+                  experience. You can include team photos.
+                </FormDescription>
+                <FormMessage />
+                <input type="hidden" name="team" value={field.value} />
+              </FormItem>
+            )}
           />
 
           <FormField
-          control={form.control}
-          name="investors"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Investors (Optional)</FormLabel>
-              <FormControl>
-                <Suspense fallback={null}>
-                  <EditorComp
-                    markdown={field.value ?? ""}
-                    onChangeFn={field.onChange}
-                    trigger={() => trigger("investors")}
-                  />
-                </Suspense>
-              </FormControl>
-              <FormDescription>
-                List any current investors, advisors, or notable partnerships. You can include their logos if available.
-              </FormDescription>
-              <FormMessage />
-              <input
-                type="hidden"
-                name="investors"
-                value={field.value ?? ""}
-              />
-            </FormItem>
-          )}
+            control={form.control}
+            name="investors"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Investors (Optional)</FormLabel>
+                <FormControl>
+                  <Suspense fallback={null}>
+                    <EditorComp
+                      markdown={field.value ?? ""}
+                      onChangeFn={field.onChange}
+                      trigger={() => trigger("investors")}
+                    />
+                  </Suspense>
+                </FormControl>
+                <FormDescription>
+                  List any current investors, advisors, or notable partnerships.
+                  You can include their logos if available.
+                </FormDescription>
+                <FormMessage />
+                <input
+                  type="hidden"
+                  name="investors"
+                  value={field.value ?? ""}
+                />
+              </FormItem>
+            )}
           />
           {/* DIALOG เด้งๆ */}
           <DialogCountdown />

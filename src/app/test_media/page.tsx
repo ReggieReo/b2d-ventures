@@ -4,11 +4,11 @@ import {
   LogoUploadButton,
   TestBut,
   UploadButtonCom,
-} from "~/components/uploadbuttton";
-import { getAllImages } from "~/server/fetchQuery";
+} from "~/components/util/uploadbuttton";
 import Image from "next/image";
 import { UploadButton } from "~/utils/uploadthings";
 import * as React from "react";
+import { getAllImages } from "~/server/repository/media_repository";
 export default async function HomePage() {
   const images = await getAllImages();
   return (

@@ -12,17 +12,23 @@ import {
 import { Button } from "~/components/ui/button";
 import { media } from "~/server/db/schema";
 import { useRouter } from "next/navigation";
-import { approveFinancialStatement, rejectFinancialStatement } from "~/server/action/financial_statement_actions";
 import { toast } from "~/hooks/use-toast";
+import {
+  approveFinancialStatement,
+  rejectFinancialStatement,
+} from "~/server/action/media_action";
 
-export function FinancialStatementsTable({ statements }: { statements: typeof media.$inferSelect[] }) {
+export function FinancialStatementsTable({
+  statements,
+}: {
+  statements: (typeof media.$inferSelect)[];
+}) {
   const router = useRouter();
   const handleApprove = async (mediaID: number) => {
     await approveFinancialStatement(mediaID);
     router.refresh();
     alert("Financial statement approved");
   };
-
 
   const handleReject = async (mediaID: number) => {
     await rejectFinancialStatement(mediaID);
@@ -53,17 +59,30 @@ export function FinancialStatementsTable({ statements }: { statements: typeof me
               <TableRow key={statement.mediaID}>
                 <TableCell>{statement.userID}</TableCell>
                 <TableCell>
-                  <a href={statement.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                  <a
+                    href={statement.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
                     {statement.name}
                   </a>
                 </TableCell>
-                <TableCell>{new Date(statement.createdAt).toLocaleDateString()}</TableCell>
+                <TableCell>
+                  {new Date(statement.createdAt).toLocaleDateString()}
+                </TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <Button onClick={() => handleApprove(statement.mediaID)} variant="default">
+                    <Button
+                      onClick={() => handleApprove(statement.mediaID)}
+                      variant="default"
+                    >
                       Approve
                     </Button>
-                    <Button onClick={() => handleReject(statement.mediaID)} variant="destructive">
+                    <Button
+                      onClick={() => handleReject(statement.mediaID)}
+                      variant="destructive"
+                    >
                       Reject
                     </Button>
                   </div>
@@ -75,4 +94,4 @@ export function FinancialStatementsTable({ statements }: { statements: typeof me
       </Table>
     </div>
   );
-} 
+}

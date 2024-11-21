@@ -1,6 +1,10 @@
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
-import { getTotalInvestmentCurrentMonth, getTotalInvestmentCurrentWeek } from "~/server/fetchQuery";
+
+import {
+  getTotalInvestmentCurrentMonth,
+  getTotalInvestmentCurrentWeek,
+} from "~/server/repository/investment_repository";
 
 export async function TotalInvestmentCard() {
   try {
@@ -13,7 +17,13 @@ export async function TotalInvestmentCard() {
         </CardHeader>
         <CardContent>
           <p className="text-2xl font-bold">
-            ${totalInvestment !== null ? totalInvestment.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00"}
+            $
+            {totalInvestment !== null
+              ? totalInvestment.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })
+              : "0.00"}
           </p>
         </CardContent>
       </Card>
@@ -43,7 +53,13 @@ export async function InvestmentWeekCard() {
         </CardHeader>
         <CardContent>
           <p className="text-2xl font-bold">
-            ${totalInvestment !== null ? totalInvestment.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00"}
+            $
+            {totalInvestment !== null
+              ? totalInvestment.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })
+              : "0.00"}
           </p>
         </CardContent>
       </Card>

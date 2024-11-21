@@ -11,19 +11,17 @@ import { Button } from "~/components/ui/button";
 import * as React from "react";
 
 import { Progress } from "~/components/ui/progress";
-import {
-  getBusinessByUserID,
-  getInvestmentByBusinessID,
-  getRequestByID,
-} from "~/server/fetchQuery";
 
 import {
   DataroomRequestWithUser,
   DataroomTable,
-} from "~/components/dataroomTable";
+} from "~/components/dataroom/dataroomTable";
 import Link from "next/link";
-import { DataroomManager } from "~/components/dataroom_manager";
+import { DataroomManager } from "~/components/dataroom/dataroom_manager";
 import { getDayUntilDeadline } from "~/utils/util";
+import { getBusinessByUserID } from "~/server/repository/business_repository";
+import { getInvestmentByBusinessID } from "~/server/repository/investment_repository";
+import { getRequestByIDWithUser } from "~/server/repository/dataroom_request_repository";
 
 export const dynamic = "force-dynamic";
 
@@ -45,7 +43,7 @@ export default async function StartupDashboard() {
 
   const businessID = business.businessID;
 
-  const dataroomRequests = await getRequestByID(businessID);
+  const dataroomRequests = await getRequestByIDWithUser(businessID);
 
   const validatedRequests: DataroomRequestWithUser[] = dataroomRequests.map(
     (request) => ({
@@ -154,9 +152,9 @@ export default async function StartupDashboard() {
                 <div className={"flex flex-col"}>
                   <p className={"text-2xl"}>Day to go</p>
                   <div className={"ml-3 flex flex-col gap-2 lg:flex-row"}>
-                    <p className={"text-3xl font-bold"}>{
-                    daysToGo === 0 ? "Last day" : daysToGo
-                    }</p>
+                    <p className={"text-3xl font-bold"}>
+                      {daysToGo === 0 ? "Last day" : daysToGo}
+                    </p>
                     <p>({daysSinceStart} days from start)</p>
                   </div>
                 </div>

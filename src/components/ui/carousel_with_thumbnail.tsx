@@ -6,7 +6,7 @@ import {
   CarouselContent,
   CarouselItem,
   type CarouselApi,
-} from "./ui/carousel";
+} from "./carousel";
 import Image from "next/image";
 import { cn } from "~/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
