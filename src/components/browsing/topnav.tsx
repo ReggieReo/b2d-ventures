@@ -16,6 +16,7 @@ import {
   getBusinessByUserID,
   getBusinessByUserIDExplicit,
 } from "~/server/repository/business_repository";
+import { MobileMenu } from "./mobile-menu";
 
 function Logo() {
   return (
@@ -49,16 +50,16 @@ export async function TopNav() {
       <div>
         <Logo />
       </div>
-      <div className={"flex flex-row space-x-4"}>
-        <Link href={"/api"}>{/*<div>asdf</div>*/}</Link>
-        <div className={"flex flex-row gap-4"}>
+
+      <MobileMenu>
+        <div className="flex flex-col md:flex-row gap-4">
           {/* Admin */}
           <Protect condition={(has) => has({ role: "org:admin" })}>
-            <Link className={"font-light"} href={"/admin"}>
+            <Link className="font-light" href="/admin">
               Admin
             </Link>
           </Protect>
-          <Link className={"font-light"} href={"/browse_business"}>
+          <Link className="font-light" href="/browse_business">
             Browse Business
           </Link>
           <SignedOut>
@@ -66,7 +67,7 @@ export async function TopNav() {
           </SignedOut>
           <SignedIn>
             {!business && (
-              <Link className={"font-light"} href={"/create_fundraising"}>
+              <Link className="font-light" href="/create_fundraising">
                 Start Raising
               </Link>
             )}
@@ -90,7 +91,7 @@ export async function TopNav() {
             <UserButton />
           </SignedIn>
         </div>
-      </div>
+      </MobileMenu>
     </nav>
   );
 }

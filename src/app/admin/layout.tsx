@@ -1,5 +1,4 @@
 import { Sidebar } from "~/components/browsing/sidebar";
-import { Toaster } from "~/components/ui/toaster";
 
 export default function AdminLayout({
   children,
@@ -7,11 +6,13 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-screen overflow-hidden">
-      <div className="w-64 flex-shrink-0">
+    <div className="relative h-[calc(100vh-64px)]">
+      <div className="fixed inset-y-16 left-0 z-30 block md:block">
         <Sidebar />
       </div>
-      <main className="flex-1 overflow-y-auto">{children}</main>
+      <main className="md:pl-64">
+        <div className="px-4 py-10 sm:px-6 lg:px-8">{children}</div>
+      </main>
     </div>
   );
 }
