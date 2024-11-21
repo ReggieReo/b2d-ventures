@@ -1,21 +1,40 @@
 "server-only";
 
 import { endOfWeek, format, parseISO, startOfWeek } from "date-fns";
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { db } from "~/server/db";
 import { business, investment, user } from "~/server/db/schema";
 import { and, asc, desc, eq, gte, lte } from "drizzle-orm";
+import { sendInvestmentNotificationEmail } from "~/server/action/send_dataroom_email_action";
+import { getBusinessByID } from "./business_repository";
 
 export async function createInvestment(businessID: number, fund: number) {
   const currentUser = auth();
 
   if (!currentUser.userId) throw new Error("Unauthorized");
 
+  // Get business details to find owner
+  const business = await getBusinessByID(businessID);
+  if (!business) throw new Error("Business not found");
+
+  // Create the investment
   await db.insert(investment).values({
     userID: currentUser.userId,
     businessID,
     fund,
   });
+
+  // Get investor details
+  const investor = await clerkClient().users.getUser(currentUser.userId);
+  if (!investor) throw new Error("Investor not found");
+
+  // Send notification email to business owner
+  await sendInvestmentNotificationEmail(
+    business.userID!,
+    businessID,
+    `${investor.firstName} ${investor.lastName}`,
+    fund,
+  );
 }
 
 export async function getInvestmentByBusinessID(businessID: number) {
