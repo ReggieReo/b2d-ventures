@@ -45,8 +45,17 @@ export async function BusinessDetail({
   const daysToGo = getDayUntilDeadline(businessData.deadline!);
   const isFullyFunded = totalInvestemntAmount >= businessData.target_stock!;
 
+
   return (
     <div className="font-geist-sans my-10 flex flex-col">
+      {businessData.business_status === 0 && (
+        <div className="rounded-lg bg-yellow-50 p-8 text-center">
+          <h2 className="mb-4 text-2xl font-bold text-yellow-800">Under Review</h2>
+          <p className="text-yellow-700">
+            This business is currently being reviewed by our admin team. You will be notified by email once the review is complete.
+          </p>
+        </div>
+      )}
       <div className="flex flex-col place-content-center gap-10 md:flex-row">
         <div className="flex w-full flex-col gap-4 px-4 md:w-1/2">
           <div className="mb-6 flex items-center gap-4">

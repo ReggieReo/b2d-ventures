@@ -79,7 +79,7 @@ function DialogCountdown() {
       return () => clearTimeout(timer);
     } else if (countdown === 0) {
       // Redirect to the portfolio page when countdown reaches 0
-      router.push("/");
+      router.push("/startup_dashboard");
     }
     return () => clearTimeout(timer);
   }, [countdown, startCountdown]);
@@ -102,9 +102,9 @@ function DialogCountdown() {
           </DialogTitle>
           <DialogDescription>
             Redirecting you to homepage in {countdown} seconds.
-            <Link href="/public">
+            <Link href="/startup_dashboard">
               <Button className="mt-6 w-full bg-blue-500 py-3 text-lg font-semibold text-white hover:bg-blue-600">
-                Go to homepage
+                Go to Dashboard
               </Button>
             </Link>
           </DialogDescription>

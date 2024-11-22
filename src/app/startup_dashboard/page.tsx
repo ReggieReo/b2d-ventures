@@ -41,6 +41,7 @@ export default async function StartupDashboard() {
     );
   }
 
+
   const businessID = business.businessID;
 
   const dataroomRequests = await getRequestByIDWithUser(businessID);
@@ -114,6 +115,16 @@ export default async function StartupDashboard() {
 
   return (
     <main className="justify-left m-4 flex min-h-screen flex-col">
+      {business.business_status === 0 && (
+        <div className="font-geist-sans my-10 flex flex-col">
+          <div className="rounded-lg bg-yellow-50 p-8 text-center">
+            <h2 className="mb-4 text-2xl font-bold text-yellow-800">Under Review</h2>
+            <p className="text-yellow-700">
+              This business is currently being reviewed by our admin team. You will be notified by email once the review is complete.
+            </p>
+          </div>
+        </div>
+      )}
       <p className={"mb-5 text-3xl font-bold"}>My Fundraising</p>
       <div className={"flex flex-col items-center gap-4"}>
         <Card className={"w-full"}>
@@ -123,41 +134,42 @@ export default async function StartupDashboard() {
           </CardHeader>
           <CardContent>
             <div className={"flex flex-col gap-y-5"}>
-              <div className={"flex flex-row gap-x-10"}>
-                <div className={"flex-col"}>
-                  <p className={"text-2xl"}>Fund Raised</p>
-                  <div className={"ml-3 flex flex-col gap-2 lg:flex-row"}>
-                    <p className={"text-3xl font-bold"}>
-                      $
-                      {totalInvestment
-                        .toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                    </p>
-                    <p>
-                      ($
-                      {thisWeekInvestmentAmount
-                        .toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-                      from this week)
-                    </p>
+              <div className={"flex justify-between"}>
+                <div className={"flex flex-row gap-x-10 justify-between w-3/4"}>
+                  <div className={"flex-col"}>
+                    <p className={"text-2xl"}>Fund Raised</p>
+                    <div className={"ml-3 flex flex-col gap-2 lg:flex-row"}>
+                      <p className={"text-3xl font-bold"}>
+                        ${totalInvestment.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                      </p>
+                      <p>
+                        (${thisWeekInvestmentAmount
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                        from this week)
+                      </p>
+                    </div>
+                  </div>
+                  <div className={"flex flex-col"}>
+                    <p className={"text-2xl"}>Investor</p>
+                    <div className={"ml-3 flex flex-col gap-2 lg:flex-row"}>
+                      <p className={"text-3xl font-bold"}>{countInvestment}</p>
+                      <p>({thisWeekInvestmentCount} from this week)</p>
+                    </div>
+                  </div>
+                  <div className={"flex flex-col"}>
+                    <p className={"text-2xl"}>Day to go</p>
+                    <div className={"ml-3 flex flex-col gap-2 lg:flex-row"}>
+                      <p className={"text-3xl font-bold"}>
+                        {daysToGo === 0 ? "Last day" : daysToGo}
+                      </p>
+                      <p>({daysSinceStart} days from start)</p>
+                    </div>
                   </div>
                 </div>
-                <div className={"flex flex-col"}>
-                  <p className={"text-2xl"}>Investor</p>
-                  <div className={"ml-3 flex flex-col gap-2 lg:flex-row"}>
-                    <p className={"text-3xl font-bold"}>{countInvestment}</p>
-                    <p>({thisWeekInvestmentCount} from this week)</p>
-                  </div>
-                </div>
-                <div className={"flex flex-col"}>
-                  <p className={"text-2xl"}>Day to go</p>
-                  <div className={"ml-3 flex flex-col gap-2 lg:flex-row"}>
-                    <p className={"text-3xl font-bold"}>
-                      {daysToGo === 0 ? "Last day" : daysToGo}
-                    </p>
-                    <p>({daysSinceStart} days from start)</p>
-                  </div>
-                </div>
+                <Link href={`/business/${businessID}`}>
+                  <Button variant="outline">View Business Page</Button>
+                </Link>
               </div>
               <div className={"ml-5 flex flex-row items-center gap-x-5"}>
                 <p>{Math.round(percentageFund)}%</p>
