@@ -27,10 +27,6 @@ export const formSchema = z.object({
   industry: z.string({
     required_error: "Please select the industry.",
   }),
-  min_investment: z.coerce.number({
-    required_error: "Please enter the minimum investment.",
-  })
-  .min(10, "Minimum investment must be at least 10."),
   allocation: z.coerce.number({
     required_error: "Please enter the allocation.",
   })

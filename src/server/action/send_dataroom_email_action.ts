@@ -6,11 +6,13 @@ import {
   FinancialStatementApprovalEmail,
   FinancialStatementRejectionEmail,
   InvestmentNotificationEmail,
+  BusinessApprovalEmail,
 } from "~/components/util/email_template";
 import { clerkClient } from "@clerk/nextjs/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { getBusinessByID } from "~/server/repository/business_repository";
 import { calculateStockPrice } from "~/utils/util";
+
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -37,6 +39,10 @@ export async function sendDataroomApprovalEmail(
     // Generate dataroom link
     const dataroomLink = `${process.env.NEXT_PUBLIC_APP_URL}/dataroom/${businessID}`;
 
+    console.log(
+      "Sending email to: ",
+      user.emailAddresses[0]?.emailAddress ?? "",
+    );
     // Send email
     const data = await resend.emails.send({
       from: "B2D Venture <b2dventure-noreply@resend.dev>",
@@ -75,6 +81,7 @@ export async function sendFinancialStatementEmail(
       throw new Error("User not found");
     }
 
+
     // Send email based on approval status
     const data = await resend.emails.send({
       from: "B2D Venture <b2dventure-noreply@resend.dev>",
@@ -93,6 +100,7 @@ export async function sendFinancialStatementEmail(
 
     return { success: true, data };
   } catch (error) {
+    console.error("Error sending financial statement email:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to send email",
@@ -146,6 +154,47 @@ export async function sendInvestmentNotificationEmail(
 
     return { success: true, data };
   } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to send email",
+    };
+  }
+}
+
+// TODO: check if admin again
+export async function sendBusinessApprovalEmail(
+  businessOwnerID: string,
+  businessID: number,
+) {
+  try {
+    // Verify current user has permission to send this email
+    const cUser = await currentUser();
+    if (!cUser) {
+      throw new Error("Unauthorized");
+    }
+
+    // Get business owner and business details
+    const businessOwner = await clerkClient().users.getUser(businessOwnerID);
+    const business = await getBusinessByID(businessID);
+
+    if (!businessOwner || !business) {
+      throw new Error("Business owner or business not found");
+    }
+
+    // Send email
+    const data = await resend.emails.send({
+      from: "B2D Venture <b2dventure-noreply@resend.dev>",
+      to: [businessOwner.emailAddresses[0]?.emailAddress ?? ""],
+      subject: `Your Business Listing for ${business.company} is Approved`,
+      react: BusinessApprovalEmail({
+        firstName: businessOwner.firstName ?? "Business Owner",
+        companyName: business.company ?? "your business",
+      }) as React.ReactElement,
+    });
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error sending business approval email:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to send email",

@@ -171,3 +171,39 @@ export const InvestmentNotificationEmail: React.FC<Readonly<InvestmentNotificati
     </p>
   </div>
 );
+
+interface BusinessApprovalEmailProps {
+  firstName: string;
+  companyName: string;
+}
+
+export const BusinessApprovalEmail: React.FC<Readonly<BusinessApprovalEmailProps>> = ({
+  firstName,
+  companyName,
+}) => (
+  <div>
+    <h1>Business Listing Approved</h1>
+    <p>Dear {firstName},</p>
+    <p>
+      Congratulations! Your business listing for {companyName} has been approved and is now live on our platform.
+    </p>
+    <div style={{ margin: '20px 0', padding: '15px', backgroundColor: '#f5f5f5', borderRadius: '5px' }}>
+      <p>What's next?</p>
+      <ul style={{ marginLeft: '20px', marginTop: '10px' }}>
+        <li>Monitor your fundraising progress in your startup dashboard</li>
+        <li>Engage with potential investors through the dataroom</li>
+        <li>Keep your business information up to date</li>
+      </ul>
+    </div>
+    <p>
+      View your startup dashboard here:{' '}
+      <a href={`${process.env.NEXT_PUBLIC_APP_URL}/startup_dashboard`} style={{ color: '#0066cc' }}>
+        Go to Dashboard
+      </a>
+    </p>
+    <hr />
+    <p style={{ color: '#666', fontSize: '0.9em' }}>
+      This is an automated message. Please do not reply to this email.
+    </p>
+  </div>
+);

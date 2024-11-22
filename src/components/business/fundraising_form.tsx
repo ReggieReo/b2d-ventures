@@ -51,23 +51,6 @@ import { format } from "date-fns";
 import { Calendar } from "~/components/ui/calendar";
 import { X } from "lucide-react";
 
-// const industries = [
-//   { label: "Technology", value: "tech" },
-//   { label: "Healthcare", value: "health" },
-//   { label: "Finance", value: "finance" },
-//   { label: "Education", value: "education" },
-//   { label: "Retail", value: "retail" },
-//   { label: "Manufacturing", value: "manufacturing" },
-//   { label: "Hospitality", value: "hospitality" },
-//   { label: "Transportation", value: "transport" },
-//   { label: "Real Estate", value: "real_estate" },
-//   { label: "Energy", value: "energy" },
-//   { label: "Food & Beverage", value: "food_beverage" },
-//   { label: "Entertainment", value: "entertainment" },
-//   { label: "Telecommunications", value: "telecom" },
-//   { label: "Construction", value: "construction" },
-//   { label: "Consulting", value: "consulting" },
-// ] as const;
 
 import { industries } from "~/utils/enum/industryList";
 
@@ -140,7 +123,6 @@ export function FundraisingForm() {
       website: "",
       industry: "",
       target_stock: 0,
-      min_investment: 0,
       valuation: 0,
       allocation: 0,
       deadline: new Date(Date.now()),
@@ -310,22 +292,6 @@ export function FundraisingForm() {
                   name={field.name}
                   value={field.value?.toString()}
                 />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="min_investment"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>The minimum check-size per investment</FormLabel>
-                <FormControl>
-                  <Input placeholder="$" {...field} />
-                </FormControl>
-                <FormDescription>
-                  The minimum check-size per investment
-                </FormDescription>
-                <FormMessage />
               </FormItem>
             )}
           />

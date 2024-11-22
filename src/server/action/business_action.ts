@@ -12,17 +12,27 @@ import {
   updateMediaImageTypeByMediaURLe,
   updateMediaLogoTypeByMediaURLe,
 } from "~/server/repository/media_repository";
+import { getBusinessByID } from "~/server/repository/business_repository";
+import { sendBusinessApprovalEmail } from "~/server/action/send_dataroom_email_action";
 
 export async function approveBusinessAction(businessID: number) {
   try {
+    // Get business details before updating status
+    const business = await getBusinessByID(businessID);
+    if (!business) {
+      throw new Error("Business not found");
+    }
+
     const statusResult = await acceptUserStatus(businessID);
 
     if (statusResult.success) {
-      return { status: 200, message: "User status updated successfully" };
+      // Send approval notification email
+      await sendBusinessApprovalEmail(business.userID!, businessID);
+      return { status: 200, message: "Business approved and notification sent" };
     } else {
       return {
         status: 500,
-        message: statusResult.error ?? "Failed to update user status",
+        message: statusResult.error ?? "Failed to update business status",
       };
     }
   } catch (error) {
@@ -68,8 +78,7 @@ export async function createFundraising(formData: FormData) {
     company: formData.get("company"),
     slogan: formData.get("slogan"),
     website: formData.get("website"),
-    target_stock: formData.get("target_stock"), // Fixed typo: removed colon
-    min_investment: formData.get("min_investment"),
+    target_stock: formData.get("target_stock"),
     allocation: formData.get("allocation"),
     valuation: formData.get("valuation"),
     deadline: formData.get("deadline"),
