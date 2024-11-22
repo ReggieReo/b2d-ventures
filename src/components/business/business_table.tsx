@@ -29,7 +29,7 @@ import {
   approveBusinessAction,
   declineBusinessAction,
 } from "~/server/action/business_action";
-
+import { getDayUntilDeadline } from "~/utils/util";
 export type Business = typeof business.$inferSelect;
 
 export default function CampaignApprovalTable({
@@ -129,26 +129,58 @@ export default function CampaignApprovalTable({
     },
     {
       accessorKey: "target_stock",
-      header: () => <div className="text-center">Shares</div>,
+      header: () => <div className="text-center">Target Shares</div>,
       cell: ({ row }) => {
         const amount = parseFloat(row.getValue("target_stock"));
         const formatted = new Intl.NumberFormat("en-US").format(amount);
-        return <div className="text-center font-medium">{formatted}</div>;
+        return (
+          <div className="text-center">
+            <div className="font-medium">{formatted}</div>
+            <div className="text-sm text-gray-500">shares</div>
+          </div>
+        );
       },
     },
     {
       accessorKey: "allocation",
-      header: "Allocation",
+      header: "Ownership Allocation",
       cell: ({ row }) => (
-        <div className="text-center">{row.getValue("allocation")}</div>
+        <div className="text-center">
+          <div className="font-medium">{row.getValue("allocation")}%</div>
+          <div className="text-sm text-gray-500">ownership</div>
+        </div>
       ),
     },
     {
       accessorKey: "deadline",
-      header: "Deadline",
-      cell: ({ row }) => (
-        <div className="text-center">{row.getValue("deadline")}</div>
-      ),
+      header: "Campaign Deadline",
+      cell: ({ row }) => {
+        const date = new Date(row.getValue("deadline"));
+        const daysToGo = getDayUntilDeadline(date.toISOString());
+        return (
+          <div className="text-center">
+            <div className="font-medium">{date.toLocaleDateString()}</div>
+            <div className="text-sm text-gray-500">
+              {daysToGo > 0 ? `${daysToGo} days left` : "Ended"}
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "valuation",
+      header: () => <div className="text-center">Company Valuation</div>,
+      cell: ({ row }) => {
+        const valuation = row.getValue<number>("valuation");
+        return (
+          <div className="text-center">
+            <div className="font-medium">
+              ${valuation?.toLocaleString() ?? "N/A"}
+            </div>
+            <div className="text-sm text-gray-500">USD</div>
+          </div>
+        );
+      },
     },
     {
       id: "actions",
@@ -249,10 +281,6 @@ export default function CampaignApprovalTable({
           </div>
         </div>
 
-        {/* Investment Table Section */}
-        {/* <div className="w-full">
-          <InvestmentTable />
-        </div> */}
       </main>
     </div>
   );
