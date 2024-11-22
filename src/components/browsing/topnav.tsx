@@ -17,6 +17,7 @@ import {
   getBusinessByUserIDExplicit,
 } from "~/server/repository/business_repository";
 import { MobileMenu } from "./mobile-menu";
+import { checkRole } from "~/utils/role";
 
 function Logo() {
   return (
@@ -54,11 +55,11 @@ export async function TopNav() {
       <MobileMenu>
         <div className="flex flex-col md:flex-row gap-4">
           {/* Admin */}
-          <Protect condition={(has) => has({ role: "org:admin" })}>
+          {await checkRole("admin") && (
             <Link className="font-light" href="/admin">
               Admin
             </Link>
-          </Protect>
+          )}
           <Link className="font-light" href="/browse_business">
             Browse Business
           </Link>

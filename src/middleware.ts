@@ -1,4 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { checkrole } from "./utils/role";
+import { NextResponse } from "next/server";
 
 const isProtectedRoute = createRouteMatcher([
   "/create_fundraising",
@@ -8,9 +10,12 @@ const isProtectedRoute = createRouteMatcher([
 ]);
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 
-export default clerkMiddleware((auth, req) => {
+export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) auth().protect();
-  if (isAdminRoute(req)) auth().protect({ role: "org:admin" });
+  console.log(auth().sessionClaims?.metadata?.role);
+  if (isAdminRoute(req) && (auth().sessionClaims?.metadata?.role !== "admin")) {
+    return NextResponse.redirect(new URL("/404", req.url));
+  }
 });
 
 export const config = {

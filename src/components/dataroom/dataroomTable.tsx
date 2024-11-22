@@ -69,7 +69,7 @@ export function DataroomTable({
           <TableHead>Email</TableHead>
           <TableHead>Financial Statement</TableHead>
           <TableHead>Request Date</TableHead>
-          <TableHead className="text-right">Status</TableHead>
+          <TableHead>Status</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -85,7 +85,7 @@ export function DataroomTable({
                 day: "numeric",
               })}
             </TableCell>
-            <TableCell className="text-right">
+            <TableCell>
               <Select
                 defaultValue={request.requestStatus.toString()}
                 onValueChange={async (value) => {
