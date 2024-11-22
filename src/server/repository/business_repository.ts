@@ -49,7 +49,6 @@ export async function createBusiness(businessFromData: businessFromSchema) {
       slogan: businessFromData.slogan,
       website: businessFromData.website,
       target_stock: businessFromData.target_stock,
-      min_investment: businessFromData.min_investment,
       allocation: businessFromData.allocation,
       valuation: businessFromData.valuation,
       deadline: businessFromData.deadline.toISOString(),

@@ -60,3 +60,4 @@ jobs:
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
           UPLOADTHING_TOKEN: ${{ secrets.UPLOADTHING_TOKEN }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
