@@ -7,9 +7,8 @@ import {
   FinancialStatementRejectionEmail,
   InvestmentNotificationEmail,
 } from "~/components/util/email_template";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { getUserByID } from "~/server/repository/user_repository";
 import { getBusinessByID } from "~/server/repository/business_repository";
 import { calculateStockPrice } from "~/utils/util";
 
@@ -27,7 +26,6 @@ export async function sendDataroomApprovalEmail(
       throw new Error("Unauthorized");
     }
 
-    console.log("Sending dataroom approval email to userID: ", userID);
     // Get user and business details
     const user = await clerkClient().users.getUser(userID);
     const business = await getBusinessByID(businessID);
@@ -39,10 +37,6 @@ export async function sendDataroomApprovalEmail(
     // Generate dataroom link
     const dataroomLink = `${process.env.NEXT_PUBLIC_APP_URL}/dataroom/${businessID}`;
 
-    console.log(
-      "Sending email to: ",
-      user.emailAddresses[0]?.emailAddress ?? "",
-    );
     // Send email
     const data = await resend.emails.send({
       from: "B2D Venture <b2dventure-noreply@resend.dev>",
@@ -54,11 +48,8 @@ export async function sendDataroomApprovalEmail(
         dataroomLink: dataroomLink,
       }) as React.ReactElement,
     });
-    console.log(data);
-    console.log("Email sent successfully");
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending dataroom approval email:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to send email",
@@ -77,21 +68,12 @@ export async function sendFinancialStatementEmail(
       throw new Error("Unauthorized");
     }
 
-    console.log(
-      `Sending financial statement ${isApproved ? "approval" : "rejection"} email to userID: `,
-      userID,
-    );
 
     // Get user details
     const user = await clerkClient().users.getUser(userID);
     if (!user) {
       throw new Error("User not found");
     }
-
-    console.log(
-      "Sending email to: ",
-      user.emailAddresses[0]?.emailAddress ?? "",
-    );
 
     // Send email based on approval status
     const data = await resend.emails.send({
@@ -109,11 +91,8 @@ export async function sendFinancialStatementEmail(
           }) as React.ReactElement),
     });
 
-    console.log(data);
-    console.log("Email sent successfully");
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending financial statement email:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to send email",
@@ -165,10 +144,8 @@ export async function sendInvestmentNotificationEmail(
       }) as React.ReactElement,
     });
 
-    console.log("Investment notification email sent successfully");
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending investment notification email:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to send email",
