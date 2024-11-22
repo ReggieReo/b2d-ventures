@@ -22,6 +22,7 @@ import { getDayUntilDeadline } from "~/utils/util";
 import { getBusinessByUserID } from "~/server/repository/business_repository";
 import { getInvestmentByBusinessID } from "~/server/repository/investment_repository";
 import { getRequestByIDWithUser } from "~/server/repository/dataroom_request_repository";
+import { clerkClient } from "@clerk/nextjs/server";
 
 export const dynamic = "force-dynamic";
 
@@ -46,8 +47,8 @@ export default async function StartupDashboard() {
 
   const dataroomRequests = await getRequestByIDWithUser(businessID);
 
-  const validatedRequests: DataroomRequestWithUser[] = dataroomRequests.map(
-    (request) => ({
+  const validatedRequests: DataroomRequestWithUser[] = await Promise.all(
+    dataroomRequests.map(async (request) => ({
       requestID: request.requestID,
       userID: request.userID!,
       businessID: request.businessID,
@@ -55,10 +56,16 @@ export default async function StartupDashboard() {
       createdAt: new Date(request.createdAt),
       user: {
         userID: request.user?.userID,
-        name: request.user?.name,
+        name: request.user?.name || undefined,
+        email: (await clerkClient.users.getUser(request.userID!)).emailAddresses[0]?.emailAddress || undefined,
+        media: request.user?.media?.map(m => ({
+          status: m.status,
+          createdAt: new Date(m.createdAt),
+        })),
       },
-    }),
+    }))
   );
+
   const isInCurrentWeek = (date: Date) => {
     const today = new Date();
     const startOfWeek = new Date(

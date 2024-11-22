@@ -28,10 +28,16 @@ export async function getRequestByUserIDAndBusinessID(
 }
 
 export async function getRequestByIDWithUser(businessID: number) {
-  return db.query.dataroomRequest.findMany({
+  return await db.query.dataroomRequest.findMany({
     where: (model, { eq }) => eq(model.businessID, businessID),
     with: {
-      user: true,
+      user: {
+        with: {
+          media: {
+            where: (media, { eq }) => eq(media.type, "financial_statement"),
+          },
+        },
+      },
     },
   });
 }

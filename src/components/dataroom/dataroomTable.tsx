@@ -26,42 +26,79 @@ export type DataroomRequestWithUser = {
   requestStatus: number;
   createdAt: Date;
   user: {
-    userID?: string | undefined;  // Make userID optional
-    name?: string | null;         // Make name optional and nullable
+    userID?: string;
+    name?: string;
+    email?: string;
+    media?: {
+      status: number;
+      createdAt: Date;
+    }[];
   } | null;
 };
-
 
 export function DataroomTable({
   dataroomRequestData,
 }: {
-  dataroomRequestData: DataroomRequestWithUser[]
+  dataroomRequestData: DataroomRequestWithUser[];
 }) {
+  const getFinancialStatementStatus = (media?: { status: number; createdAt: Date }[]) => {
+    if (!media || media.length === 0) return "No Statement";
+    
+    const latestStatement = media.sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )[0];
+
+    switch (latestStatement?.status) {
+      case 0:
+        return "Pending Review";
+      case 1:
+        return "Approved";
+      case 2:
+        return "Rejected";
+      default:
+        return "No Statement";
+    }
+  };
+
   return (
     <Table>
       <TableCaption>A list of dataroom requests</TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead>Name</TableHead>
-          <TableHead>Date</TableHead>
-          <TableHead>Status</TableHead>
+          <TableHead>Email</TableHead>
+          <TableHead>Financial Statement</TableHead>
+          <TableHead>Request Date</TableHead>
+          <TableHead className="text-right">Status</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {dataroomRequestData.map((request, index) => (
           <TableRow key={`${request.userID}-${index}`}>
-            <TableCell>{request.user?.name}</TableCell>
+            <TableCell>{request.user?.name || "Unknown User"}</TableCell>
+            <TableCell>{request.user?.email || "N/A"}</TableCell>
+            <TableCell>{getFinancialStatementStatus(request.user?.media)}</TableCell>
             <TableCell>
-              {new Date(request.createdAt).toLocaleDateString('en-US')}
+              {request.createdAt.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
             </TableCell>
             <TableCell className="text-right">
               <Select
                 defaultValue={request.requestStatus.toString()}
-                onValueChange={
-                async(value) => {
-                  await updateDataroomRequestAction(request.businessID, request.userID, Number(value))
+                onValueChange={async (value) => {
+                  await updateDataroomRequestAction(
+                    request.businessID,
+                    request.userID,
+                    Number(value),
+                  );
                   if (Number(value) === RequestDataroomStatusEnum.Accepted) {
-                    await sendDataroomApprovalEmail(request.userID, request.businessID) 
+                    await sendDataroomApprovalEmail(
+                      request.userID,
+                      request.businessID,
+                    );
                   }
                 }}
               >
@@ -69,21 +106,16 @@ export function DataroomTable({
                   <SelectValue placeholder={request.requestStatus.toString()} />
                 </SelectTrigger>
                 <SelectContent>
-                  {/*TODO: Change the value of the status*/}
                   <SelectItem
                     value={RequestDataroomStatusEnum.Pending.toString()}
                     disabled={true}
                   >
                     Pending
                   </SelectItem>
-                  <SelectItem
-                    value={RequestDataroomStatusEnum.Accepted.toString()}
-                  >
+                  <SelectItem value={RequestDataroomStatusEnum.Accepted.toString()}>
                     Accept
                   </SelectItem>
-                  <SelectItem
-                    value={RequestDataroomStatusEnum.Rejected.toString()}
-                  >
+                  <SelectItem value={RequestDataroomStatusEnum.Rejected.toString()}>
                     Denied
                   </SelectItem>
                 </SelectContent>
