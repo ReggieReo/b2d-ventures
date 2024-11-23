@@ -122,9 +122,6 @@ export function FundraisingForm() {
       slogan: "",
       website: "",
       industry: "",
-      target_stock: 0,
-      valuation: 0,
-      allocation: 0,
       deadline: new Date(Date.now()),
       media: [],
       dataroom: [],
@@ -186,10 +183,10 @@ export function FundraisingForm() {
               <FormItem>
                 <FormLabel>Company Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Company Name" {...field} />
+                  <Input placeholder="Enter your company name (2-50 characters)" {...field} />
                 </FormControl>
                 <FormDescription>
-                  We want to get to know more about your business
+                  This will be displayed as your main business identifier across the platform
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -200,12 +197,12 @@ export function FundraisingForm() {
             name="slogan"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Your Company Slogan Or Short introduction</FormLabel>
+                <FormLabel>Company Slogan</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                  <Input placeholder="A brief, compelling description of your business (10-100 characters)" {...field} />
                 </FormControl>
                 <FormDescription>
-                  Your Company Slogan Or Short introduction
+                  A concise tagline that captures your business's unique value proposition
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -216,12 +213,12 @@ export function FundraisingForm() {
             name="website"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Your Website</FormLabel>
+                <FormLabel>Company Website</FormLabel>
                 <FormControl>
-                  <Input placeholder="https://b2dventures.com" {...field} />
+                  <Input placeholder="https://www.yourcompany.com" {...field} />
                 </FormControl>
                 <FormDescription>
-                  How can we know more about you
+                  Your official company website where investors can learn more about your business
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -300,11 +297,13 @@ export function FundraisingForm() {
             name="valuation"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Valuation</FormLabel>
+                <FormLabel>Company Valuation</FormLabel>
                 <FormControl>
-                  <Input placeholder="$" {...field} />
+                  <Input placeholder="Minimum $25,000" {...field} />
                 </FormControl>
-                <FormDescription>Company Valuation</FormDescription>
+                <FormDescription>
+                  Your company's current valuation - this will be used to calculate the stock price
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -314,11 +313,13 @@ export function FundraisingForm() {
             name="allocation"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Allocation</FormLabel>
+                <FormLabel>Equity Allocation</FormLabel>
                 <FormControl>
-                  <Input placeholder="10%" {...field} />
+                  <Input placeholder="Enter percentage (10-49%)" {...field} />
                 </FormControl>
-                <FormDescription>Company Allocation</FormDescription>
+                <FormDescription>
+                  The percentage of equity you're offering to investors in this fundraising round
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -328,11 +329,13 @@ export function FundraisingForm() {
             name="target_stock"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Stock</FormLabel>
+                <FormLabel>Target Stock Amount</FormLabel>
                 <FormControl>
-                  <Input placeholder="$" {...field} />
+                  <Input placeholder="Minimum 10 shares" {...field} />
                 </FormControl>
-                <FormDescription>The target amount of stock</FormDescription>
+                <FormDescription>
+                  The total number of shares available for investment in this fundraising round
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -348,8 +351,8 @@ export function FundraisingForm() {
             control={form.control}
             name="deadline"
             render={({ field }) => (
-              <FormItem className={"flex flex-col"}>
-                <FormLabel>Investment Deadline</FormLabel>
+              <FormItem className="flex flex-col">
+                <FormLabel>Fundraising Deadline</FormLabel>
                 <FormControl>
                   <Popover>
                     <PopoverTrigger asChild>
@@ -380,7 +383,9 @@ export function FundraisingForm() {
                     </PopoverContent>
                   </Popover>
                 </FormControl>
-                <FormDescription>Company Allocation</FormDescription>
+                <FormDescription>
+                  Set the closing date for your fundraising campaign (minimum 2 weeks from today)
+                </FormDescription>
                 <FormMessage />
                 <input
                   type="hidden"
@@ -397,7 +402,7 @@ export function FundraisingForm() {
             name="media"
             render={(field) => (
               <FormItem>
-                <FormLabel>Upload Media</FormLabel>
+                <FormLabel>Company Gallery Images</FormLabel>
                 <FormControl>
                   <div className="space-y-4">
                     <UploadButton
@@ -463,8 +468,7 @@ export function FundraisingForm() {
                   </div>
                 </FormControl>
                 <FormDescription>
-                  Upload images, documents, or other media files related to your
-                  fundraising campaign
+                  Upload images that will be displayed in your company's gallery section. These images should showcase your products, services, or company highlights to potential investors. (Recommended: 3-5 high-quality images, maximum 2MB per image, WEBP or JPEG format)
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -542,7 +546,7 @@ export function FundraisingForm() {
                   </div>
                 </FormControl>
                 <FormDescription>
-                  Upload your company logo (maximum 512 KB, WEBP or JPEG)
+                  Upload your company logo that will appear at the top of your business profile. This will be your primary brand identifier across the platform. (Maximum 512 KB, WEBP or JPEG)
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -621,7 +625,7 @@ export function FundraisingForm() {
                   </div>
                 </FormControl>
                 <FormDescription>
-                  Upload your company banner (maximum 2MB, WEBP or JPEG)
+                  Upload a banner image that will be displayed at the top of your business profile page. Choose a high-quality image that represents your brand. (Maximum 2MB, WEBP or JPEG, recommended size: 1200x400px)
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -633,7 +637,7 @@ export function FundraisingForm() {
             name="dataroom"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Dataroom</FormLabel>
+                <FormLabel>Data Room Documents</FormLabel>
                 <FormControl>
                   <div className="space-y-4">
                     <UploadButton
@@ -690,7 +694,7 @@ export function FundraisingForm() {
                   </div>
                 </FormControl>
                 <FormDescription>
-                  Upload documents for your dataroom
+                  Upload confidential business documents (financial statements, business plans, etc.) that will be available to approved investors. These documents will require investor approval to access.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -703,6 +707,11 @@ export function FundraisingForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Problem</FormLabel>
+                <FormDescription>
+                  Clearly describe the problem or pain point your business is addressing. What specific challenges do your target customers face? What are the consequences of this problem remaining unsolved? <br></br>
+                  To add images: Paste or drag & drop images directly into the editor (max 2MB per image, WEBP or JPEG format).<br></br> 
+                  Maximum text length: 5000 characters.
+                </FormDescription>
                 <FormControl>
                   <Suspense fallback={null}>
                     <EditorComp
@@ -712,10 +721,6 @@ export function FundraisingForm() {
                     />
                   </Suspense>
                 </FormControl>
-                <FormDescription>
-                  Describe the problem or pain point your business is solving.
-                  What challenges do your customers face?
-                </FormDescription>
                 <FormMessage />
                 <input type="hidden" name="problem" value={field.value} />
               </FormItem>
@@ -728,6 +733,11 @@ export function FundraisingForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Solution</FormLabel>
+                <FormDescription>
+                  Explain how your product or service solves the problem. What makes your solution unique and effective? Include specific features, benefits, and competitive advantages. Demonstrate how your solution creates value for customers.<br></br>
+                  To add images: Paste or drag & drop product screenshots, diagrams, or demos directly into the editor (max 2MB per image, WEBP or JPEG format).<br></br>
+                  Maximum text length: 5000 characters.
+                </FormDescription>
                 <FormControl>
                   <Suspense fallback={null}>
                     <EditorComp
@@ -737,10 +747,6 @@ export function FundraisingForm() {
                     />
                   </Suspense>
                 </FormControl>
-                <FormDescription>
-                  Explain your solution and how it addresses the problem. You
-                  can include images to showcase your product or service.
-                </FormDescription>
                 <FormMessage />
                 <input type="hidden" name="solution" value={field.value} />
               </FormItem>
@@ -753,6 +759,16 @@ export function FundraisingForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Stage</FormLabel>
+                <FormDescription>
+                  Detail your current business stage and traction. Include key metrics like:<br></br>
+                  • Current stage (Idea, MVP, Growth)<br></br>
+                  • Key milestones achieved<br></br>
+                  • User/customer metrics<br></br>
+                  • Revenue figures (if applicable)<br></br>
+                  • Market validation points<br></br>
+                  To add images: Paste or drag & drop charts, graphs, or milestone timelines directly into the editor (max 2MB per image, WEBP or JPEG format).<br></br>
+                  Maximum text length: 3000 characters.
+                </FormDescription>
                 <FormControl>
                   <Suspense fallback={null}>
                     <EditorComp
@@ -762,10 +778,6 @@ export function FundraisingForm() {
                     />
                   </Suspense>
                 </FormControl>
-                <FormDescription>
-                  What is your current business stage? (e.g., Idea, MVP, Growth)
-                  Include key metrics and milestones achieved.
-                </FormDescription>
                 <FormMessage />
                 <input type="hidden" name="stage" value={field.value} />
               </FormItem>
@@ -778,6 +790,16 @@ export function FundraisingForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Team</FormLabel>
+                <FormDescription>
+                  Introduce your team members and their qualifications. For each key team member, include:<br></br>
+                  • Role and responsibilities<br></br>
+                  • Relevant experience<br></br>
+                  • Education<br></br>
+                  • Notable achievements<br></br>
+                  • LinkedIn profiles (optional)<br></br>
+                  To add images: Paste or drag & drop professional headshots or team photos directly into the editor (max 2MB per image, WEBP or JPEG format).<br></br>
+                  Maximum text length: 3000 characters.
+                </FormDescription>
                 <FormControl>
                   <Suspense fallback={null}>
                     <EditorComp
@@ -787,10 +809,6 @@ export function FundraisingForm() {
                     />
                   </Suspense>
                 </FormControl>
-                <FormDescription>
-                  Introduce your team members, their roles, and relevant
-                  experience. You can include team photos.
-                </FormDescription>
                 <FormMessage />
                 <input type="hidden" name="team" value={field.value} />
               </FormItem>
@@ -803,6 +821,16 @@ export function FundraisingForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Investors (Optional)</FormLabel>
+                <FormDescription>
+                  List any notable investors, advisors, or partnerships. Include:<br></br>
+                  • Names and roles<br></br>
+                  • Investment amounts (if public)<br></br>
+                  • Strategic value they bring<br></br>
+                  • Notable achievements or expertise<br></br>
+
+                  To add images: Paste or drag & drop investor/partner logos directly into the editor (max 2MB per image, WEBP or JPEG format).<br></br>
+                  Maximum text length: 2000 characters.
+                </FormDescription>
                 <FormControl>
                   <Suspense fallback={null}>
                     <EditorComp
@@ -812,10 +840,6 @@ export function FundraisingForm() {
                     />
                   </Suspense>
                 </FormControl>
-                <FormDescription>
-                  List any current investors, advisors, or notable partnerships.
-                  You can include their logos if available.
-                </FormDescription>
                 <FormMessage />
                 <input
                   type="hidden"
