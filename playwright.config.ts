@@ -1,12 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
+import dotenv from 'dotenv';
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+// Method 2: Use direct relative path
+dotenv.config({ path: '.env' });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -39,18 +35,29 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: 'setup clerk',
+      testMatch: /global\.setup\.ts/,
     },
+    {
+      name: 'cleanup db',
+      testMatch: /global\.teardown\.ts/,
+    },
+    // {
+    //   name: "chromium",
+    //   use: { ...devices["Desktop Chrome"] },
+    //   dependencies: ['setup clerk'],
+    // },
 
     // {
     //   name: "firefox",
     //   use: { ...devices["Desktop Firefox"] },
+    //   dependencies: ['setup clerk'],
     // },
     //
     // {
-    //   name: "webkit",
-    //   use: { ...devices["Desktop Safari"] },
+      // name: "webkit",
+      // use: { ...devices["Desktop Safari"] },
+      // dependencies: ['setup clerk'],
     // },
     //
     /* Test against mobile viewports. */
@@ -68,10 +75,11 @@ export default defineConfig({
     //   name: 'Microsoft Edge',
     //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
     // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
+    {
+      name: 'Google Chrome',
+      use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+      dependencies: ['setup clerk'],
+    },
   ],
 
   /* Run your local dev server before starting the tests */
