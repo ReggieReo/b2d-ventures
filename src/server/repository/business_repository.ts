@@ -5,6 +5,7 @@ import { asc, desc, eq, inArray } from "drizzle-orm";
 import type { formSchema } from "~/app/create_fundraising/schema";
 import { auth } from "@clerk/nextjs/server";
 import { industries } from "~/utils/enum/industryList";
+import { calculateStockPrice } from "~/utils/util";
 
 ("server-only");
 
@@ -103,8 +104,6 @@ export async function getAcceptBusinessesByKeyData(
   sortMethod: string,
   orderMethod: string,
 ) {
-  // Return a get business according to the search keyword, industry and sorting
-
   if (industry.length === 0) {
     industry = industries.map((ind) => ind.value);
   }
@@ -126,9 +125,6 @@ export async function getAcceptBusinessesByKeyData(
   } else {
     orderBy = desc;
   }
-  // TODO: Implement sorting by remaining stock
-  // TODO: Implement sorting by stocks invested
-  // TODO: Implement sorting by min stocks investment
 
   const today = new Date();
 
@@ -152,14 +148,59 @@ export async function getAcceptBusinessesByKeyData(
     },
   });
 
-  if (sortMethod === "no_investor") {
-    return result.sort((a, b) => {
-      return orderMethod === "asc"
-        ? a.investment.length - b.investment.length
-        : b.investment.length - a.investment.length;
-    });
+  // Handle special sorting cases
+  switch (sortMethod) {
+    case "no_investor":
+      return result.sort((a, b) => {
+        return orderMethod === "asc"
+          ? a.investment.length - b.investment.length
+          : b.investment.length - a.investment.length;
+      });
+
+    case "remaining_stocks":
+      return result.sort((a, b) => {
+        const getRemaining = (business: typeof result[0]) => {
+          const totalInvested = business.investment.reduce((sum, inv) => sum + inv.fund, 0);
+          return business.target_stock! - totalInvested;
+        };
+        const remainingA = getRemaining(a);
+        const remainingB = getRemaining(b);
+        return orderMethod === "asc" 
+          ? remainingA - remainingB 
+          : remainingB - remainingA;
+      });
+
+    case "amount_invest":
+      return result.sort((a, b) => {
+        const getTotalInvested = (business: typeof result[0]) => {
+          return business.investment.reduce((sum, inv) => sum + inv.fund, 0);
+        };
+        const investedA = getTotalInvested(a);
+        const investedB = getTotalInvested(b);
+        return orderMethod === "asc" 
+          ? investedA - investedB 
+          : investedB - investedA;
+      });
+
+    case "min_invest":
+      return result.sort((a, b) => {
+        const getStockPrice = (business: typeof result[0]) => {
+          return calculateStockPrice(
+            business.valuation!,
+            business.target_stock!,
+            business.allocation!,
+          );
+        };
+        const priceA = getStockPrice(a);
+        const priceB = getStockPrice(b);
+        return orderMethod === "asc" 
+          ? priceA - priceB 
+          : priceB - priceA;
+      });
+
+    default:
+      return result;
   }
-  return result;
 }
 
 export async function getBusinessByUserIDExplicit(userID: string) {
