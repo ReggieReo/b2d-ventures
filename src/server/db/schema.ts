@@ -147,4 +147,13 @@ export const investmentRelation = relations(investment, ({ one }) => ({
 export const userRelation = relations(user, ({ many, one }) => ({
   business: one(business),
   investment: many(investment),
+  dataroomRequest: many(dataroomRequest),
+  media: many(media),
+}));
+
+export const mediaRelation = relations(media, ({ one }) => ({
+  user: one(user, {
+    fields: [media.userID],
+    references: [user.userID],
+  }),
 }));
