@@ -223,7 +223,7 @@ test.describe("Business Investment Flow", () => {
     
     // Complete investment
     await page.getByRole("button", { name: "Confirm investment" }).click();
-    await expect(page).toHaveURL(/\/startup_dashboard/);
+    await expect(page).toHaveURL(/\/investment_portfolio/);
     await expect(page.getByText(TEST_COMPANY.name)).toBeVisible();
   });
 
