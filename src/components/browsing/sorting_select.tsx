@@ -39,10 +39,9 @@ export default function SortingSelect() {
                     <SelectItem value="created">Created</SelectItem>
                     <SelectItem value="deadline">Deadline</SelectItem>
                     <SelectItem value="no_investor">Number of Investment</SelectItem>
-                    {/*TODO: Enable after investment rework*/}
-                    <SelectItem value="amount_invest" disabled={true}>Amount Invested</SelectItem>
-                    <SelectItem value="remaining_stocks" disabled={true}>Remaining Stocks</SelectItem>
-                    <SelectItem value="min_invest" disabled={true}>Minimum Investment</SelectItem>
+                    <SelectItem value="amount_invest">Amount Invested</SelectItem>
+                    <SelectItem value="remaining_stocks">Remaining Stocks</SelectItem>
+                    <SelectItem value="min_invest">Minimum Stock Price</SelectItem>
                 </SelectContent>
             </Select>
             <Select onValueChange={(e)=>{handleOrder(e.valueOf())}}>
