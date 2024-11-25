@@ -1,5 +1,4 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { checkrole } from "./utils/role";
 import { NextResponse } from "next/server";
 
 const isProtectedRoute = createRouteMatcher([
