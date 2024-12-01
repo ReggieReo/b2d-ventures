@@ -22,6 +22,7 @@ export const createTable = pgTableCreator((name) => `b2d_ventures_${name}`);
 export const user = createTable("user", {
   userID: varchar("userID", { length: 256 }).primaryKey(),
   name: text("name"),
+  privacy: boolean("privacy").default(false).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
