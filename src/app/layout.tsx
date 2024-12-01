@@ -4,12 +4,28 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TopNav } from "~/components/browsing/topnav";
+import { PrivacyConsentForm } from "~/components/privacy/PrivacyConsentForm";
+import { auth } from "@clerk/nextjs/server";
+import { db } from "~/server/db";
+import { user } from "~/server/db/schema";
+import { eq } from "drizzle-orm";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { userId } = auth();
+  let showPrivacyForm = false;
+
+  if (userId) {
+    const userRecord = await db.query.user.findFirst({
+      where: eq(user.userID, userId),
+    });
+    showPrivacyForm = userRecord?.privacy === false;
+  }
+  console.log(showPrivacyForm);
+
   return (
     <ClerkProvider>
       <html lang="en" className={`${GeistSans.variable}`}>
@@ -18,6 +34,7 @@ export default function RootLayout({
             <TopNav />
             <main className={"overflow-y-scroll"}>
               {children} {/*this is page*/}
+              {showPrivacyForm && <PrivacyConsentForm />}
             </main>
           </div>
         </body>

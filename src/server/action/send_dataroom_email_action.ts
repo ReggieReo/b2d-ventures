@@ -13,10 +13,8 @@ import { currentUser } from "@clerk/nextjs/server";
 import { getBusinessByID } from "~/server/repository/business_repository";
 import { calculateStockPrice } from "~/utils/util";
 
-
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// TODO: check if admin again
 export async function sendDataroomApprovalEmail(
   userID: string,
   businessID: number,
@@ -46,7 +44,8 @@ export async function sendDataroomApprovalEmail(
     // Send email
     const data = await resend.emails.send({
       from: "B2D Venture <b2dventure-noreply@resend.dev>",
-      to: [user.emailAddresses[0]?.emailAddress ?? ""],
+      // to: [user.emailAddresses[0]?.emailAddress ?? ""],
+      to: "steam.reaw1@gmail.com",
       subject: `Dataroom Access Approved for ${business.company}`,
       react: EmailTemplate({
         firstName: user.firstName ?? "Investor",
@@ -74,18 +73,17 @@ export async function sendFinancialStatementEmail(
       throw new Error("Unauthorized");
     }
 
-
     // Get user details
     const user = await clerkClient().users.getUser(userID);
     if (!user) {
       throw new Error("User not found");
     }
 
-
     // Send email based on approval status
     const data = await resend.emails.send({
       from: "B2D Venture <b2dventure-noreply@resend.dev>",
-      to: [user.emailAddresses[0]?.emailAddress ?? ""],
+      // to: [user.emailAddresses[0]?.emailAddress ?? ""],
+      to: "steam.reaw1@gmail.com",
       subject: isApproved
         ? "Your Financial Statement has been Approved"
         : "Financial Statement Review Update",
@@ -140,7 +138,8 @@ export async function sendInvestmentNotificationEmail(
     // Send email
     const data = await resend.emails.send({
       from: "B2D Venture <b2dventure-noreply@resend.dev>",
-      to: [businessOwner.emailAddresses[0]?.emailAddress ?? ""],
+      // to: [businessOwner.emailAddresses[0]?.emailAddress ?? ""],
+      to: "steam.reaw1@gmail.com",
       subject: `New Investment in ${business.company}`,
       react: InvestmentNotificationEmail({
         firstName: businessOwner.firstName ?? "Business Owner",
@@ -161,7 +160,6 @@ export async function sendInvestmentNotificationEmail(
   }
 }
 
-// TODO: check if admin again
 export async function sendBusinessApprovalEmail(
   businessOwnerID: string,
   businessID: number,
@@ -184,7 +182,8 @@ export async function sendBusinessApprovalEmail(
     // Send email
     const data = await resend.emails.send({
       from: "B2D Venture <b2dventure-noreply@resend.dev>",
-      to: [businessOwner.emailAddresses[0]?.emailAddress ?? ""],
+      // to: [businessOwner.emailAddresses[0]?.emailAddress ?? ""],
+      to: "steam.reaw1@gmail.com",
       subject: `Your Business Listing for ${business.company} is Approved`,
       react: BusinessApprovalEmail({
         firstName: businessOwner.firstName ?? "Business Owner",
