@@ -1,6 +1,7 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { db } from "~/server/db";
 import { user } from "~/server/db/schema";
+import { encrypt } from "../db/encrypted-types";
 
 ("server-only");
 
@@ -28,6 +29,7 @@ export async function createUserForCurrentUser() {
     await db.insert(user).values({
       userID: cuser.id,
       name: cuser.firstName,
+      privacy: false
     });
   }
 }

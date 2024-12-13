@@ -11,51 +11,51 @@ import {
   boolean,
   uuid
 } from "drizzle-orm/pg-core";
+import {
+  encryptedText,
+  encryptedInteger,
+  encryptedBoolean,
+  encryptedDate
+} from "./encrypted-types";
 
-/**
- * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
- * database instance for multiple projects.
- *
- * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
- */
 export const createTable = pgTableCreator((name) => `secure_${name}`);
 
 export const user = createTable("user", {
-  userID: varchar("userID", { length: 256 }).primaryKey(),
-  name: text("name"),
-  privacy: boolean("privacy").default(false).notNull(),
+  userID: text("userID").primaryKey(),
+  name: encryptedText("name"),
+  privacy: encryptedBoolean("privacy").default(false).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date(),
+    () => new Date(),
   ),
 });
 
 export const business = createTable("business", {
   businessID: uuid("businessID").primaryKey().defaultRandom(),
-  userID: varchar("userID", { length: 256 }).references(() => user.userID, {
+  userID: text("userID").references(() => user.userID, {
     onDelete: "cascade",
   }),
   createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date(),
+    () => new Date(),
   ),
-  company: varchar("company", { length: 256 }),
-  website: varchar("website", { length: 256 }),
-  target_stock: integer("target_stock"),
-  allocation: integer("allocation"),
-  valuation: integer("valuation"),
+  company: encryptedText('company'),
+  website: encryptedText('website'),
+  target_stock: encryptedInteger("target_stock"),
+  allocation: encryptedInteger("allocation"),
+  valuation: encryptedInteger("valuation"),
   deadline: date("deadline"),
-  industry: varchar("industry", { length: 256 }),
-  slogan: text("slogan"),
-  problem: text("problem"),
-  solution: text("solution"),
-  stage: text("stage"),
-  team: text("team"),
-  investors: text("investors"),
+  industry: encryptedText('industry'),
+  slogan: encryptedText("slogan"),
+  problem: encryptedText("problem"),
+  solution: encryptedText("solution"),
+  stage: encryptedText("stage"),
+  team: encryptedText("team"),
+  investors: encryptedText("investors"),
   business_status: integer("business_status").default(0).notNull(),
 });
 
@@ -64,15 +64,15 @@ export const investment = createTable("investment", {
   businessID: uuid("businessID").references(() => business.businessID, {
     onDelete: "cascade",
   }),
-  userID: varchar("userID", { length: 256 }).references(() => user.userID, {
+  userID: text("userID").references(() => user.userID, {
     onDelete: "cascade",
   }),
-  fund: integer("fund").notNull(),
+  fund: encryptedInteger("fund").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date(),
+    () => new Date(),
   ),
 });
 
@@ -81,24 +81,24 @@ export const media = createTable("media", {
   businessID: uuid("businessID").references(() => business.businessID, {
     onDelete: "cascade",
   }),
-  userID: varchar("userID", { length: 256 }).references(() => user.userID, {
+  userID: text("userID").references(() => user.userID, {
     onDelete: "cascade",
   }),
-  url: varchar("url", { length: 1024 }).notNull(),
-  name: varchar("name", { length: 256 }).notNull(),
-  type: text("type"),
+  url: encryptedText('url'),
+  name: encryptedText('name'),
+  type: encryptedText("type"),
   status: integer("status").default(0).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date(),
+    () => new Date(),
   ),
 });
 
 export const dataroomRequest = createTable("dataroom_request", {
   requestID: uuid("requestID").primaryKey().defaultRandom(),
-  userID: varchar("userID", { length: 256 }).references(() => user.userID, {
+  userID: text("userID").references(() => user.userID, {
     onDelete: "cascade",
   }),
   businessID: uuid("businessID").references(() => business.businessID, {
@@ -106,10 +106,10 @@ export const dataroomRequest = createTable("dataroom_request", {
   }),
   requestStatus: integer("requestStatus").default(0).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date(),
+    () => new Date(),
   ),
 });
 
@@ -122,17 +122,17 @@ export const businessRelation = relations(business, ({ many, one }) => ({
 }));
 
 export const dataroomRequestRelation = relations(
-    dataroomRequest,
-    ({ many, one }) => ({
-      user: one(user, {
-        fields: [dataroomRequest.userID],
-        references: [user.userID],
-      }),
-      business: one(business, {
-        fields: [dataroomRequest.businessID],
-        references: [business.businessID],
-      }),
+  dataroomRequest,
+  ({ many, one }) => ({
+    user: one(user, {
+      fields: [dataroomRequest.userID],
+      references: [user.userID],
     }),
+    business: one(business, {
+      fields: [dataroomRequest.businessID],
+      references: [business.businessID],
+    }),
+  }),
 );
 
 export const investmentRelation = relations(investment, ({ one }) => ({

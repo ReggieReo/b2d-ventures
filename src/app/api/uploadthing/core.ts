@@ -113,28 +113,25 @@ export const ourFileRouter = {
   })
     .middleware(async ({ req }) => {
       const user = auth();
-      // eslint-disable-next-line @typescript-eslint/only-throw-error
       if (!user) throw new UploadThingError("Unauthorized");
       return { userId: user.userId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       try {
-        // Add validation
         if (!metadata.userId) {
           throw new Error("No userId in metadata");
         }
 
-        // Try inserting with explicit businessID handling
+        // Insert with proper type handling
         const result = await db.insert(media).values({
           userID: metadata.userId,
           url: file.url,
           name: file.name,
           type: "financial_statement",
-          status: 0,
+          status: 0, // This will be automatically encrypted by Drizzle's custom type
           businessID: process.env.BUSINESS_PLACEHOLDER_ID,
         });
 
-        // Return detailed response
         return {
           success: true,
           uploadedBy: metadata.userId,
@@ -144,7 +141,8 @@ export const ourFileRouter = {
           },
         };
       } catch (error) {
-        throw error; // Re-throw to ensure uploadthing knows about the failure
+        console.error("Upload error:", error);
+        throw error;
       }
     }),
 } satisfies FileRouter;
