@@ -17,7 +17,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendDataroomApprovalEmail(
   userID: string,
-  businessID: number,
+  businessID: string,
 ) {
   try {
     // Verify current user has permission to send this email
@@ -108,7 +108,7 @@ export async function sendFinancialStatementEmail(
 
 export async function sendInvestmentNotificationEmail(
   businessOwnerID: string,
-  businessID: number,
+  businessID: string,
   investorName: string,
   stockAmount: number,
 ) {
@@ -162,7 +162,7 @@ export async function sendInvestmentNotificationEmail(
 
 export async function sendBusinessApprovalEmail(
   businessOwnerID: string,
-  businessID: number,
+  businessID: string,
 ) {
   try {
     // Verify current user has permission to send this email

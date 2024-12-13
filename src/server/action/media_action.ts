@@ -11,11 +11,11 @@ import {
 } from "~/server/repository/media_repository";
 import { sendFinancialStatementEmail } from "~/server/action/send_dataroom_email_action";
 
-export async function getDataroomFilesAction(businessId: number) {
+export async function getDataroomFilesAction(businessId: string) {
   return await getDataroomFiles(businessId);
 }
 
-export async function deleteDataroomFile(mediaId: number) {
+export async function deleteDataroomFile(mediaId: string) {
   const user = auth();
   if (!user.userId) {
     throw new Error("Unauthorized");
@@ -29,11 +29,11 @@ export async function deleteDataroomFile(mediaId: number) {
 //TODO: Check auth
 export async function updateDataroomFileType(
   mediaURL: string[],
-  businessID: number,
+  businessID: string,
 ) {
   await updateDataroomTypeByMediaURLe(mediaURL, businessID);
 }
-export async function approveFinancialStatement(mediaID: number) {
+export async function approveFinancialStatement(mediaID: string) {
   // TODO: Check if admin
   try {
     const mediaRecord = await db.query.media.findFirst({
@@ -56,7 +56,7 @@ export async function approveFinancialStatement(mediaID: number) {
   }
 }
 
-export async function rejectFinancialStatement(mediaID: number) {
+export async function rejectFinancialStatement(mediaID: string) {
   // TODO: Check if admin
   try {
     const mediaRecord = await db.query.media.findFirst({

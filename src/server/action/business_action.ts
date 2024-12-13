@@ -15,7 +15,7 @@ import {
 import { getBusinessByID } from "~/server/repository/business_repository";
 import { sendBusinessApprovalEmail } from "~/server/action/send_dataroom_email_action";
 
-export async function approveBusinessAction(businessID: number) {
+export async function approveBusinessAction(businessID: string) {
   try {
     // Get business details before updating status
     const business = await getBusinessByID(businessID);
@@ -134,7 +134,7 @@ export async function createFundraising(formData: FormData) {
   }
 }
 
-export async function declineBusinessAction(businessID: number) {
+export async function declineBusinessAction(businessID: string) {
   try {
     const statusResult = await declineUserStatus(businessID);
 

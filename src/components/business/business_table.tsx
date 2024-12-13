@@ -51,7 +51,7 @@ export default function CampaignApprovalTable({
       )
     ) {
       try {
-        const result = await approveBusinessAction(Number(rowData.businessID));
+        const result = await approveBusinessAction(rowData.businessID);
         if (result.status === 200) {
           setData((prevData) =>
             prevData.filter((item) => item.businessID !== rowData.businessID),
@@ -74,7 +74,7 @@ export default function CampaignApprovalTable({
       )
     ) {
       try {
-        const result = await declineBusinessAction(Number(rowData.businessID));
+        const result = await declineBusinessAction(rowData.businessID);
         if (result.status === 200) {
           setData((prevData) =>
             prevData.filter((item) => item.businessID !== rowData.businessID),

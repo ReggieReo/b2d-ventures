@@ -8,7 +8,7 @@ import {
 } from "~/server/repository/investment_repository";
 
 export async function createInvestmentAction(
-  businessID: number,
+  businessID: string,
   formData: FormData,
 ) {
   "use server";
