@@ -30,7 +30,7 @@ export const ourFileRouter = {
         userID: metadata.userId ?? "",
         url: file.url,
         name: file.name,
-        businessID: 1,
+        businessID: process.env.BUSINESS_PLACEHOLDER_ID,
         status: 4,
       });
       return { uploadedBy: metadata.userId };
@@ -56,7 +56,7 @@ export const ourFileRouter = {
         url: file.url,
         name: file.name,
         status: 4,
-        businessID: 1,
+        businessID: process.env.BUSINESS_PLACEHOLDER_ID,
       });
       return { uploadedBy: metadata.userId };
     }),
@@ -81,7 +81,7 @@ export const ourFileRouter = {
         url: file.url,
         name: file.name,
         status: 4,
-        businessID: 1,
+        businessID: process.env.BUSINESS_PLACEHOLDER_ID,
       });
       return { uploadedBy: metadata.userId };
     }),
@@ -102,7 +102,7 @@ export const ourFileRouter = {
         url: file.url,
         name: file.name,
         status: 4,
-        businessID: 1,
+        businessID: process.env.BUSINESS_PLACEHOLDER_ID,
       });
       console.log(metadata, "done onUploadComplete");
       return { uploadedBy: metadata.userId };
@@ -131,7 +131,7 @@ export const ourFileRouter = {
           name: file.name,
           type: "financial_statement",
           status: 0,
-          businessID: 1, // Consider making this dynamic if needed
+          businessID: process.env.BUSINESS_PLACEHOLDER_ID,
         });
 
         // Return detailed response

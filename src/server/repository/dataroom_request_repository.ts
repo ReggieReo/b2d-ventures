@@ -5,7 +5,7 @@ import { db } from "~/server/db";
 import { dataroomRequest } from "~/server/db/schema";
 import { and, eq } from "drizzle-orm";
 
-export async function getRequestByBusinessID(businessID: number) {
+export async function getRequestByBusinessID(businessID: string) {
   const curUserID = auth().userId;
   if (!curUserID) throw new Error("Unauthorized");
 
@@ -17,7 +17,7 @@ export async function getRequestByBusinessID(businessID: number) {
 
 export async function getRequestByUserIDAndBusinessID(
   userID: string,
-  businessID: number,
+  businessID: string,
 ) {
   if (!userID) throw new Error("Unauthorized");
 
@@ -27,7 +27,7 @@ export async function getRequestByUserIDAndBusinessID(
   });
 }
 
-export async function getRequestByIDWithUser(businessID: number) {
+export async function getRequestByIDWithUser(businessID: string) {
   return await db.query.dataroomRequest.findMany({
     where: (model, { eq }) => eq(model.businessID, businessID),
     with: {
@@ -42,7 +42,7 @@ export async function getRequestByIDWithUser(businessID: number) {
   });
 }
 
-export async function createDataroomRequest(businessID: number) {
+export async function createDataroomRequest(businessID: string) {
   const currentUser = auth();
   const curUserID = currentUser.userId;
 
@@ -59,7 +59,7 @@ export async function createDataroomRequest(businessID: number) {
 }
 
 export async function updateDataroomRequest(
-  businessID: number,
+  businessID: string,
   userID: string,
   newStatus: number,
 ) {

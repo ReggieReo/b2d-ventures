@@ -9,6 +9,7 @@ import {
   integer,
   text,
   boolean,
+  uuid
 } from "drizzle-orm/pg-core";
 
 /**
@@ -17,7 +18,7 @@ import {
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `b2d_ventures_${name}`);
+export const createTable = pgTableCreator((name) => `secure_${name}`);
 
 export const user = createTable("user", {
   userID: varchar("userID", { length: 256 }).primaryKey(),
@@ -32,7 +33,7 @@ export const user = createTable("user", {
 });
 
 export const business = createTable("business", {
-  businessID: serial("businessID").primaryKey(),
+  businessID: uuid("businessID").primaryKey().defaultRandom(),
   userID: varchar("userID", { length: 256 }).references(() => user.userID, {
     onDelete: "cascade",
   }),
@@ -59,8 +60,8 @@ export const business = createTable("business", {
 });
 
 export const investment = createTable("investment", {
-  investmentID: serial("investmentID").primaryKey(),
-  businessID: serial("businessID").references(() => business.businessID, {
+  investmentID: uuid("investmentID").primaryKey().defaultRandom(),
+  businessID: uuid("businessID").references(() => business.businessID, {
     onDelete: "cascade",
   }),
   userID: varchar("userID", { length: 256 }).references(() => user.userID, {
@@ -76,8 +77,8 @@ export const investment = createTable("investment", {
 });
 
 export const media = createTable("media", {
-  mediaID: serial("mediaID").primaryKey(),
-  businessID: serial("businessID").references(() => business.businessID, {
+  mediaID: uuid("mediaID").primaryKey().defaultRandom(),
+  businessID: uuid("businessID").references(() => business.businessID, {
     onDelete: "cascade",
   }),
   userID: varchar("userID", { length: 256 }).references(() => user.userID, {
@@ -96,11 +97,11 @@ export const media = createTable("media", {
 });
 
 export const dataroomRequest = createTable("dataroom_request", {
-  requestID: serial("requestID").primaryKey(),
+  requestID: uuid("requestID").primaryKey().defaultRandom(),
   userID: varchar("userID", { length: 256 }).references(() => user.userID, {
     onDelete: "cascade",
   }),
-  businessID: serial("businessID").references(() => business.businessID, {
+  businessID: uuid("businessID").references(() => business.businessID, {
     onDelete: "cascade",
   }),
   requestStatus: integer("requestStatus").default(0).notNull(),

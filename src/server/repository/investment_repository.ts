@@ -8,7 +8,7 @@ import { and, asc, desc, eq, gte, lte } from "drizzle-orm";
 import { sendInvestmentNotificationEmail } from "~/server/action/send_dataroom_email_action";
 import { getBusinessByID } from "./business_repository";
 
-export async function createInvestment(businessID: number, fund: number) {
+export async function createInvestment(businessID: string, fund: number) {
   const currentUser = auth();
 
   if (!currentUser.userId) throw new Error("Unauthorized");
@@ -37,7 +37,7 @@ export async function createInvestment(businessID: number, fund: number) {
   );
 }
 
-export async function getInvestmentByBusinessID(businessID: number) {
+export async function getInvestmentByBusinessID(businessID: string) {
   return db.query.investment.findMany({
     where: (model, { eq }) => eq(model.businessID, businessID),
   });

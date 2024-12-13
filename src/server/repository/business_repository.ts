@@ -9,7 +9,7 @@ import { calculateStockPrice } from "~/utils/util";
 
 ("server-only");
 
-export async function acceptUserStatus(businessID: number) {
+export async function acceptUserStatus(businessID: string) {
   try {
     await db
       .update(business)
@@ -22,7 +22,7 @@ export async function acceptUserStatus(businessID: number) {
   }
 }
 
-export async function declineUserStatus(businessID: number) {
+export async function declineUserStatus(businessID: string) {
   try {
     await db
       .update(business)
@@ -67,7 +67,7 @@ export async function getAllBusiness() {
   return db.query.business.findMany();
 }
 
-export async function getBusinessByID(businessID: number) {
+export async function getBusinessByID(businessID: string) {
   return db.query.business.findFirst({
     where: (model, { eq }) => eq(model.businessID, businessID),
   });
