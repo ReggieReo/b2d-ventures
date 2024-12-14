@@ -41,7 +41,7 @@ const Gallery = ({ images, className }: GalleryProps) => {
             onMouseLeave={() => setIsHovering(false)}
           >
             <Image
-              src={image.url}
+              src={image.url!}
               alt={`Gallery Image ${index + 1}`}
               fill
               className="transform object-cover transition-transform duration-300 group-hover:scale-105"
@@ -99,7 +99,7 @@ const Gallery = ({ images, className }: GalleryProps) => {
             )}
           >
             <Image
-              src={image.url}
+              src={image.url!}
               alt={`Thumbnail ${index + 1}`}
               fill
               className="transform object-cover transition-transform duration-300 group-hover:scale-110"

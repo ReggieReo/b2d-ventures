@@ -6,10 +6,11 @@ import type { formSchema } from "~/app/create_fundraising/schema";
 import { auth } from "@clerk/nextjs/server";
 import { industries } from "~/utils/enum/industryList";
 import { calculateStockPrice } from "~/utils/util";
+import logger from '~/utils/logger';
 
 ("server-only");
 
-export async function acceptUserStatus(businessID: number) {
+export async function acceptUserStatus(businessID: string) {
   try {
     await db
       .update(business)
@@ -17,12 +18,12 @@ export async function acceptUserStatus(businessID: number) {
       .where(eq(business.businessID, businessID));
     return { success: true };
   } catch (error) {
-    console.error("Error updating user status:", error);
+    logger.error({message: `Error updating user status: ${error}`});
     return { success: false, error: "Failed to update user status" };
   }
 }
 
-export async function declineUserStatus(businessID: number) {
+export async function declineUserStatus(businessID: string) {
   try {
     await db
       .update(business)
@@ -30,7 +31,7 @@ export async function declineUserStatus(businessID: number) {
       .where(eq(business.businessID, businessID));
     return { success: true };
   } catch (error) {
-    console.error("Error updating user status:", error);
+    logger.error({message: `Error updating user status: ${error}`});
     return { success: false, error: "Failed to update user status" };
   }
 }
@@ -67,7 +68,7 @@ export async function getAllBusiness() {
   return db.query.business.findMany();
 }
 
-export async function getBusinessByID(businessID: number) {
+export async function getBusinessByID(businessID: string) {
   return db.query.business.findFirst({
     where: (model, { eq }) => eq(model.businessID, businessID),
   });

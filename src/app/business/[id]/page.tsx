@@ -16,7 +16,7 @@ import { getBusinessByID } from "~/server/repository/business_repository";
 import { getInvestmentByBusinessID } from "~/server/repository/investment_repository";
 import { getRequestByBusinessID } from "~/server/repository/dataroom_request_repository";
 
-async function getRequestStatus(business: number, curUserID?: string) {
+async function getRequestStatus(business: string, curUserID?: string) {
   if (!curUserID) {
     return RequestDataroomStatusEnum.NoUsers;
   }
@@ -27,7 +27,7 @@ async function getRequestStatus(business: number, curUserID?: string) {
   return requestStatus.requestStatus;
 }
 
-export default async function Page({ params }: { params: { id: number } }) {
+export default async function Page({ params }: { params: { id: string} }) {
   const business = await getBusinessByID(params.id);
   if (!business) {
     redirect("/browse_business");

@@ -50,7 +50,6 @@ export function InvestmentBarChart() {
         } else {
           console.error(
             "Failed to fetch data or invalid data format:",
-            response?.message,
           );
         }
       } catch (error) {

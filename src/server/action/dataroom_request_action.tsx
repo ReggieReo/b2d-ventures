@@ -7,16 +7,16 @@ import {
   updateDataroomRequest,
 } from "~/server/repository/dataroom_request_repository";
 
-export async function createDataroomRequestAction(pageID: number) {
+export async function createDataroomRequestAction(pageID: string) {
   return await createDataroomRequest(pageID);
 }
 
-export async function getRequestAction(pageID: number) {
+export async function getRequestAction(pageID: string) {
   return await getRequestByBusinessID(pageID);
 }
 
 export async function updateDataroomRequestAction(
-  pageID: number,
+  pageID: string,
   userID: string,
   newStatus: number,
 ) {

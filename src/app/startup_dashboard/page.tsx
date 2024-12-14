@@ -42,7 +42,6 @@ export default async function StartupDashboard() {
     );
   }
 
-
   const businessID = business.businessID;
 
   const dataroomRequests = await getRequestByIDWithUser(businessID);
@@ -51,19 +50,21 @@ export default async function StartupDashboard() {
     dataroomRequests.map(async (request) => ({
       requestID: request.requestID,
       userID: request.userID!,
-      businessID: request.businessID,
+      businessID: request.businessID!,
       requestStatus: request.requestStatus,
       createdAt: new Date(request.createdAt),
       user: {
         userID: request.user?.userID,
-        name: request.user?.name || undefined,
-        email: (await clerkClient.users.getUser(request.userID!)).emailAddresses[0]?.emailAddress || undefined,
-        media: request.user?.media?.map(m => ({
+        name: request.user?.name ?? undefined,
+        email:
+          (await clerkClient.users.getUser(request.userID!)).emailAddresses[0]
+            ?.emailAddress ?? undefined,
+        media: request.user?.media?.map((m) => ({
           status: m.status,
           createdAt: new Date(m.createdAt),
         })),
       },
-    }))
+    })),
   );
 
   const isInCurrentWeek = (date: Date) => {
@@ -121,18 +122,23 @@ export default async function StartupDashboard() {
   const percentageFund = (totalInvestment / business.target_stock!) * 100;
 
   return (
-    <main className="justify-left m-2 sm:m-4 flex min-h-screen flex-col">
+    <main className="justify-left m-2 flex min-h-screen flex-col sm:m-4">
       {business.business_status === 0 && (
-        <div className="font-geist-sans my-5 sm:my-10 flex flex-col">
-          <div className="rounded-lg bg-yellow-50 p-4 sm:p-8 text-center">
-            <h2 className="mb-2 sm:mb-4 text-xl sm:text-2xl font-bold text-yellow-800">Under Review</h2>
-            <p className="text-sm sm:text-base text-yellow-700">
-              This business is currently being reviewed by our admin team. You will be notified by email once the review is complete.
+        <div className="font-geist-sans my-5 flex flex-col sm:my-10">
+          <div className="rounded-lg bg-yellow-50 p-4 text-center sm:p-8">
+            <h2 className="mb-2 text-xl font-bold text-yellow-800 sm:mb-4 sm:text-2xl">
+              Under Review
+            </h2>
+            <p className="text-sm text-yellow-700 sm:text-base">
+              This business is currently being reviewed by our admin team. You
+              will be notified by email once the review is complete.
             </p>
           </div>
         </div>
       )}
-      <p className={"mb-3 sm:mb-5 text-2xl sm:text-3xl font-bold"}>My Fundraising</p>
+      <p className={"mb-3 text-2xl font-bold sm:mb-5 sm:text-3xl"}>
+        My Fundraising
+      </p>
       <div className={"flex flex-col items-center gap-3 sm:gap-4"}>
         <Card className={"w-full"}>
           <CardHeader>
@@ -141,38 +147,57 @@ export default async function StartupDashboard() {
           </CardHeader>
           <CardContent>
             <div className={"flex flex-col gap-y-4 sm:gap-y-5"}>
-              <div className={"flex flex-col sm:flex-row justify-between"}>
-                <div className={"flex flex-col sm:flex-row gap-4 sm:gap-x-10 sm:justify-between sm:w-3/4"}>
+              <div className={"flex flex-col justify-between sm:flex-row"}>
+                <div
+                  className={
+                    "flex flex-col gap-4 sm:w-3/4 sm:flex-row sm:justify-between sm:gap-x-10"
+                  }
+                >
                   <div className={"flex-col"}>
                     <p className={"text-xl sm:text-2xl"}>Fund Raised</p>
                     <div className={"ml-3 flex flex-col gap-1 sm:gap-2"}>
-                      <p className={"text-2xl sm:text-3xl font-bold"}>
-                        ${totalInvestment.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                      <p className={"text-2xl font-bold sm:text-3xl"}>
+                        $
+                        {totalInvestment
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                       </p>
                       <p className="text-sm sm:text-base">
-                        (${thisWeekInvestmentAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} from this week)
+                        ($
+                        {thisWeekInvestmentAmount
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                        from this week)
                       </p>
                     </div>
                   </div>
                   <div className={"flex flex-col"}>
                     <p className={"text-xl sm:text-2xl"}>Investor</p>
                     <div className={"ml-3 flex flex-col gap-1 sm:gap-2"}>
-                      <p className={"text-2xl sm:text-3xl font-bold"}>{countInvestment}</p>
-                      <p className="text-sm sm:text-base">({thisWeekInvestmentCount} from this week)</p>
+                      <p className={"text-2xl font-bold sm:text-3xl"}>
+                        {countInvestment}
+                      </p>
+                      <p className="text-sm sm:text-base">
+                        ({thisWeekInvestmentCount} from this week)
+                      </p>
                     </div>
                   </div>
                   <div className={"flex flex-col"}>
                     <p className={"text-xl sm:text-2xl"}>Day to go</p>
                     <div className={"ml-3 flex flex-col gap-1 sm:gap-2"}>
-                      <p className={"text-2xl sm:text-3xl font-bold"}>
+                      <p className={"text-2xl font-bold sm:text-3xl"}>
                         {daysToGo === 0 ? "Last day" : daysToGo}
                       </p>
-                      <p className="text-sm sm:text-base">({daysSinceStart} days from start)</p>
+                      <p className="text-sm sm:text-base">
+                        ({daysSinceStart} days from start)
+                      </p>
                     </div>
                   </div>
                 </div>
                 <Link href={`/business/${businessID}`} className="mt-4 sm:mt-0">
-                  <Button variant="outline" className="w-full sm:w-auto">View Business Page</Button>
+                  <Button variant="outline" className="w-full sm:w-auto">
+                    View Business Page
+                  </Button>
                 </Link>
               </div>
               <div className={"ml-5 flex flex-row items-center gap-x-5"}>
@@ -196,23 +221,38 @@ export default async function StartupDashboard() {
               </div>
             ) : (
               <div className={"flex flex-col items-center"}>
-                <div className={"flex flex-col sm:flex-row gap-4 sm:gap-x-10"}>
-                  <div className={"flex flex-col w-full sm:w-auto"}>
-                    <p className={"text-xl sm:text-2xl"}>Lowest Check-size Value</p>
-                    <p className={"ml-3 text-2xl sm:text-3xl font-bold"}>
-                      ${minInvestment.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                <div className={"flex flex-col gap-4 sm:flex-row sm:gap-x-10"}>
+                  <div className={"flex w-full flex-col sm:w-auto"}>
+                    <p className={"text-xl sm:text-2xl"}>
+                      Lowest Check-size Value
+                    </p>
+                    <p className={"ml-3 text-2xl font-bold sm:text-3xl"}>
+                      $
+                      {minInvestment
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                     </p>
                   </div>
-                  <div className={"flex flex-col w-full sm:w-auto"}>
-                    <p className={"text-xl sm:text-2xl"}>Highest Check-size Value</p>
-                    <p className={"ml-3 text-2xl sm:text-3xl font-bold"}>
-                      ${maxInvestment.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  <div className={"flex w-full flex-col sm:w-auto"}>
+                    <p className={"text-xl sm:text-2xl"}>
+                      Highest Check-size Value
+                    </p>
+                    <p className={"ml-3 text-2xl font-bold sm:text-3xl"}>
+                      $
+                      {maxInvestment
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                     </p>
                   </div>
-                  <div className={"flex flex-col w-full sm:w-auto"}>
-                    <p className={"text-xl sm:text-2xl"}>Average Check-size Value</p>
-                    <p className={"ml-3 text-2xl sm:text-3xl font-bold"}>
-                      ${avgInvestment.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  <div className={"flex w-full flex-col sm:w-auto"}>
+                    <p className={"text-xl sm:text-2xl"}>
+                      Average Check-size Value
+                    </p>
+                    <p className={"ml-3 text-2xl font-bold sm:text-3xl"}>
+                      $
+                      {avgInvestment
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                     </p>
                   </div>
                 </div>
@@ -251,18 +291,24 @@ export default async function StartupDashboard() {
           </CardHeader>
           <CardContent>
             <div className={"flex flex-col items-center gap-y-4 sm:gap-y-5"}>
-              <div className={"flex flex-col sm:flex-row gap-4 sm:gap-x-10"}>
+              <div className={"flex flex-col gap-4 sm:flex-row sm:gap-x-10"}>
                 <div className={"flex flex-col"}>
                   <p className={"text-xl sm:text-2xl"}>Business Name</p>
-                  <p className={"ml-3 text-2xl sm:text-3xl font-bold"}>{business.company}</p>
+                  <p className={"ml-3 text-2xl font-bold sm:text-3xl"}>
+                    {business.company}
+                  </p>
                 </div>
                 <div className={"flex flex-col"}>
                   <p className={"text-xl sm:text-2xl"}>Target Fund</p>
-                  <p className={"ml-3 text-2xl sm:text-3xl font-bold"}>{business.target_stock}</p>
+                  <p className={"ml-3 text-2xl font-bold sm:text-3xl"}>
+                    {business.target_stock}
+                  </p>
                 </div>
                 <div className={"flex flex-col"}>
                   <p className={"text-xl sm:text-2xl"}>Deadline</p>
-                  <p className={"ml-3 text-2xl sm:text-3xl font-bold"}>{dayDeadline.toLocaleDateString("en-US")}</p>
+                  <p className={"ml-3 text-2xl font-bold sm:text-3xl"}>
+                    {dayDeadline.toLocaleDateString("en-US")}
+                  </p>
                 </div>
               </div>
             </div>

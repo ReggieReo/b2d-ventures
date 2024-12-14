@@ -4,18 +4,20 @@ import { db } from "~/server/db";
 import { media } from "~/server/db/schema";
 import { eq } from "drizzle-orm";
 import { auth } from "@clerk/nextjs/server";
+import logger from '~/utils/logger';
 
 import {
   getDataroomFiles,
   updateDataroomTypeByMediaURLe,
 } from "~/server/repository/media_repository";
 import { sendFinancialStatementEmail } from "~/server/action/send_dataroom_email_action";
+import { checkRole } from "~/utils/role";
 
-export async function getDataroomFilesAction(businessId: number) {
+export async function getDataroomFilesAction(businessId: string) {
   return await getDataroomFiles(businessId);
 }
 
-export async function deleteDataroomFile(mediaId: number) {
+export async function deleteDataroomFile(mediaId: string) {
   const user = auth();
   if (!user.userId) {
     throw new Error("Unauthorized");
@@ -26,15 +28,19 @@ export async function deleteDataroomFile(mediaId: number) {
   return { success: true };
 }
 
-//TODO: Check auth
 export async function updateDataroomFileType(
   mediaURL: string[],
-  businessID: number,
+  businessID: string,
 ) {
+  const currentUser = auth();
+  if (!currentUser.userId) throw new Error("Unauthorized");
   await updateDataroomTypeByMediaURLe(mediaURL, businessID);
 }
-export async function approveFinancialStatement(mediaID: number) {
-  // TODO: Check if admin
+export async function approveFinancialStatement(mediaID: string) {
+  const currentUser = auth();
+  if (!currentUser.userId) throw new Error("Unauthorized");
+  checkRole("admin")
+
   try {
     const mediaRecord = await db.query.media.findFirst({
       where: (model, { eq }) => eq(model.mediaID, mediaID),
@@ -51,13 +57,15 @@ export async function approveFinancialStatement(mediaID: number) {
 
     return { success: true };
   } catch (error) {
-    console.error("Error approving financial statement:", error);
+    logger.info({ message: `${currentUser.userId} failed to approve financial statement: ${error}` });
     return { success: false, error: "Failed to approve financial statement" };
   }
 }
 
-export async function rejectFinancialStatement(mediaID: number) {
-  // TODO: Check if admin
+export async function rejectFinancialStatement(mediaID: string) {
+  const currentUser = auth();
+  if (!currentUser.userId) throw new Error("Unauthorized");
+  checkRole("admin")
   try {
     const mediaRecord = await db.query.media.findFirst({
       where: (model, { eq }) => eq(model.mediaID, mediaID),
@@ -74,7 +82,7 @@ export async function rejectFinancialStatement(mediaID: number) {
 
     return { success: true };
   } catch (error) {
-    console.error("Error rejecting financial statement:", error);
+    logger.info({ message: `${currentUser.userId} failed to reject financial statement: ${error}` });
     return { success: false, error: "Failed to reject financial statement" };
   }
 }

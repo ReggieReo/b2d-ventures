@@ -28,7 +28,7 @@ import {
 import { getBusinessByID } from "~/server/repository/business_repository";
 export const dynamic = "force-dynamic";
 
-export default async function Dataroom({ params }: { params: { id: number } }) {
+export default async function Dataroom({ params }: { params: { id: string } }) {
   const files = await getDataroomFiles(params.id);
   const business = await getBusinessByID(params.id);
   const logo = await getLogoByBusinessID(params.id);
@@ -50,7 +50,7 @@ export default async function Dataroom({ params }: { params: { id: number } }) {
         <CardHeader className={"flex flex-row items-center gap-x-5"}>
           <div className="h-16 w-16 overflow-hidden rounded-lg">
             <Image
-              src={logo!.url}
+              src={logo!.url!}
               alt="IP3 Logo"
               width={64}
               height={64}
@@ -74,7 +74,7 @@ export default async function Dataroom({ params }: { params: { id: number } }) {
           {files.map((link) => (
             <TableRow key={link.mediaID}>
               <TableCell>
-                <a href={link.url} target="_blank" download={link.url}>
+                <a href={link.url!} target="_blank" download={link.url}>
                   {link.name}
                 </a>
               </TableCell>

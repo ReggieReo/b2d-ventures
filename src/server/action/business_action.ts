@@ -14,8 +14,14 @@ import {
 } from "~/server/repository/media_repository";
 import { getBusinessByID } from "~/server/repository/business_repository";
 import { sendBusinessApprovalEmail } from "~/server/action/send_dataroom_email_action";
+import logger from '~/utils/logger';
+import { auth } from "@clerk/nextjs/server";
+import { checkRole } from "~/utils/role";
 
-export async function approveBusinessAction(businessID: number) {
+export async function approveBusinessAction(businessID: string) {
+  const currentUser = auth();
+  if (!currentUser.userId) throw new Error("Unauthorized");
+  checkRole("admin")
   try {
     // Get business details before updating status
     const business = await getBusinessByID(businessID);
@@ -36,13 +42,13 @@ export async function approveBusinessAction(businessID: number) {
       };
     }
   } catch (error) {
-    console.error("Server action error:", error);
+    logger.error({message: `Server action error: ${error}`});
     return { status: 500, message: "Internal server error" };
   }
 }
 
 export async function createFundraising(formData: FormData) {
-  console.log("Creating fundraising with form data:", formData);
+  logger.info({message: `${auth().userId} creating fundraising with form data: ${JSON.stringify(formData)}`});
   // Parse JSON strings for media and logo
   let mediaData: unknown[] = [];
   let logoData: unknown = null;
@@ -70,7 +76,8 @@ export async function createFundraising(formData: FormData) {
       dataroomData = JSON.parse(dataroomString) as unknown[];
     }
   } catch (error) {
-    console.error("Error parsing JSON data:", error);
+    logger.error({message: `Error parsing JSON data: ${error}`});
+    return { success: false, error: "Failed to parse JSON data" };
   }
 
   // Validate the form data with parsed JSON values
@@ -96,13 +103,11 @@ export async function createFundraising(formData: FormData) {
   });
 
   if (!validatedFields.success) {
-    console.error("Validation errors:", validatedFields.error.flatten());
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-    };
+    logger.error({message: `Validation errors: ${JSON.stringify(validatedFields.error.flatten())}`});
+    return { success: false, error: "Failed to validate fields" };
   }
 
-  console.log("Validated fields:", validatedFields.data);
+  logger.info({message: `Validated fields: ${JSON.stringify(validatedFields.data)}`});
   try {
     // Uncomment this when ready to create business
     const id = await createBusiness(validatedFields.data);
@@ -125,16 +130,15 @@ export async function createFundraising(formData: FormData) {
 
     return { success: true };
   } catch (error) {
-    console.error("Error creating business:", error);
-    return {
-      errors: {
-        form: ["Failed to create business. Please try again."],
-      },
-    };
+    logger.error({message: `Error creating business: ${error}`});
+    return { success: false, error: "Failed to create business" };
   }
 }
 
-export async function declineBusinessAction(businessID: number) {
+export async function declineBusinessAction(businessID: string) {
+  const currentUser = auth();
+  if (!currentUser.userId) throw new Error("Unauthorized");
+  checkRole("admin")
   try {
     const statusResult = await declineUserStatus(businessID);
 
@@ -150,7 +154,7 @@ export async function declineBusinessAction(businessID: number) {
       };
     }
   } catch (error) {
-    console.error("Server action error:", error);
-    return { status: 500, message: "Internal server error" };
+    logger.error({message: `Server action error: ${error}`});
+    return { success: false, error: "Failed to get business" };
   }
 }

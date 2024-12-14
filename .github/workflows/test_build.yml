@@ -61,5 +61,9 @@ jobs:
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
           UPLOADTHING_TOKEN: ${{ secrets.UPLOADTHING_TOKEN }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          BUSINESS_PLACEHOLDER_ID: ${{ secrets.BUSINESS_PLACEHOLDER_ID}}
+          CRYPTO_KEY: ${{ secrets.CRYPTO_KEY}}
+          IV_KEY: ${{ secrets.IV_KEY}}
+
       - name: typecheck
         run: pnpm tsc --noEmit

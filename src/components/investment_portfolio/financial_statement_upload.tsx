@@ -22,7 +22,6 @@ export function FinancialStatementUpload() {
           <UploadButton
             endpoint="financialStatementUploader"
             onClientUploadComplete={(res) => {
-              console.log(res);
               setHasUploaded(true);
               alert("Financial statement uploaded successfully!");
               router.refresh();

@@ -7,7 +7,7 @@ import { auth } from "@clerk/nextjs/server";
 
 export async function updateMediaImageTypeByMediaURLe(
   mediaURL: string[],
-  businessID: number,
+  businessID: string,
 ) {
   await db
     .update(media)
@@ -20,7 +20,7 @@ export async function updateMediaImageTypeByMediaURLe(
 
 export async function updateMediaLogoTypeByMediaURLe(
   mediaURL: string,
-  businessID: number,
+  businessID: string,
 ) {
   await db
     .update(media)
@@ -33,7 +33,7 @@ export async function updateMediaLogoTypeByMediaURLe(
 
 export async function updateMediaBannerTypeByMediaURLe(
   mediaURL: string,
-  businessID: number,
+  businessID: string,
 ) {
   await db
     .update(media)
@@ -46,7 +46,7 @@ export async function updateMediaBannerTypeByMediaURLe(
 
 export async function updateDataroomTypeByMediaURLe(
   mediaURL: string[],
-  businessID: number,
+  businessID: string,
 ) {
   await db
     .update(media)
@@ -61,35 +61,35 @@ export async function getAllImages() {
   return db.query.media.findMany();
 }
 
-export async function getImageByBusinessID(businessID: number) {
+export async function getImageByBusinessID(businessID: string) {
   return db.query.media.findMany({
     where: (model, { eq, and }) =>
       and(eq(model.businessID, businessID), eq(model.type, "image")),
   });
 }
 
-export async function getLogoByBusinessID(businessID: number) {
+export async function getLogoByBusinessID(businessID: string) {
   return db.query.media.findFirst({
     where: (model, { eq, and }) =>
       and(eq(model.businessID, businessID), eq(model.type, "logo")),
   });
 }
 
-export async function getBannerByBusinessID(businessID: number) {
+export async function getBannerByBusinessID(businessID: string) {
   return db.query.media.findFirst({
     where: (model, { eq, and }) =>
       and(eq(model.businessID, businessID), eq(model.type, "banner")),
   });
 }
 
-export async function getDataroomFiles(businessID: number) {
+export async function getDataroomFiles(businessID: string) {
   return db.query.media.findMany({
     where: (model, { eq, and }) =>
       and(eq(model.businessID, businessID), eq(model.type, "dataroom")),
   });
 }
 
-export async function getFinancialStatement(businessID: number) {
+export async function getFinancialStatement(businessID: string) {
   const user = auth();
   if (!user) throw new Error("Unauthorized");
   return db.query.media.findFirst({

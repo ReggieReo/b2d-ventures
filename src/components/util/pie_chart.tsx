@@ -105,15 +105,15 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export type InvestmentWithBusiness = {
-  investmentID: number;
-  businessID: number;
+  investmentID: string;
+  businessID: string;
   userID: string | null;
   createdAt: Date;
   updatedAt: Date | null;
   fund: number;
   industry: string;
   business: {
-    businessID: number;
+    businessID: string;
     company: string;
     valuation?: number;
     target_stock?: number;

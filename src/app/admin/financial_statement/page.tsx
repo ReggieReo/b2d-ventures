@@ -1,11 +1,14 @@
 import { Sidebar } from "~/components/browsing/sidebar";
 import { FinancialStatementsTable } from "~/components/admin/financial_statements_table";
-import { getPendingFinancialStatements } from "~/server/repository/media_repository";
+import { getAllImages, getPendingFinancialStatements } from "~/server/repository/media_repository";
 
 export const dynamic = "force-dynamic";
 
 export default async function FinancialStatementsPage() {
   const statements = await getPendingFinancialStatements();
+  const sta = await getAllImages();
+  console.log(sta)
+  console.log(statements, "a")
 
   return (
     <div className="flex min-h-screen">

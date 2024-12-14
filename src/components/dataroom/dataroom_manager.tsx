@@ -21,13 +21,13 @@ import {
 } from "~/server/action/media_action";
 
 type DataroomFile = {
-  mediaID: number;
-  url: string;
-  name: string;
+  mediaID: string;
+  url: string | null;
+  name: string | null;
   type: string | null;
 };
 
-export function DataroomManager({ businessId }: { businessId: number }) {
+export function DataroomManager({ businessId }: { businessId: string}) {
   const [files, setFiles] = useState<DataroomFile[]>([]);
   const router = useRouter();
 
@@ -39,7 +39,7 @@ export function DataroomManager({ businessId }: { businessId: number }) {
     void fetchFiles();
   }, [businessId]);
 
-  const handleRemoveFile = async (mediaId: number) => {
+  const handleRemoveFile = async (mediaId: string) => {
     if (confirm("Are you sure you want to remove this file?")) {
       try {
         await deleteDataroomFile(mediaId);
@@ -59,7 +59,7 @@ export function DataroomManager({ businessId }: { businessId: number }) {
           onClientUploadComplete={async (res) => {
             if (res) {
               const newFiles = res.map((file) => ({
-                mediaID: 0, // This will be updated when fetching
+                mediaID: "0",
                 url: file.url,
                 name: file.name,
                 type: "dataroom",
@@ -93,12 +93,12 @@ export function DataroomManager({ businessId }: { businessId: number }) {
                 <div className="flex items-center space-x-2">
                   <FileIcon className="h-4 w-4" />
                   <a
-                    href={file.url}
+                    href={file.url ?? '#'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:underline"
                   >
-                    {file.name}
+                    {file.name ?? 'Untitled'}
                   </a>
                 </div>
               </TableCell>

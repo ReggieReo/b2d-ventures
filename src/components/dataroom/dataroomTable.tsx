@@ -20,9 +20,9 @@ import * as React from "react";
 import {updateDataroomRequestAction} from "~/server/action/dataroom_request_action";
 import {sendDataroomApprovalEmail} from "~/server/action/send_dataroom_email_action";
 export type DataroomRequestWithUser = {
-  requestID: number;
+  requestID: string;
   userID: string;
-  businessID: number;
+  businessID: string;
   requestStatus: number;
   createdAt: Date;
   user: {

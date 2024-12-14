@@ -75,7 +75,6 @@ const columns: ColumnDef<InvestmentData>[] = [
 ];
 
 const handleCheckout = (rowData: InvestmentData) => {
-  console.log(`Processing checkout for:`, rowData);
   alert(`Confirmed checkout for ${rowData.Investment}`);
 };
 

@@ -13,7 +13,7 @@ import { getInvestmentByBusinessID } from "~/server/repository/investment_reposi
 export default async function InputForm({
   params,
 }: {
-  params: { id: number };
+  params: { id: string};
 }) {
   const business = await getBusinessByID(params.id);
   const logo = await getLogoByBusinessID(params.id);
