@@ -12,7 +12,6 @@ export function UploadButtonCom() {
       endpoint="imageUploader"
       onClientUploadComplete={(res) => {
         // Do something with the response
-        console.log("Files: ", res);
         alert("Upload Completed");
         router.refresh();
       }}
@@ -31,7 +30,6 @@ export function LogoUploadButton() {
       endpoint="logoUploader"
       onClientUploadComplete={(res) => {
         // Do something with the response
-        console.log("Files: ", res);
         alert("Upload Completed");
         router.refresh();
       }}
@@ -43,17 +41,3 @@ export function LogoUploadButton() {
   );
 }
 
-export function TestBut() {
-  return (
-    <UploadButton
-      endpoint="logoUploader"
-      onClientUploadComplete={async (res) => {
-        console.log(res);
-        console.log(res[0]);
-      }}
-      onUploadError={(error: Error) => {
-        console.error("Logo upload error:", error);
-      }}
-    />
-  );
-}

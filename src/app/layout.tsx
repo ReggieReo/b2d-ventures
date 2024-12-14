@@ -24,7 +24,6 @@ export default async function RootLayout({
     });
     showPrivacyForm = userRecord?.privacy === false;
   }
-  console.log(showPrivacyForm);
 
   return (
     <ClerkProvider>

@@ -37,10 +37,6 @@ export async function sendDataroomApprovalEmail(
     // Generate dataroom link
     const dataroomLink = `${process.env.NEXT_PUBLIC_APP_URL}/dataroom/${businessID}`;
 
-    console.log(
-      "Sending email to: ",
-      user.emailAddresses[0]?.emailAddress ?? "",
-    );
     // Send email
     const data = await resend.emails.send({
       from: "B2D Venture <b2dventure-noreply@resend.dev>",

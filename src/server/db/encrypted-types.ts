@@ -74,8 +74,6 @@ export const encryptedBoolean = customType<{
 }>({
   dataType: () => `text`,
   fromDriver: (value: string): boolean => {
-    console.log(String(value), "asdfasdfasdfsdafsadf")
-    console.log(decrypt(value), "deedee")
     return value ? decrypt(value) === "true" : false;
   },
   toDriver: (value: boolean)=> {

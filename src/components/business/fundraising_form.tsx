@@ -486,8 +486,6 @@ export function FundraisingForm() {
                       <UploadButton
                         endpoint="logoUploader"
                         onClientUploadComplete={async (res) => {
-                          console.log(res);
-                          console.log(res[0]);
                           if (res?.[0]) {
                             form.setValue("logo", {
                               url: res[0].url,
@@ -565,8 +563,6 @@ export function FundraisingForm() {
                       <UploadButton
                         endpoint="bannerUploader"
                         onClientUploadComplete={async (res) => {
-                          console.log(res);
-                          console.log(res[0]);
                           if (res?.[0]) {
                             form.setValue("banner", {
                               url: res[0].url,

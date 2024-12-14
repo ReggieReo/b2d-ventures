@@ -32,7 +32,6 @@ export function RecentInvestments() {
       try {
         const response = await fetchRecentInvestmentsInCurrentWeekAction();
         if (response.status === 200) {
-          console.log("Recent investments data:", response.recentInvestments);
           setInvestments(response.recentInvestments as Investment[]);
         } else {
           console.error("Failed to fetch investments");
