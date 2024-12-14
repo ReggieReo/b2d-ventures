@@ -11,6 +11,7 @@ import {
   updateDataroomTypeByMediaURLe,
 } from "~/server/repository/media_repository";
 import { sendFinancialStatementEmail } from "~/server/action/send_dataroom_email_action";
+import { checkRole } from "~/utils/role";
 
 export async function getDataroomFilesAction(businessId: string) {
   return await getDataroomFiles(businessId);
@@ -27,15 +28,19 @@ export async function deleteDataroomFile(mediaId: string) {
   return { success: true };
 }
 
-//TODO: Check auth
 export async function updateDataroomFileType(
   mediaURL: string[],
   businessID: string,
 ) {
+  const currentUser = auth();
+  if (!currentUser.userId) throw new Error("Unauthorized");
   await updateDataroomTypeByMediaURLe(mediaURL, businessID);
 }
 export async function approveFinancialStatement(mediaID: string) {
-  // TODO: Check if admin
+  const currentUser = auth();
+  if (!currentUser.userId) throw new Error("Unauthorized");
+  checkRole("admin")
+
   try {
     const mediaRecord = await db.query.media.findFirst({
       where: (model, { eq }) => eq(model.mediaID, mediaID),
@@ -52,13 +57,15 @@ export async function approveFinancialStatement(mediaID: string) {
 
     return { success: true };
   } catch (error) {
-    logger.error({ error }, "Error approving financial statement");
+    logger.info({ message: `${currentUser.userId} failed to approve financial statement: ${error}` });
     return { success: false, error: "Failed to approve financial statement" };
   }
 }
 
 export async function rejectFinancialStatement(mediaID: string) {
-  // TODO: Check if admin
+  const currentUser = auth();
+  if (!currentUser.userId) throw new Error("Unauthorized");
+  checkRole("admin")
   try {
     const mediaRecord = await db.query.media.findFirst({
       where: (model, { eq }) => eq(model.mediaID, mediaID),
@@ -75,7 +82,7 @@ export async function rejectFinancialStatement(mediaID: string) {
 
     return { success: true };
   } catch (error) {
-    logger.error({ error }, "Error rejecting financial statement");
+    logger.info({ message: `${currentUser.userId} failed to reject financial statement: ${error}` });
     return { success: false, error: "Failed to reject financial statement" };
   }
 }

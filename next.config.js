@@ -38,22 +38,25 @@ const config = {
   images: {
     remotePatterns: [{ hostname: "utfs.io" }],
   },
+  experimental: {
+    serverComponentsExternalPackages: ["pino", "pino-pretty"],
+  },
   pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
   transpilePackages: ["next-mdx-remote"],
-  // async headers() {
-  //   return [
-  //     {
-  //       source: "/(.*)",
-  //       headers: [
-          // { key: "X-Frame-Options", value: "DENY" },
-          // { key: "X-Content-Type-Options", value: "nosniff" },
-          // { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
-          // { key: "Cache-Control", value: "no-cache, no-store, max-age=0, must-revalidate" },
-          // { key: "Content-Security-Policy", value: cspHeader.replace(/\n/g, "") },
-  //       ],
-  //     },
-  //   ];
-  // },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
+          { key: "Cache-Control", value: "no-cache, no-store, max-age=0, must-revalidate" },
+          { key: "Content-Security-Policy", value: cspHeader.replace(/\n/g, "") },
+        ],
+      },
+    ];
+  },
 };
 
 const withMDX = createMDX({

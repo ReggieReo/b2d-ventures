@@ -2,6 +2,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { db } from "~/server/db";
 import { user } from "~/server/db/schema";
 import { encrypt } from "../db/encrypted-types";
+import logger from "~/utils/logger";
 
 ("server-only");
 
@@ -18,6 +19,7 @@ export async function getUserByID(id: string) {
 export async function createUserForCurrentUser() {
   // const currentUser = auth();
   const cuser = await currentUser();
+  logger.info({messge:``})
 
   if (!cuser) throw new Error("Unauthorized");
 

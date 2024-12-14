@@ -9,12 +9,15 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "~/server/db";
 import { user } from "~/server/db/schema";
 import { eq } from "drizzle-orm";
+import { env } from "~/env";
+import logger from "~/utils/logger";
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
   const { userId } = auth();
   let showPrivacyForm = false;
 

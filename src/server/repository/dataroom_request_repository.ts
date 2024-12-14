@@ -4,6 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "~/server/db";
 import { dataroomRequest } from "~/server/db/schema";
 import { and, eq } from "drizzle-orm";
+import logger from "~/utils/logger";
 
 export async function getRequestByBusinessID(businessID: string) {
   const curUserID = auth().userId;
@@ -46,6 +47,7 @@ export async function createDataroomRequest(businessID: string) {
   const currentUser = auth();
   const curUserID = currentUser.userId;
 
+  logger.info({message: `${currentUser.userId} create dataroom request`})
   if (!curUserID) throw new Error("Unauthorized");
 
   const dataroomQueryResult = await getRequestByBusinessID(businessID);

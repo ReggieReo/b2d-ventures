@@ -18,7 +18,7 @@ export async function acceptUserStatus(businessID: string) {
       .where(eq(business.businessID, businessID));
     return { success: true };
   } catch (error) {
-    logger.error({ error }, "Error updating user status");
+    logger.error({message: `Error updating user status: ${error}`});
     return { success: false, error: "Failed to update user status" };
   }
 }
@@ -31,7 +31,7 @@ export async function declineUserStatus(businessID: string) {
       .where(eq(business.businessID, businessID));
     return { success: true };
   } catch (error) {
-    logger.error({ error }, "Error updating user status");
+    logger.error({message: `Error updating user status: ${error}`});
     return { success: false, error: "Failed to update user status" };
   }
 }

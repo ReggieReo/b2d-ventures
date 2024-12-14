@@ -138,7 +138,7 @@ export async function getTotalInvestmentByMonth() {
 
     return result;
   } catch (error) {
-    logger.error({ error }, "Error fetching total investment by month");
+    logger.error({message: `Error fetching total investment by month: ${error}`});
     throw error;
   }
 }

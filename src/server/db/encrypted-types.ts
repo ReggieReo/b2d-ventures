@@ -16,7 +16,7 @@ export const encrypt = (value: string) => {
       padding: CryptoJS.pad.Pkcs7
     }).toString();
   } catch (error) {
-    logger.error({ error }, 'Encryption error');
+    logger.error({message: `Failed to encrypt data: ${error}`});
     throw new Error('Failed to encrypt data');
   }
 };
@@ -35,7 +35,7 @@ const decrypt = (value: string) => {
     if (!result) throw new Error('Decryption resulted in empty string');
     return result;
   } catch (error) {
-    logger.error({ error }, 'Decryption error');
+    logger.error({message: `Failed to decrypt data: ${error}`});
     throw new Error('Failed to decrypt data');
   }
 };

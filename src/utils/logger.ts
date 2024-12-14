@@ -1,21 +1,19 @@
-import { env } from "src/env"
-const pino = require('pino')
+const winston = require('winston');
 
-interface Destination {
-  minLength: number;
-  sync: boolean;
-  dest?: string;
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  defaultMeta: { service: 'user-service' },
+  transports: [
+    new winston.transports.Console({
+        format: winston.format.simple(),
+      })
+    ]
+});
+
+if (process.env.NODE_ENV === 'development') {
+  logger.add(new winston.transports.File({ filename: 'logger/combined.log' }));
+  logger.add(new winston.transports.File({ filename: 'logger/error.log', level: 'error' }));
 }
-
-let destination: Destination = {
-  minLength: 4096, // Buffer before writing
-  sync: false // Asynchronous logging
-}
-
-if (env.NODE_ENV === "development") {
-    destination["dest"] = "~/logger/log"
-}
-
-const logger = pino(pino.destination(destination))
 
 export default logger

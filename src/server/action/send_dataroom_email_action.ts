@@ -95,7 +95,7 @@ export async function sendFinancialStatementEmail(
 
     return { success: true, data };
   } catch (error) {
-    logger.error({ error }, "Error sending financial statement email");
+    logger.error({message: `failed to send financial statement email: ${error}`});
     return { success: false, error: "Failed to send financial statement email" };
   }
 }
@@ -187,7 +187,7 @@ export async function sendBusinessApprovalEmail(
 
     return { success: true, data };
   } catch (error) {
-    logger.error({ error }, "Error sending business approval email");
+    logger.error({message: ` failed to send business approval email: ${error}`});
     return { success: false, error: "Failed to send business approval email" };
   }
 }
