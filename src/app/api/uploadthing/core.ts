@@ -89,14 +89,11 @@ export const ourFileRouter = {
   dataroomUploader: f({ pdf: { maxFileSize: "4MB", maxFileCount: 40 } })
     .middleware(async ({ req }) => {
       const user = auth();
-      console.log(user);
       // eslint-disable-next-line @typescript-eslint/only-throw-error
       if (!user) throw new UploadThingError("Unauthorized");
-      console.log(user, "done middleware");
       return { userId: user.userId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      console.log(metadata, file, "before insert");
       await db.insert(media).values({
         userID: metadata.userId ?? "",
         url: file.url,
@@ -104,7 +101,6 @@ export const ourFileRouter = {
         status: 4,
         businessID: process.env.BUSINESS_PLACEHOLDER_ID,
       });
-      console.log(metadata, "done onUploadComplete");
       return { uploadedBy: metadata.userId };
     }),
 
@@ -141,7 +137,6 @@ export const ourFileRouter = {
           },
         };
       } catch (error) {
-        console.error("Upload error:", error);
         throw error;
       }
     }),
