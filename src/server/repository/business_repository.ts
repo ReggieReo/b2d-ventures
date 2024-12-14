@@ -6,6 +6,7 @@ import type { formSchema } from "~/app/create_fundraising/schema";
 import { auth } from "@clerk/nextjs/server";
 import { industries } from "~/utils/enum/industryList";
 import { calculateStockPrice } from "~/utils/util";
+import logger from '~/utils/logger';
 
 ("server-only");
 
@@ -17,7 +18,7 @@ export async function acceptUserStatus(businessID: string) {
       .where(eq(business.businessID, businessID));
     return { success: true };
   } catch (error) {
-    console.error("Error updating user status:", error);
+    logger.error({ error }, "Error updating user status");
     return { success: false, error: "Failed to update user status" };
   }
 }
@@ -30,7 +31,7 @@ export async function declineUserStatus(businessID: string) {
       .where(eq(business.businessID, businessID));
     return { success: true };
   } catch (error) {
-    console.error("Error updating user status:", error);
+    logger.error({ error }, "Error updating user status");
     return { success: false, error: "Failed to update user status" };
   }
 }

@@ -4,6 +4,7 @@ import { db } from "~/server/db";
 import { media } from "~/server/db/schema";
 import { eq } from "drizzle-orm";
 import { auth } from "@clerk/nextjs/server";
+import logger from '~/utils/logger';
 
 import {
   getDataroomFiles,
@@ -51,7 +52,7 @@ export async function approveFinancialStatement(mediaID: string) {
 
     return { success: true };
   } catch (error) {
-    console.error("Error approving financial statement:", error);
+    logger.error({ error }, "Error approving financial statement");
     return { success: false, error: "Failed to approve financial statement" };
   }
 }
@@ -74,7 +75,7 @@ export async function rejectFinancialStatement(mediaID: string) {
 
     return { success: true };
   } catch (error) {
-    console.error("Error rejecting financial statement:", error);
+    logger.error({ error }, "Error rejecting financial statement");
     return { success: false, error: "Failed to reject financial statement" };
   }
 }

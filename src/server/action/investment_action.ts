@@ -6,6 +6,7 @@ import {
   getTotalInvestmentByMonth,
   getTotalInvestmentCurrentWeek,
 } from "~/server/repository/investment_repository";
+import logger from '~/utils/logger';
 
 export async function createInvestmentAction(
   businessID: string,
@@ -18,24 +19,23 @@ export async function createInvestmentAction(
   });
 
   if (!validatedFields.success) {
-    console.log(validatedFields.error.flatten().fieldErrors);
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-    };
+    logger.error({ errors: validatedFields.error.flatten().fieldErrors }, "Validation errors");
+    return { success: false, error: "Failed to validate fields" };
   }
 
+  logger.info()
   await createInvestment(businessID, validatedFields.data.amount);
 }
 
 export async function fetchRecentInvestmentsInCurrentWeekAction() {
   try {
     const recentInvestments = await getRecentInvestmentsInCurrentWeek();
-    console.log("Recent investments data:", recentInvestments);
+    logger.info({ recentInvestments }, "Recent investments data");
 
     return { status: 200, recentInvestments };
   } catch (error) {
-    console.error("Server action error:", error);
-    return { status: 500, message: "Internal server error" };
+    logger.error({ error }, "Server action error");
+    return { success: false, error: "Failed to get recent investments" };
   }
 }
 
@@ -44,8 +44,8 @@ export async function fetchTotalInvestmentCurrentWeekAction() {
     const totalInvestment = await getTotalInvestmentCurrentWeek();
     return { status: 200, totalInvestment };
   } catch (error) {
-    console.error("Server action error:", error);
-    return { status: 500, message: "Internal server error" };
+    logger.error({ error }, "Server action error");
+    return { success: false, error: "Failed to get total investment" };
   }
 }
 
@@ -55,7 +55,7 @@ export async function fetchTotalInvestmentByMonthAction() {
 
     return { status: 200, totalInvestmentByMonth };
   } catch (error) {
-    console.error("Server action error:", error);
-    return { status: 500, message: "Internal server error" };
+    logger.error({ error }, "Server action error");
+    return { success: false, error: "Failed to get investment by month" };
   }
 }

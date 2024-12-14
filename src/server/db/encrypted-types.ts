@@ -1,6 +1,7 @@
 import { customType } from "drizzle-orm/pg-core";
 import CryptoJS from "crypto-js";
 import {env} from "~/env";
+import logger from '~/utils/logger';
 
 const iv = CryptoJS.enc.Utf8.parse(env.IV_KEY); // Move IV to env variable
 const key = CryptoJS.enc.Utf8.parse(env.CRYPTO_KEY);
@@ -15,8 +16,8 @@ export const encrypt = (value: string) => {
       padding: CryptoJS.pad.Pkcs7
     }).toString();
   } catch (error) {
-    console.error('Encryption error:', error);
-    throw new Error('Encryption failed');
+    logger.error({ error }, 'Encryption error');
+    throw new Error('Failed to encrypt data');
   }
 };
 
@@ -34,8 +35,8 @@ const decrypt = (value: string) => {
     if (!result) throw new Error('Decryption resulted in empty string');
     return result;
   } catch (error) {
-    console.error('Decryption error:', error);
-    throw new Error('Decryption failed');
+    logger.error({ error }, 'Decryption error');
+    throw new Error('Failed to decrypt data');
   }
 };
 

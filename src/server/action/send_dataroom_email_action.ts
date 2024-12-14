@@ -12,6 +12,7 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { getBusinessByID } from "~/server/repository/business_repository";
 import { calculateStockPrice } from "~/utils/util";
+import logger from '~/utils/logger';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -94,11 +95,8 @@ export async function sendFinancialStatementEmail(
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending financial statement email:", error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Failed to send email",
-    };
+    logger.error({ error }, "Error sending financial statement email");
+    return { success: false, error: "Failed to send financial statement email" };
   }
 }
 
@@ -189,10 +187,7 @@ export async function sendBusinessApprovalEmail(
 
     return { success: true, data };
   } catch (error) {
-    console.error("Error sending business approval email:", error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Failed to send email",
-    };
+    logger.error({ error }, "Error sending business approval email");
+    return { success: false, error: "Failed to send business approval email" };
   }
 }

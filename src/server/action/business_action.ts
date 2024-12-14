@@ -14,6 +14,7 @@ import {
 } from "~/server/repository/media_repository";
 import { getBusinessByID } from "~/server/repository/business_repository";
 import { sendBusinessApprovalEmail } from "~/server/action/send_dataroom_email_action";
+import logger from '~/utils/logger';
 
 export async function approveBusinessAction(businessID: string) {
   try {
@@ -36,13 +37,13 @@ export async function approveBusinessAction(businessID: string) {
       };
     }
   } catch (error) {
-    console.error("Server action error:", error);
+    logger.error({ error }, "Server action error");
     return { status: 500, message: "Internal server error" };
   }
 }
 
 export async function createFundraising(formData: FormData) {
-  console.log("Creating fundraising with form data:", formData);
+  logger.info({ formData }, "Creating fundraising with form data");
   // Parse JSON strings for media and logo
   let mediaData: unknown[] = [];
   let logoData: unknown = null;
@@ -70,7 +71,8 @@ export async function createFundraising(formData: FormData) {
       dataroomData = JSON.parse(dataroomString) as unknown[];
     }
   } catch (error) {
-    console.error("Error parsing JSON data:", error);
+    logger.error({ error }, "Error parsing JSON data");
+    return { success: false, error: "Failed to parse JSON data" };
   }
 
   // Validate the form data with parsed JSON values
@@ -96,13 +98,11 @@ export async function createFundraising(formData: FormData) {
   });
 
   if (!validatedFields.success) {
-    console.error("Validation errors:", validatedFields.error.flatten());
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-    };
+    logger.error({ errors: validatedFields.error.flatten() }, "Validation errors");
+    return { success: false, error: "Failed to validate fields" };
   }
 
-  console.log("Validated fields:", validatedFields.data);
+  logger.info({ data: validatedFields.data }, "Validated fields");
   try {
     // Uncomment this when ready to create business
     const id = await createBusiness(validatedFields.data);
@@ -125,12 +125,8 @@ export async function createFundraising(formData: FormData) {
 
     return { success: true };
   } catch (error) {
-    console.error("Error creating business:", error);
-    return {
-      errors: {
-        form: ["Failed to create business. Please try again."],
-      },
-    };
+    logger.error({ error }, "Error creating business");
+    return { success: false, error: "Failed to create business" };
   }
 }
 
@@ -150,7 +146,7 @@ export async function declineBusinessAction(businessID: string) {
       };
     }
   } catch (error) {
-    console.error("Server action error:", error);
-    return { status: 500, message: "Internal server error" };
+    logger.error({ error }, "Server action error");
+    return { success: false, error: "Failed to get business" };
   }
 }
