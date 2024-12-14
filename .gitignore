@@ -49,3 +49,12 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+/logger
+2024
