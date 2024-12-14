@@ -22,8 +22,8 @@ import {
 
 type DataroomFile = {
   mediaID: string;
-  url: string;
-  name: string;
+  url: string | null;
+  name: string | null;
   type: string | null;
 };
 
@@ -59,7 +59,7 @@ export function DataroomManager({ businessId }: { businessId: string}) {
           onClientUploadComplete={async (res) => {
             if (res) {
               const newFiles = res.map((file) => ({
-                mediaID: 0, // This will be updated when fetching
+                mediaID: "0",
                 url: file.url,
                 name: file.name,
                 type: "dataroom",
@@ -93,12 +93,12 @@ export function DataroomManager({ businessId }: { businessId: string}) {
                 <div className="flex items-center space-x-2">
                   <FileIcon className="h-4 w-4" />
                   <a
-                    href={file.url}
+                    href={file.url ?? '#'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:underline"
                   >
-                    {file.name}
+                    {file.name ?? 'Untitled'}
                   </a>
                 </div>
               </TableCell>
