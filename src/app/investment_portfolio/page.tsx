@@ -81,7 +81,7 @@ export default async function InvestorPortfolioPage() {
       createdAt: inv.createdAt,
       updatedAt: inv.updatedAt,
       fund: inv.fund,
-      industry: inv.business.industry ?? "",
+      industry: inv.business!.industry ?? "",
       business: inv.business
         ? {
             businessID: inv.business.businessID,

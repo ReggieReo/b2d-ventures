@@ -21,13 +21,13 @@ import {
 } from "~/server/action/media_action";
 
 type DataroomFile = {
-  mediaID: number;
+  mediaID: string;
   url: string;
   name: string;
   type: string | null;
 };
 
-export function DataroomManager({ businessId }: { businessId: number }) {
+export function DataroomManager({ businessId }: { businessId: string}) {
   const [files, setFiles] = useState<DataroomFile[]>([]);
   const router = useRouter();
 
@@ -39,7 +39,7 @@ export function DataroomManager({ businessId }: { businessId: number }) {
     void fetchFiles();
   }, [businessId]);
 
-  const handleRemoveFile = async (mediaId: number) => {
+  const handleRemoveFile = async (mediaId: string) => {
     if (confirm("Are you sure you want to remove this file?")) {
       try {
         await deleteDataroomFile(mediaId);
