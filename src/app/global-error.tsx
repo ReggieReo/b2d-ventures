@@ -16,7 +16,7 @@ export default function GlobalError({
             <div className="mb-4">
               <p className="text-gray-600 mb-2">Error details:</p>
               <p className="text-sm bg-gray-50 p-2 rounded border border-gray-200">
-                {error.message || "An unexpected error occurred"}
+                { "An unexpected error occurred"}
               </p>
               {error.digest && (
                 <p className="text-xs text-gray-500 mt-1">
