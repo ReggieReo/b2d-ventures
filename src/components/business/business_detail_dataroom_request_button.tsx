@@ -13,7 +13,7 @@ export function RequestDataroomButton({
   onClick,
 }: {
   initialRequestStatus: number;
-  pageID: number;
+  pageID: string;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   const buttonStyle =

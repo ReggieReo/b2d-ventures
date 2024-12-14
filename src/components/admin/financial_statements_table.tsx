@@ -24,13 +24,13 @@ export function FinancialStatementsTable({
   statements: (typeof media.$inferSelect)[];
 }) {
   const router = useRouter();
-  const handleApprove = async (mediaID: number) => {
+  const handleApprove = async (mediaID: string) => {
     await approveFinancialStatement(mediaID);
     router.refresh();
     alert("Financial statement approved");
   };
 
-  const handleReject = async (mediaID: number) => {
+  const handleReject = async (mediaID: string) => {
     await rejectFinancialStatement(mediaID);
     router.refresh();
     alert("Financial statement rejected");
@@ -60,7 +60,7 @@ export function FinancialStatementsTable({
                 <TableCell>{statement.userID}</TableCell>
                 <TableCell>
                   <a
-                    href={statement.url}
+                    href={statement.url!}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline"

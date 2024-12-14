@@ -76,7 +76,7 @@ export default async function InvestorPortfolioPage() {
   const validatedInvestment: InvestmentWithBusiness[] = allInvestment.map(
     (inv) => ({
       investmentID: inv.investmentID,
-      businessID: inv.businessID,
+      businessID: inv.businessID!,
       userID: inv.userID,
       createdAt: inv.createdAt,
       updatedAt: inv.updatedAt,

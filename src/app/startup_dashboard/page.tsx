@@ -50,7 +50,7 @@ export default async function StartupDashboard() {
     dataroomRequests.map(async (request) => ({
       requestID: request.requestID,
       userID: request.userID!,
-      businessID: request.businessID,
+      businessID: request.businessID!,
       requestStatus: request.requestStatus,
       createdAt: new Date(request.createdAt),
       user: {
