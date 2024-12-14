@@ -65,8 +65,8 @@ Make sure to add `/logger` to your `.gitignore
 [Visit Wiki](https://github.com/ReggieReo/b2d-ventures/wiki)
 
 ## Team Member
-Kollawat Rupanya 6310545221
-Sittanat Palakawong Na Ayudthaya 6310545400
-Nanthawat Duang-ead 6510545551
-Setthapon Thadisakun 6510545764
-Phumrapee Chaowanapricha 6510545683
+Kollawat Rupanya 6310545221 <br>
+Sittanat Palakawong Na Ayudthaya 6310545400 <br>
+Nanthawat Duang-ead 6510545551 <br>
+Setthapon Thadisakun 6510545764 <br>
+Phumrapee Chaowanapricha 6510545683 <br>
