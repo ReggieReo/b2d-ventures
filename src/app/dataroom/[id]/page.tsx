@@ -26,15 +26,37 @@ import {
   getLogoByBusinessID,
 } from "~/server/repository/media_repository";
 import { getBusinessByID } from "~/server/repository/business_repository";
+import { auth } from "@clerk/nextjs/server";
+import { getRequestByUserIDAndBusinessID } from "~/server/repository/dataroom_request_repository";
+
 export const dynamic = "force-dynamic";
 
 export default async function Dataroom({ params }: { params: { id: string } }) {
-  const files = await getDataroomFiles(params.id);
+  const currentUser = auth();
+  if (!currentUser.userId) {
+    redirect("/sign-in");
+  }
+
   const business = await getBusinessByID(params.id);
-  const logo = await getLogoByBusinessID(params.id);
   if (!business) {
     redirect("/browse_business");
   }
+
+  // Check if user is the business owner
+  const isOwner = business.userID === currentUser.userId;
+
+  if (!isOwner) {
+    // Check if user has approved dataroom access
+    const request = await getRequestByUserIDAndBusinessID(currentUser.userId, params.id);
+    
+    if (!request || request.requestStatus !== 1) { // 1 represents approved status
+      redirect(`/business/${params.id}`);
+    }
+  }
+
+  const files = await getDataroomFiles(params.id);
+  const logo = await getLogoByBusinessID(params.id);
+
   if (!files) {
     return (
       <>
